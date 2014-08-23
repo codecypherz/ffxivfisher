@@ -28,4 +28,9 @@
     http://code.google.com/appengine/docs/java/config/appconfig.html#Enabling_Sessions
   -->
 
+  <static-error-handlers>
+    <handler file="/error-default.html"/>
+    <handler file="/error-over-quota.html" error-code="over_quota"/>
+  </static-error-handlers>
+
 </appengine-web-app>
