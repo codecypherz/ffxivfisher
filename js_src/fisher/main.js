@@ -2,9 +2,9 @@
  * Main bootstrapping file which gets the entire application going.
  */
 
-goog.provide('ff.home.Main');
+goog.provide('ff.fisher.Main');
 
-goog.require('ff.home.ui.Root');
+goog.require('ff.fisher.ui.Root');
 goog.require('goog.Disposable');
 goog.require('goog.debug.Console');
 /** @suppress {extraRequire} Needed for compilation warnings within closure. */
@@ -20,11 +20,11 @@ goog.require('goog.log');
  * @constructor
  * @extends {goog.Disposable}
  */
-ff.home.Main = function() {
+ff.fisher.Main = function() {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
-  this.logger = goog.log.getLogger('ff.home.Main');
+  this.logger = goog.log.getLogger('ff.fisher.Main');
 
   // Set up logging for the entire application.
   if (!goog.debug.Console.instance) {
@@ -38,18 +38,18 @@ ff.home.Main = function() {
   window.onbeforeunload = goog.bind(this.onUnload_, this);
 
   // Create and render the UI.
-  var root = new ff.home.ui.Root();
+  var root = new ff.fisher.ui.Root();
   this.registerDisposable(root);
   root.render();
 };
-goog.inherits(ff.home.Main, goog.Disposable);
+goog.inherits(ff.fisher.Main, goog.Disposable);
 
 
 /**
  * Called when the application unloads.
  * @private
  */
-ff.home.Main.prototype.onUnload_ = function() {
+ff.fisher.Main.prototype.onUnload_ = function() {
   this.disposeInternal();
 };
 
@@ -57,10 +57,10 @@ ff.home.Main.prototype.onUnload_ = function() {
 /**
  * Main entry point to the program.  All bootstrapping happens here.
  */
-ff.home.Main.bootstrap = function() {
-  new ff.home.Main();
+ff.fisher.Main.bootstrap = function() {
+  new ff.fisher.Main();
 };
 
 
 // Ensures the symbol will be visible after compiler renaming.
-goog.exportSymbol('ff.home.Main.bootstrap', ff.home.Main.bootstrap);
+goog.exportSymbol('ff.fisher.Main.bootstrap', ff.fisher.Main.bootstrap);

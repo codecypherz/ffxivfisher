@@ -9,5 +9,9 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-3.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/guice-servlet-3.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/twig-persist-2.0-rc.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-2.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/httpclient-4.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/httpcore-4.2.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

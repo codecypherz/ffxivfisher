@@ -16,16 +16,16 @@ import ffxiv.fisher.Annotations.FrontendVersion;
 @Singleton
 public class PageWriter {
 
-	private Provider<JsMode> jsModeProvider;
+	private Provider<ServingMode> servingModeProvider;
 	private Provider<HttpServletResponse> responseProvider;
 	private Provider<String> frontendVersionProvider;
 	
 	@Inject
 	public PageWriter(
-			Provider<JsMode> jsModeProvider,
+			Provider<ServingMode> jsModeProvider,
 			Provider<HttpServletResponse> responseProvider,
 			@FrontendVersion Provider<String> frontendVersionProvider) {
-		this.jsModeProvider = jsModeProvider;
+		this.servingModeProvider = jsModeProvider;
 		this.responseProvider = responseProvider;
 		this.frontendVersionProvider = frontendVersionProvider;
 	}
@@ -40,10 +40,10 @@ public class PageWriter {
 	 */
 	public void write(Page page) throws FileNotFoundException, IOException {
 
-		JsMode jsMode = jsModeProvider.get();
+		ServingMode servingMode = servingModeProvider.get();
 
 		// Get the HTML path.
-		String htmlPath = page.getHtmlFilePath(jsMode == JsMode.RAW);
+		String htmlPath = page.getHtmlFilePath(servingMode);
 
 		// Read in the HTML.
 		FileReader reader = new FileReader(htmlPath);
@@ -53,7 +53,7 @@ public class PageWriter {
 		String html = new String(buffer.array());
 
 		String frontendVersion = frontendVersionProvider.get();
-		if (jsMode == JsMode.RAW) {
+		if (servingMode == ServingMode.PROD) {
 			html = replaceParam(html, HtmlParameter.JS_FILE_PATH, page.getJsFilePath(frontendVersion));
 		}
 		html = replaceParam(html, HtmlParameter.CSS_FILE_PATH, page.getCssFilePath(frontendVersion));

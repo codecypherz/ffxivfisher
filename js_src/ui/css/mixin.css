@@ -1,0 +1,101 @@
+/**
+ * Common @mixin's to use throughout the application.
+ */
+
+
+/**
+ * Mixin for background-size.
+ * @param SIZE the size definition.
+ */
+@defmixin background_size(SIZE) {
+	/** @alternate */ -webkit-background-size: SIZE;
+	/** @alternate */ -moz-background-size: SIZE;
+	/** @alternate */ -o-background-size: SIZE;
+	/** @alternate */ background-size: SIZE;
+}
+
+/**
+ * Mixin for border-radius.
+ * @param RADIUS The radius definition.
+ */
+@defmixin border_radius(RADIUS) {
+  /* @alternate */ -webkit-border-radius: RADIUS;
+  /* @alternate */ -moz-border-radius: RADIUS;
+  /* @alternate */ border-radius: RADIUS;
+}
+
+
+/**
+ * Mixin for box-shadow.
+ * @param SHADOW The shadow definition.
+ */
+@defmixin box_shadow(SHADOW) {
+  /* @alternate */ -webkit-box-shadow: SHADOW;
+  /* @alternate */ -moz-box-shadow: SHADOW;
+  /* @alternate */ box-shadow: SHADOW;
+}
+
+
+/**
+ * Mixin for box-sizing.
+ * @param SIZING The sizing definition.
+ */
+@defmixin box_sizing(SIZING) {
+  /* @alternate */ -webkit-box-sizing: SIZING;
+  /* @alternate */ -moz-box-sizing: SIZING;
+  /* @alternate */ box-sizing: SIZING;
+}
+
+
+/**
+ * Mixin for linear gradient with a fallback to solid background-color.
+ * @param GRADIENT The gradient.
+ * @param FALLBACK_BG_COLOR The color to fallback to if gradient isn't supported
+ */
+@defmixin linear_gradient(GRADIENT, FALLBACK_BG_COLOR) {
+  /* This is in case the gradient isn't supported by the browser. */
+  background-color: FALLBACK_BG_COLOR;
+
+  /* @alternate */ background-image: -webkit-linear-gradient(GRADIENT);
+  /* @alternate */ background-image: -moz-linear-gradient(GRADIENT);
+  /* @alternate */ background-image: -ms-linear-gradient(GRADIENT);
+  /* @alternate */ background-image: -o-linear-gradient(GRADIENT);
+  /* @alternate */ background-image: linear-gradient(GRADIENT);
+}
+
+
+/**
+ * Mixin for CSS3 transform.
+ * @param TRANSFORM The transform definition.
+ */
+@defmixin transform(TRANSFORM) {
+  /* @alternate */ -webkit-transform: TRANSFORM;
+  /* @alternate */ -moz-transform: TRANSFORM;
+  /* @alternate */ -ms-transform: TRANSFORM;
+  /* @alternate */ -o-transform: TRANSFORM;
+  /* @alternate */ transform: TRANSFORM;
+}
+
+
+/**
+ * Mixin for CSS3 transition.
+ * @param TRANSITION The transition definition.
+ */
+@defmixin transition(TRANSITION) {
+  /* @alternate */ -webkit-transition: TRANSITION;
+  /* @alternate */ -moz-transition: TRANSITION;
+  /* @alternate */ -ms-transition: TRANSITION;
+  /* @alternate */ -o-transition: TRANSITION;
+  /* @alternate */ transition: TRANSITION;
+}
+
+
+/**
+ * Mixin for user select.
+ * @param USER_SELECT User select value.
+ */
+@defmixin user_select(USER_SELECT) {
+  /* @alternate */ -webkit-user-select: USER_SELECT;
+  /* @alternate */ -moz-user-select: USER_SELECT;
+  /* @alternate */ user-select: USER_SELECT;
+}

@@ -2,7 +2,7 @@
  * The top level component for the home page.
  */
 
-goog.provide('ff.home.ui.Root');
+goog.provide('ff.fisher.ui.Root');
 
 goog.require('ff.service.Fish');
 goog.require('goog.array');
@@ -14,17 +14,17 @@ goog.require('goog.ui.Component');
  * @constructor
  * @extends {goog.ui.Component}
  */
-ff.home.ui.Root = function() {
+ff.fisher.ui.Root = function() {
   goog.base(this);
 
   /** @private {!ff.service.Fish} */
   this.fishService_ = ff.service.Fish.getInstance();
 };
-goog.inherits(ff.home.ui.Root, goog.ui.Component);
+goog.inherits(ff.fisher.ui.Root, goog.ui.Component);
 
 
 /** @override */
-ff.home.ui.Root.prototype.enterDocument = function() {
+ff.fisher.ui.Root.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
 
   this.fishService_.getAll().addCallback(
@@ -36,7 +36,7 @@ ff.home.ui.Root.prototype.enterDocument = function() {
  * @param {!Array.<!ff.model.Fish>} fishes The fishes to render.
  * @private
  */
-ff.home.ui.Root.prototype.renderFish_ = function(fishes) {
+ff.fisher.ui.Root.prototype.renderFish_ = function(fishes) {
   // Clear existing fish.
   //goog.disposeAll(this.removeChildren(true));
   this.getElement().innerHTML = '';

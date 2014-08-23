@@ -11,20 +11,20 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class HomeServlet extends HttpServlet {
+public class FisherServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = -2778887191917652176L;
 	
 	private PageWriter pageWriter;
 	
 	@Inject
-	public HomeServlet(PageWriter pageWriter) {
+	public FisherServlet(PageWriter pageWriter) {
 		this.pageWriter = pageWriter;
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		pageWriter.write(Page.HOME);
+		pageWriter.write(Page.FISHER);
 	}
 }

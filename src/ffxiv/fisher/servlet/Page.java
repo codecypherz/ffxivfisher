@@ -6,7 +6,7 @@ package ffxiv.fisher.servlet;
  */
 public enum Page {
 
-	HOME("home.html", "fish.js", "fish.css");
+	FISHER("fisher.html", "fisher.js", "fisher.css");
 	
 	private final String htmlFilePath;
 	private final String jsFilePath;
@@ -18,8 +18,8 @@ public enum Page {
 		this.cssFilePath = "/generated/" + cssFileName;
 	}
 	
-	public String getHtmlFilePath(boolean isDev) {
-		return isDev ? "dev-" + htmlFilePath : htmlFilePath;
+	public String getHtmlFilePath(ServingMode servingMode) {
+		return servingMode == ServingMode.DEV ? "dev-" + htmlFilePath : htmlFilePath;
 	}
 	
 	public String getJsFilePath(String frontendVersion) {
