@@ -8,7 +8,7 @@ echo ___________________________________________
 echo Deploying FFXIV Fisher to AppEngine...
 echo.
 
-"C:\Program Files\eclipse\plugins\com.google.appengine.eclipse.sdkbundle_1.9.9\appengine-java-sdk-1.9.9\bin\appcfg.cmd" ^
+"C:\Program Files\eclipse luna\plugins\com.google.appengine.eclipse.sdkbundle_1.9.9\appengine-java-sdk-1.9.9\bin\appcfg.cmd" ^
   update ..\war\
 
 echo.
