@@ -1,0 +1,19 @@
+# General
+*.class
+
+# AppEngine
+/war/WEB-INF/appengine-generated
+/war/WEB-INF/classes
+
+# Eclipse workspace configuration
+.project
+.settings
+
+# Project generated
+/js_generated
+/war/generated
+
+# Symlinks
+/war/closure
+/war/js_generated
+/war/js_src
