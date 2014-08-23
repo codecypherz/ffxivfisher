@@ -9,8 +9,6 @@ goog.require('goog.async.Deferred');
 goog.require('goog.events.EventHandler');
 goog.require('goog.log');
 goog.require('goog.net.EventType');
-/** @suppress {extraRequire} Needed for compiler type warning. */
-goog.require('goog.net.XhrLite');
 goog.require('goog.net.XhrManager');
 goog.require('goog.ui.IdGenerator');
 
@@ -81,7 +79,7 @@ ff.service.Xhr.prototype.get = function(uri, opt_processJsonResponse) {
 /**
  * Sends a POST request to the given URI.
  * @param {!goog.Uri} uri The URI to which to make the request.
- * @param {Object=} opt_json The json to post.
+ * @param {string|null|undefined} opt_json The json to post.
  * @param {boolean=} opt_processJsonResponse True if a JSON response is expected
  *     and should be processed.  If so, then the value passed in the callback
  *     will be the validated JSON.

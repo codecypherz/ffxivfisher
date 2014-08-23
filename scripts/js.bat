@@ -16,7 +16,6 @@ echo ==============
   -f --only_closure_dependencies ^
   -f --manage_closure_dependencies ^
   -f --accept_const_keyword ^
-  -f --externs=..\js_externs\externs.js ^
   --output_file=..\war\generated\fisher.js
 echo Finished building fisher.js.
 

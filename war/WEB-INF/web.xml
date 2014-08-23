@@ -19,6 +19,6 @@
 
   <!-- This is the hook that registers Guice module during initialization. -->
   <listener>
-    <listener-class>ffxiv.fish.FishServer</listener-class>
+    <listener-class>ffxiv.fisher.FishServer</listener-class>
   </listener>
 </web-app>
