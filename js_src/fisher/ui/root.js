@@ -4,8 +4,10 @@
 
 goog.provide('ff.fisher.ui.Root');
 
+goog.require('ff.model.Weather');
 goog.require('ff.service.FishService');
 goog.require('goog.array');
+goog.require('goog.structs');
 goog.require('goog.ui.Component');
 
 
@@ -44,6 +46,15 @@ ff.fisher.ui.Root.prototype.renderFish_ = function(fishes) {
   // Render the fish.
   goog.array.forEach(fishes, function(fish) {
     // TODO Create a FishComponent.
-    this.getElement().innerHTML += '<div>' + fish.getName() + '</div></br>';
+    var weatherStr = '[';
+    goog.structs.forEach(fish.getWeatherSet(), function(weather) {
+      weatherStr += (weather + ',');
+    });
+    weatherStr += ']';
+
+    this.getElement().innerHTML += '<div>' +
+        fish.getName() + ' ' + weatherStr +
+        '</div></br>';
+
   }, this);
 };
