@@ -10,29 +10,26 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import ffxiv.fisher.servlet.HttpResponseCode;
 
 /**
- * A filter which only lets admin users through.
+ * A filter which only lets requests through if this is the development environment.
  */
 @Singleton
-public class AdminFilter implements Filter {
-	
-	private final UserService userService;
+public class DevEnvFilter implements Filter {
 	
 	@Inject
-	public AdminFilter(UserService userService) {
-		this.userService = userService;
+	public DevEnvFilter() {
 	}
 	
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain filterChain)
 			throws IOException, ServletException {
-		if (userService.isUserLoggedIn() && userService.isUserAdmin()) {
+		if (SystemProperty.Environment.Value.Development == SystemProperty.environment.value()) {
 			filterChain.doFilter(req, resp);
 			return;
 		}

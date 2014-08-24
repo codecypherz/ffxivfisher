@@ -9,6 +9,7 @@ import com.google.inject.Singleton;
 import ffxiv.fisher.Annotations.FrontendVersion;
 import ffxiv.fisher.model.TwigModule;
 import ffxiv.fisher.servlet.FishServletModule;
+import ffxiv.fisher.servlet.HttpParameterModule;
 
 public class FishServerModule extends AbstractModule {
 
@@ -16,6 +17,7 @@ public class FishServerModule extends AbstractModule {
 	protected void configure() {
 		install(new FishServletModule());
 		install(new TwigModule());
+		install(new HttpParameterModule());
 	}
 	
 	/**
