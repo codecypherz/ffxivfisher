@@ -2,10 +2,10 @@
  * Service for interacting with fish data.
  */
 
-goog.provide('ff.service.Fish');
+goog.provide('ff.service.FishService');
 
 goog.require('ff.model.Fish');
-goog.require('ff.service.Xhr');
+goog.require('ff.service.XhrService');
 goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.events.EventTarget');
@@ -17,26 +17,26 @@ goog.require('goog.log');
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-ff.service.Fish = function() {
+ff.service.FishService = function() {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
-  this.logger = goog.log.getLogger('ff.service.Fish');
+  this.logger = goog.log.getLogger('ff.service.FishService');
 
-  /** @private {!ff.service.Xhr} */
-  this.xhrService_ = ff.service.Xhr.getInstance();
+  /** @private {!ff.service.XhrService} */
+  this.xhrService_ = ff.service.XhrService.getInstance();
 };
-goog.inherits(ff.service.Fish, goog.events.EventTarget);
-goog.addSingletonGetter(ff.service.Fish);
+goog.inherits(ff.service.FishService, goog.events.EventTarget);
+goog.addSingletonGetter(ff.service.FishService);
 
 
 /**
  * Loads the fish from the server.
  * @return {!goog.async.Deferred}
  */
-ff.service.Fish.prototype.getAll = function() {
+ff.service.FishService.prototype.getAll = function() {
   // TODO Prevent multiple calls from issuing duplicate requests.
-  goog.log.info(this.logger, 'Loading all ff.');
+  goog.log.info(this.logger, 'Loading all fish.');
 
   // Create the request URL.
   var uri = new goog.Uri();
@@ -59,7 +59,7 @@ ff.service.Fish.prototype.getAll = function() {
  *     response.
  * @private
  */
-ff.service.Fish.prototype.onFishLoaded_ = function(fishesJson) {
+ff.service.FishService.prototype.onFishLoaded_ = function(fishesJson) {
   goog.log.info(this.logger, 'All fish received.');
 
   if (!goog.isArray(fishesJson)) {

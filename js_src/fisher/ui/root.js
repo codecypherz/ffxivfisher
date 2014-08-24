@@ -4,7 +4,7 @@
 
 goog.provide('ff.fisher.ui.Root');
 
-goog.require('ff.service.Fish');
+goog.require('ff.service.FishService');
 goog.require('goog.array');
 goog.require('goog.ui.Component');
 
@@ -17,8 +17,8 @@ goog.require('goog.ui.Component');
 ff.fisher.ui.Root = function() {
   goog.base(this);
 
-  /** @private {!ff.service.Fish} */
-  this.fishService_ = ff.service.Fish.getInstance();
+  /** @private {!ff.service.FishService} */
+  this.fishService_ = ff.service.FishService.getInstance();
 };
 goog.inherits(ff.fisher.ui.Root, goog.ui.Component);
 

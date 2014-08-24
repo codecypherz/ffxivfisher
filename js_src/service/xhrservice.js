@@ -2,7 +2,7 @@
  * Provides a service for shared XHR functionality such as the manager.
  */
 
-goog.provide('ff.service.Xhr');
+goog.provide('ff.service.XhrService');
 
 goog.require('goog.Disposable');
 goog.require('goog.async.Deferred');
@@ -18,11 +18,11 @@ goog.require('goog.ui.IdGenerator');
  * @constructor
  * @extends {goog.Disposable}
  */
-ff.service.Xhr = function() {
+ff.service.XhrService = function() {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
-  this.logger = goog.log.getLogger('ff.service.Xhr');
+  this.logger = goog.log.getLogger('ff.service.XhrService');
 
   /**
    * Generator for unique IDs to be used for requests on the XHR manager.
@@ -47,8 +47,8 @@ ff.service.Xhr = function() {
       goog.net.EventType.SUCCESS,
       this.onSuccess_);
 };
-goog.inherits(ff.service.Xhr, goog.Disposable);
-goog.addSingletonGetter(ff.service.Xhr);
+goog.inherits(ff.service.XhrService, goog.Disposable);
+goog.addSingletonGetter(ff.service.XhrService);
 
 
 /**
@@ -61,7 +61,7 @@ goog.addSingletonGetter(ff.service.Xhr);
  *     happens after the send completes successfully and the errback happens if
  *     an error occurs.
  */
-ff.service.Xhr.prototype.get = function(uri, opt_processJsonResponse) {
+ff.service.XhrService.prototype.get = function(uri, opt_processJsonResponse) {
   var deferred = new goog.async.Deferred();
 
   var requestId = this.idGenerator_.getNextUniqueId();
@@ -87,7 +87,8 @@ ff.service.Xhr.prototype.get = function(uri, opt_processJsonResponse) {
  *     happens after the send completes successfully and the errback happens if
  *     an error occurs.
  */
-ff.service.Xhr.prototype.post = function(uri, json, opt_processJsonResponse) {
+ff.service.XhrService.prototype.post =
+    function(uri, json, opt_processJsonResponse) {
   var deferred = new goog.async.Deferred();
 
   var requestId = this.idGenerator_.getNextUniqueId();
@@ -108,7 +109,7 @@ ff.service.Xhr.prototype.post = function(uri, json, opt_processJsonResponse) {
  * @param {!goog.net.XhrManager.Event} e
  * @private
  */
-ff.service.Xhr.prototype.onError_ = function(e) {
+ff.service.XhrService.prototype.onError_ = function(e) {
   goog.log.error(this.logger, 'XHR failed');
   var deferred = this.pendingMap_[e.id];
   if (deferred) {
@@ -125,7 +126,7 @@ ff.service.Xhr.prototype.onError_ = function(e) {
  * @param {!goog.net.XhrManager.Event} e
  * @private
  */
-ff.service.Xhr.prototype.onSuccess_ = function(e) {
+ff.service.XhrService.prototype.onSuccess_ = function(e) {
   var deferred = this.pendingMap_[e.id];
   if (deferred) {
     deferred.callback(e);
@@ -144,7 +145,7 @@ ff.service.Xhr.prototype.onSuccess_ = function(e) {
  * @return {!Object} The JSON from the response.
  * @private
  */
-ff.service.Xhr.prototype.processJsonResponse_ = function(event) {
+ff.service.XhrService.prototype.processJsonResponse_ = function(event) {
 
   // First, get the JSON from the response which can throw an error.
   var responseJson;
