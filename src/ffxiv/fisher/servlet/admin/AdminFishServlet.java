@@ -7,11 +7,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import ffxiv.fisher.model.Fish;
+import ffxiv.fisher.model.Weather;
 import ffxiv.fisher.service.FishService;
 import ffxiv.fisher.servlet.HttpResponseCode;
 
@@ -33,6 +35,12 @@ public class AdminFishServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		
+		// TODO Remove.
+		fishService.storeNewFish(new Fish.Builder()
+			.setName("Gigantshark")
+			.setWeatherSet(ImmutableSet.of(Weather.CLEAR, Weather.FAIR))
+			.build());
 		
 		// TODO If key is specified, update instead.
 		

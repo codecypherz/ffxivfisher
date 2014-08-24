@@ -2,12 +2,14 @@ package ffxiv.fisher.servlet;
 
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.inject.Provides;
 import com.google.inject.servlet.ServletModule;
 
@@ -15,7 +17,9 @@ import ffxiv.fisher.filter.AdminFilter;
 import ffxiv.fisher.servlet.admin.AdminFishServlet;
 
 public class FishServletModule extends ServletModule {
-
+	
+	private static final Logger log = Logger.getLogger(FishServletModule.class.getName());
+	
 	/**
 	 * The UTF_8 charset.
 	 */
@@ -34,11 +38,15 @@ public class FishServletModule extends ServletModule {
 	
 	@Provides
 	public ServingMode provideServingMode(HttpServletRequest req) {
-		String servingMode = getParam(req, UrlParameter.SERVING_MODE);
-		if (servingMode != null) {
+		String servingModeParam = getParam(req, UrlParameter.SERVING_MODE);
+		if (servingModeParam != null) {
 			try {
-				// TODO If dev, authenticate?
-				return ServingMode.valueOf(servingMode.toUpperCase());
+				ServingMode servingMode = ServingMode.valueOf(servingModeParam.toUpperCase());
+				if (ServingMode.DEV == servingMode &&
+						SystemProperty.Environment.Value.Production == SystemProperty.environment.value()) {
+					log.severe("Cannot request dev mode in production environment");
+				}
+				return servingMode;
 			} catch (Exception e) {
 				return null;
 			}
