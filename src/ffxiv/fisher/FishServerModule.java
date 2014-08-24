@@ -1,7 +1,10 @@
 package ffxiv.fisher;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 
 import ffxiv.fisher.Annotations.FrontendVersion;
 import ffxiv.fisher.model.TwigModule;
@@ -23,5 +26,10 @@ public class FishServerModule extends AbstractModule {
 	@Provides @FrontendVersion
 	public String provideFrontendVersion() {
 		return "0";
+	}
+	
+	@Provides @Singleton
+	public UserService provideUserService() {
+		return UserServiceFactory.getUserService();
 	}
 }

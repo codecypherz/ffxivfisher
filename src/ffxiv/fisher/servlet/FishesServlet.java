@@ -16,17 +16,13 @@ import ffxiv.fisher.model.Fish;
 import ffxiv.fisher.service.FishService;
 
 /**
- * Servlet offering interaction with fishes.
- *
- *  - POST: Creates a new fish.
- *  -  GET: Lists all fishes.
- *
+ * Serves queries for fish.
  */
 @Singleton
 public class FishesServlet extends HttpServlet {
-
+	
 	private static final long serialVersionUID = -8372385733325260330L;
-
+	
 	private final FishService fishService;
 	
 	@Inject
@@ -40,11 +36,5 @@ public class FishesServlet extends HttpServlet {
 		List<Fish> allFish = fishService.getAll();
 		Gson gson = new Gson();
 		resp.getWriter().write(gson.toJson(allFish));
-	}
-	
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		// TODO Implement
 	}
 }

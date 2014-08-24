@@ -11,6 +11,9 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import com.google.inject.Provides;
 import com.google.inject.servlet.ServletModule;
 
+import ffxiv.fisher.filter.AdminFilter;
+import ffxiv.fisher.servlet.admin.AdminFishServlet;
+
 public class FishServletModule extends ServletModule {
 
 	/**
@@ -20,6 +23,11 @@ public class FishServletModule extends ServletModule {
 	
 	@Override
 	protected void configureServlets() {
+		// Admin only.
+		filter("/admin/*").through(AdminFilter.class);
+		serve("/admin/fish").with(AdminFishServlet.class);
+
+		// Normal web access.
 		serve("/").with(FisherServlet.class);
 		serve("/fishes").with(FishesServlet.class);
 	}
