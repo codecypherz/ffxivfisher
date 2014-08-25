@@ -33,6 +33,7 @@ goog.inherits(ff.fisher.ui.FishRow, goog.ui.Component);
  */
 ff.fisher.ui.FishRow.Id_ = {
   NAME: ff.getUniqueId('name'),
+  TIME: ff.getUniqueId('time'),
   WEATHER: ff.getUniqueId('weather')
 };
 
@@ -61,4 +62,6 @@ ff.fisher.ui.FishRow.prototype.enterDocument = function() {
   weatherStr += ']';
   ff.ui.getElementByFragment(this, ff.fisher.ui.FishRow.Id_.WEATHER).innerHTML =
       weatherStr;
+
+  // TODO Render Time component.
 };
