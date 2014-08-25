@@ -4,10 +4,9 @@
 
 goog.provide('ff.fisher.ui.Root');
 
-goog.require('ff.model.Weather');
+goog.require('ff.fisher.ui.FishRow');
 goog.require('ff.service.FishService');
 goog.require('goog.array');
-goog.require('goog.structs');
 goog.require('goog.ui.Component');
 
 
@@ -40,21 +39,12 @@ ff.fisher.ui.Root.prototype.enterDocument = function() {
  */
 ff.fisher.ui.Root.prototype.renderFish_ = function(fishes) {
   // Clear existing fish.
-  //goog.disposeAll(this.removeChildren(true));
-  this.getElement().innerHTML = '';
+  goog.disposeAll(this.removeChildren(true));
 
   // Render the fish.
   goog.array.forEach(fishes, function(fish) {
-    // TODO Create a FishComponent.
-    var weatherStr = '[';
-    goog.structs.forEach(fish.getWeatherSet(), function(weather) {
-      weatherStr += (weather + ',');
-    });
-    weatherStr += ']';
-
-    this.getElement().innerHTML += '<div>' +
-        fish.getName() + ' ' + weatherStr +
-        '</div></br>';
-
+    var fishRow = new ff.fisher.ui.FishRow(fish);
+    this.addChild(fishRow);
+    fishRow.render(this.getElement());
   }, this);
 };

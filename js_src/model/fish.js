@@ -1,6 +1,7 @@
 
 goog.provide('ff.model.Fish');
 
+goog.require('ff');
 goog.require('ff.model.Weather');
 goog.require('goog.array');
 goog.require('goog.events.EventTarget');
@@ -14,10 +15,12 @@ goog.require('goog.structs.Set');
  * @param {string} key
  * @param {string} name
  * @param {!goog.structs.Set} weatherSet
+ * @param {number} startHour
+ * @param {number} endHour
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-ff.model.Fish = function(key, name, weatherSet) {
+ff.model.Fish = function(key, name, weatherSet, startHour, endHour) {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
@@ -31,31 +34,43 @@ ff.model.Fish = function(key, name, weatherSet) {
 
   /** @private {!goog.structs.Set} */
   this.weatherSet_ = weatherSet;
+
+  /** @private {number} */
+  this.startHour_ = startHour;
+
+  /** @private {number} */
+  this.endHour_ = endHour;
 };
 goog.inherits(ff.model.Fish, goog.events.EventTarget);
 
 
-/**
- * @return {string}
- */
+/** @return {string} */
 ff.model.Fish.prototype.getKey = function() {
   return this.key_;
 };
 
 
-/**
- * @return {string}
- */
+/** @return {string} */
 ff.model.Fish.prototype.getName = function() {
   return this.name_;
 };
 
 
-/**
- * @return {!goog.structs.Set}
- */
+/** @return {!goog.structs.Set} */
 ff.model.Fish.prototype.getWeatherSet = function() {
   return this.weatherSet_;
+};
+
+
+/** @return {number} */
+ff.model.Fish.prototype.getStartHour = function() {
+  return this.startHour_;
+};
+
+
+/** @return {number} */
+ff.model.Fish.prototype.getEndHour = function() {
+  return this.endHour_;
 };
 
 
@@ -67,7 +82,7 @@ ff.model.Fish.fromJson = function(json) {
 
   var weatherSet = new goog.structs.Set();
   goog.array.forEach(json['weatherSet'], function(weatherString) {
-    var weather = ff.model.Weather.getFromString(weatherString);
+    var weather = ff.stringToEnum(weatherString, ff.model.Weather);
     if (goog.isDefAndNotNull(weather)) {
       weatherSet.add(weather);
     } else {
@@ -78,5 +93,7 @@ ff.model.Fish.fromJson = function(json) {
   return new ff.model.Fish(
       json['key'],
       json['name'],
-      weatherSet);
+      weatherSet,
+      json['startHour'],
+      json['endHour']);
 };

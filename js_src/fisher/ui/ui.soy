@@ -1,0 +1,15 @@
+{namespace ff.fisher.ui.soy}
+
+
+/**
+ * HTML for the component that renders a fish as a row.
+ * @param ids
+ */
+{template .FISH_ROW}
+  <div class="{css ff-fish-row}">
+    <div id="{$ids.NAME|id}" class="{css ff-fish-row-name}">
+    </div>
+    <div id="{$ids.WEATHER|id}" class="{css ff-fish-row-weather}">
+    </div>
+  </div>
+{/template}

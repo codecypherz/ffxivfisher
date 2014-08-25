@@ -12,21 +12,29 @@ public class Fish {
 	
 	private String name;
 	private Set<Weather> weatherSet;
+	private int startHour; // inclusive
+	private int endHour; // inclusive
 	
 	public Fish() {
 		this(
 			"",
 			"",
-			new HashSet<Weather>());
+			new HashSet<Weather>(),
+			0,
+			0);
 	}
 	
 	private Fish(
 			String key,
 			String name,
-			Set<Weather> weatherSet) {
+			Set<Weather> weatherSet,
+			int startHour,
+			int endHour) {
 		this.key = key;
 		this.name = name;
 		this.weatherSet = weatherSet;
+		this.startHour = startHour;
+		this.endHour = endHour;
 	}
 	
 	public String getKey() {
@@ -43,36 +51,10 @@ public class Fish {
 	public Set<Weather> getWeatherSet() {
 		return weatherSet;
 	}
-	
-	public static class Builder {
-		private String key;
-		private String name;
-		private Set<Weather> weatherSet;
-		
-		public Builder() {
-		}
-		
-		public Builder(Fish fromFish) {
-			this.key = fromFish.getKey();
-			this.name = fromFish.getName();
-			this.weatherSet = new HashSet<>(fromFish.getWeatherSet());
-		}
-		
-		public Builder setKey(String key) {
-			this.key = key;
-			return this;
-		}
-		public Builder setName(String name) {
-			this.name = name;
-			return this;
-		}
-		public Builder setWeatherSet(Set<Weather> weather) {
-			this.weatherSet = weather;
-			return this;
-		}
-		
-		public Fish build() {
-			return new Fish(key, name, weatherSet);
-		}
+	public int getStartHour() {
+		return startHour;
+	}
+	public int getEndHour() {
+		return endHour;
 	}
 }

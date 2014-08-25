@@ -1,9 +1,6 @@
 
 goog.provide('ff.model.Weather');
 
-goog.require('goog.object');
-goog.require('goog.string');
-
 
 /**
  * The set of weather types.
@@ -34,18 +31,4 @@ ff.model.Weather = {
   THUNDERSTORM: 'Thunderstorm',
   TORRENTIAL: 'Torrential',
   WIND: 'Wind'
-};
-
-
-/**
- * Tries to find a matching type for the string.
- * @param {string} typeString The string to match.
- * @return {ff.model.Weather} The type or undefined if not found.
- */
-ff.model.Weather.getFromString = function(typeString) {
-  return /** @type {ff.model.Weather} */ (goog.object.findValue(
-      ff.model.Weather,
-      function(value, key, object) {
-        return goog.string.caseInsensitiveCompare(value, typeString) == 0;
-      }));
 };
