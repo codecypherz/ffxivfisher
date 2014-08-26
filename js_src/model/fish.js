@@ -6,6 +6,8 @@ goog.require('ff.model.Weather');
 goog.require('goog.array');
 goog.require('goog.events.EventTarget');
 goog.require('goog.log');
+goog.require('goog.object');
+goog.require('goog.structs');
 goog.require('goog.structs.Set');
 
 
@@ -71,6 +73,26 @@ ff.model.Fish.prototype.getStartHour = function() {
 /** @return {number} */
 ff.model.Fish.prototype.getEndHour = function() {
   return this.endHour_;
+};
+
+
+/**
+ * Converts the fish to JSON.
+ * @return {!Object}
+ */
+ff.model.Fish.prototype.toJson = function() {
+  var transposedWeather = goog.object.transpose(ff.model.Weather);
+  var weatherArray = [];
+  goog.structs.forEach(this.weatherSet_, function(weather) {
+    weatherArray.push(transposedWeather[weather]);
+  });
+
+  return {
+    'name': this.name_,
+    'weatherSet': weatherArray,
+    'startHour': this.startHour_,
+    'endHour': this.endHour_
+  };
 };
 
 

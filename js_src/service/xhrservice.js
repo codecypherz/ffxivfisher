@@ -7,6 +7,7 @@ goog.provide('ff.service.XhrService');
 goog.require('goog.Disposable');
 goog.require('goog.async.Deferred');
 goog.require('goog.events.EventHandler');
+goog.require('goog.json');
 goog.require('goog.log');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrManager');
@@ -79,7 +80,7 @@ ff.service.XhrService.prototype.get = function(uri, opt_processJsonResponse) {
 /**
  * Sends a POST request to the given URI.
  * @param {!goog.Uri} uri The URI to which to make the request.
- * @param {string|null|undefined} json The json to post.
+ * @param {Object=} opt_json The json to post.
  * @param {boolean=} opt_processJsonResponse True if a JSON response is expected
  *     and should be processed.  If so, then the value passed in the callback
  *     will be the validated JSON.
@@ -88,11 +89,12 @@ ff.service.XhrService.prototype.get = function(uri, opt_processJsonResponse) {
  *     an error occurs.
  */
 ff.service.XhrService.prototype.post =
-    function(uri, json, opt_processJsonResponse) {
+    function(uri, opt_json, opt_processJsonResponse) {
   var deferred = new goog.async.Deferred();
 
   var requestId = this.idGenerator_.getNextUniqueId();
 
+  var json = opt_json ? goog.json.serialize(opt_json) : undefined;
   this.xhrManager_.send(requestId, uri.toString(), 'POST', json);
   this.pendingMap_[requestId] = deferred;
 

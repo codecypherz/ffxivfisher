@@ -4,9 +4,9 @@
 
 goog.provide('ff.fisher.ui.Root');
 
-goog.require('ff.fisher.ui.FishRow');
-goog.require('ff.service.FishService');
-goog.require('goog.array');
+goog.require('ff.fisher.ui.FishTable');
+goog.require('ff.fisher.ui.NewFishDialog');
+goog.require('goog.ui.Button');
 goog.require('goog.ui.Component');
 
 
@@ -18,33 +18,33 @@ goog.require('goog.ui.Component');
 ff.fisher.ui.Root = function() {
   goog.base(this);
 
-  /** @private {!ff.service.FishService} */
-  this.fishService_ = ff.service.FishService.getInstance();
+  /** @private {!ff.fisher.ui.FishTable} */
+  this.fishTable_ = new ff.fisher.ui.FishTable();
+  this.addChild(this.fishTable_);
+
+  /** @private {!goog.ui.Button} */
+  this.newFishButton_ = new goog.ui.Button('New Fish');
+  this.addChild(this.newFishButton_);
 };
 goog.inherits(ff.fisher.ui.Root, goog.ui.Component);
+
+
+/** @override */
+ff.fisher.ui.Root.prototype.createDom = function() {
+  goog.base(this, 'createDom');
+
+  this.fishTable_.render(this.getElement());
+  this.newFishButton_.render(this.getElement());
+};
 
 
 /** @override */
 ff.fisher.ui.Root.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
 
-  this.fishService_.getAll().addCallback(
-      goog.bind(this.renderFish_, this));
-};
-
-
-/**
- * @param {!Array.<!ff.model.Fish>} fishes The fishes to render.
- * @private
- */
-ff.fisher.ui.Root.prototype.renderFish_ = function(fishes) {
-  // Clear existing fish.
-  goog.disposeAll(this.removeChildren(true));
-
-  // Render the fish.
-  goog.array.forEach(fishes, function(fish) {
-    var fishRow = new ff.fisher.ui.FishRow(fish);
-    this.addChild(fishRow);
-    fishRow.render(this.getElement());
-  }, this);
+  this.getHandler().listen(this.newFishButton_,
+      goog.ui.Component.EventType.ACTION,
+      function() {
+        new ff.fisher.ui.NewFishDialog().show();
+      });
 };

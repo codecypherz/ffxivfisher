@@ -66,7 +66,8 @@ public class FishService {
 	 */
 	public Fish storeNewFish(Fish fish) {
 		// Validate fish.
-		checkArgument(fish.getKey() == null, "A key is already set.");
+		checkArgument(
+				fish.getKey() == null || !fish.getKey().isEmpty(), "A key is already set.");
 		checkArgument(fish.getName() != null, "Name must not be null");
 		checkArgument(fish.getWeatherSet() != null, "Weather set must not be null");
 		

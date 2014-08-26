@@ -53,6 +53,25 @@ ff.service.FishService.prototype.getAll = function() {
 
 
 /**
+ * Stores a new fish.  The server will authenticate this.
+ * @param {!ff.model.Fish} fish
+ * @return {!goog.async.Deferred}
+ */
+ff.service.FishService.prototype.storeNewFish = function(fish) {
+  var uri = new goog.Uri();
+  uri.setPath('/admin/fish');
+
+  var deferred = this.xhrService_.post(uri, fish.toJson());
+
+  deferred.addCallback(function() {
+    goog.log.info(this.logger, 'New fish stored.');
+  }, this);
+
+  return deferred;
+};
+
+
+/**
  * Called when the request for all fish completes successfully.
  * @param {Object} fishesJson The JSON response.
  * @return {!Array.<!ff.model.Fish>} The parsed fish objects from the

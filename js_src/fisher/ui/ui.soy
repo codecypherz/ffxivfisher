@@ -15,3 +15,17 @@
     </div>
   </div>
 {/template}
+
+
+/**
+ * HTML for creating a new fish.
+ * @param ids
+ */
+{template .NEW_FISH_DIALOG}
+  <div class="{css ff-table}">
+    <div class="{css ff-row}">
+      Name:
+      <input type="text" id="{$ids.NAME_INPUT|id}" />
+    </div>
+  </div>
+{/template}

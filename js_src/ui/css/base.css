@@ -1,0 +1,29 @@
+/*
+ * Base css for the application.
+ */
+
+@def FONT_FAMILY                   Cinzel;
+@def FONT_SIZE_NORMAL              16px;
+@def TEXT_SHADOW                   1px 0px rgba(0, 0, 0, .5);
+
+body {
+  background-color: #333;
+  color: #fff;
+  font-family: FONT_FAMILY;
+  font-size: FONT_SIZE_NORMAL;
+  margin: 0;
+  padding: 0;
+  text-shadow: TEXT_SHADOW;
+}
+
+.ff-table {
+	display: table;
+}
+
+.ff-row {
+	display: table-row;
+}
+
+.ff-cell {
+	display: table-cell;
+}

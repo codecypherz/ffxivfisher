@@ -1,0 +1,62 @@
+/**
+ * CSS for dialogs.
+ */
+
+@def DIALOG_BORDER              1px solid #8d8d8d;
+@def DIALOG_TITLE_PADDING       10px;
+@def DIALOG_CONTENT_PADDING     20px;
+
+.modal-dialog-bg {
+  background: #000;
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+
+.modal-dialog {
+  background: #333;
+  border: DIALOG_BORDER;
+  color: #fff;
+  outline: none;
+  position: absolute;
+  @mixin border_radius(6px);
+  @mixin box_shadow(10px 10px 20px rgba(0, 0, 0, .6));
+}
+
+.modal-dialog-title {
+	border-bottom: DIALOG_BORDER;
+  cursor: pointer;
+  font-size: 23px;
+  padding: 10px 20px;
+  padding-right: 31px; /* Make room for the close button. */
+  position: relative;
+}
+
+.modal-dialog-title-close {
+  cursor: pointer;
+  padding: 10px 20px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  vertical-align: middle;
+}
+
+.modal-dialog-content {
+  padding: DIALOG_CONTENT_PADDING;
+}
+
+.modal-dialog-buttons {
+	padding: 0 DIALOG_CONTENT_PADDING DIALOG_CONTENT_PADDING;
+}
+
+.modal-dialog-buttons {
+	text-align: right;
+}
+
+.modal-dialog-buttons > button {
+	vertical-align: top;
+}
+
+.goog-buttonset-default {
+	margin-right: 10px;
+}
