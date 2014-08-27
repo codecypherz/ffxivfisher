@@ -14,7 +14,10 @@ echo Running FFXIV Fisher locally...
 echo.
 
 "C:\Program Files\eclipse luna\plugins\com.google.appengine.eclipse.sdkbundle_1.9.9\appengine-java-sdk-1.9.9\bin\dev_appserver.cmd" ^
-   --port=8888 ..\war\
+   --port=8888 ^
+   --jvm_flag=-Xdebug ^
+   --jvm_flag=-Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n ^
+   ..\war\
 
 echo ___________________________________________
 echo Server shut down successfully.
