@@ -2,18 +2,16 @@
  * Base css for the application.
  */
 
-@def FONT_FAMILY                   Cinzel;
+@def FONT_FAMILY                   Open Sans;
 @def FONT_SIZE_NORMAL              16px;
-@def TEXT_SHADOW                   1px 0px rgba(0, 0, 0, .5);
 
 body {
-  background-color: #333;
-  color: #fff;
+  background-color: #111;
+  color: #ddd;
   font-family: FONT_FAMILY;
   font-size: FONT_SIZE_NORMAL;
   margin: 0;
   padding: 0;
-  text-shadow: TEXT_SHADOW;
 }
 
 .ff-table {
@@ -26,4 +24,11 @@ body {
 
 .ff-cell {
 	display: table-cell;
+}
+
+.ff-card {
+  background-color: #333;
+  border: 1px solid #555;
+  padding: 10px;
+  @mixin border_radius(5px);
 }

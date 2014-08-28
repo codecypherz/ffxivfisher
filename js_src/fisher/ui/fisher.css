@@ -1,0 +1,21 @@
+/**
+ * CSS for the root of the fisher page.
+ */
+
+.ff-fisher-root {
+  margin: 20px;
+}
+
+.ff-fisher-new-fish-button {
+  float: right;
+  margin-right: -10px;
+  margin-top: 25px;
+}
+
+.ff-fish-table {
+  width: 100%;
+}
+
+.ff-fish-row {
+  width: 100%;
+}

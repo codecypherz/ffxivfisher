@@ -1,0 +1,43 @@
+/*
+ * CSS for button elements.
+ */
+
+@def BUTTON_BACKGROUND_COLOR_LIGHT  #777;
+@def BUTTON_BACKGROUND_COLOR_MID    #222;
+@def BUTTON_BACKGROUND_COLOR_DARK   #000;
+@def BUTTON_GRADIENT                top, BUTTON_BACKGROUND_COLOR_LIGHT 0%, BUTTON_BACKGROUND_COLOR_DARK 100%;
+@def BUTTON_GRADIENT_ACTIVE         top, BUTTON_BACKGROUND_COLOR_DARK 0%, BUTTON_BACKGROUND_COLOR_LIGHT 100%;
+@def BUTTON_GRADIENT_HOVER          top, BUTTON_BACKGROUND_COLOR_LIGHT 0%, BUTTON_BACKGROUND_COLOR_MID 100%;
+
+button {
+  border: 1px solid #666;
+  color: #ddd;
+  cursor: pointer;
+  font-family: FONT_FAMILY;
+  font-size: FONT_SIZE_NORMAL;
+  margin: 0;
+  outline: none;
+  padding: 4px 12px;
+  @mixin border_radius(10px);
+  @mixin linear_gradient(BUTTON_GRADIENT, BUTTON_BACKGROUND_COLOR_MID);
+}
+
+button:hover {
+  @mixin linear_gradient(BUTTON_GRADIENT_HOVER, BUTTON_BACKGROUND_COLOR_LIGHT);
+}
+
+button:active {
+  padding: 5px 12px 3px 12px;
+  @mixin linear_gradient(BUTTON_GRADIENT_ACTIVE, BUTTON_BACKGROUND_COLOR_DARK);
+}
+
+button:disabled {
+	cursor: initial;
+	opacity: .7;
+	padding: 4px 12px;
+	@mixin linear_gradient(BUTTON_GRADIENT, BUTTON_BACKGROUND_COLOR_MID);
+}
+
+button.ff-action {
+	font-weight: bold;
+}

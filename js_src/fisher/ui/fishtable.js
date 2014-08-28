@@ -6,7 +6,9 @@ goog.provide('ff.fisher.ui.FishTable');
 
 goog.require('ff.fisher.ui.FishRow');
 goog.require('ff.service.FishService');
+goog.require('ff.ui.Css');
 goog.require('goog.array');
+goog.require('goog.dom.classlist');
 goog.require('goog.ui.Component');
 
 
@@ -24,9 +26,22 @@ ff.fisher.ui.FishTable = function() {
 goog.inherits(ff.fisher.ui.FishTable, goog.ui.Component);
 
 
+/**
+ * CSS for this component.
+ * @enum {string}
+ * @private
+ */
+ff.fisher.ui.FishTable.Css_ = {
+  ROOT: goog.getCssName('ff-fish-table')
+};
+
+
 /** @override */
 ff.fisher.ui.FishTable.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
+
+  goog.dom.classlist.addAll(this.getElement(),
+      [ff.ui.Css.TABLE, ff.fisher.ui.FishTable.Css_.ROOT]);
 
   this.fishService_.getAll().addCallback(
       goog.bind(this.renderFish_, this));
