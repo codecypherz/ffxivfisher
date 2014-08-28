@@ -19,3 +19,13 @@
 .ff-fish-row {
   width: 100%;
 }
+
+.ff-fish-row > .ff-cell {
+  margin-bottom: 5px;
+  vertical-align: middle;
+}
+
+.ff-fish-row-icon {
+  height: 30px;
+  width: 30px;
+}
