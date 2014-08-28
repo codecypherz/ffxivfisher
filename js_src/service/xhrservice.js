@@ -32,7 +32,8 @@ ff.service.XhrService = function() {
   this.idGenerator_ = goog.ui.IdGenerator.getInstance();
 
   /** @private {!goog.net.XhrManager} */
-  this.xhrManager_ = new goog.net.XhrManager();
+  this.xhrManager_ = new goog.net.XhrManager(
+      ff.service.XhrService.MAX_RETRY_ATTEMPTS_);
   this.registerDisposable(this.xhrManager_);
 
   /** @private {!Object.<!goog.async.Deferred>} */
@@ -50,6 +51,14 @@ ff.service.XhrService = function() {
 };
 goog.inherits(ff.service.XhrService, goog.Disposable);
 goog.addSingletonGetter(ff.service.XhrService);
+
+
+/**
+ * @type {number}
+ * @const
+ * @private
+ */
+ff.service.XhrService.MAX_RETRY_ATTEMPTS_ = 0;
 
 
 /**
