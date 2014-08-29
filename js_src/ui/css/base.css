@@ -5,6 +5,8 @@
 @def FONT_FAMILY                   Open Sans;
 @def FONT_SIZE_NORMAL              16px;
 
+@def ACTIVE_BORDER_COLOR           #00ADFF;
+
 body {
   background-color: #111;
   color: #ddd;

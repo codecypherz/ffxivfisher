@@ -20,13 +20,30 @@ ff.getUniqueId = goog.events.getUniqueId;
 
 /**
  * Converts the string to the given enum type by doing a case-insensitive
+ * comparison on the enum key.  If the string isn't in the enum, null is
+ * returned.
+ * @param {string} string
+ * @param {!Object} enumObj
+ * @return {*} The enum for the string or null if not found in the enum.
+ */
+ff.stringKeyToEnum = function(string, enumObj) {
+  return goog.object.findKey(
+      enumObj,
+      function(value, key, object) {
+        return goog.string.caseInsensitiveCompare(key, string) == 0;
+      });
+};
+
+
+/**
+ * Converts the string to the given enum type by doing a case-insensitive
  * comparison on the enum values.  If the string isn't in the enum, null is
  * returned.
  * @param {string} string
  * @param {!Object} enumObj
  * @return {*} The enum for the string or null if not found in the enum.
  */
-ff.stringToEnum = function(string, enumObj) {
+ff.stringValueToEnum = function(string, enumObj) {
   return goog.object.findValue(
       enumObj,
       function(value, key, object) {

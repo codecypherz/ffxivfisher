@@ -9,6 +9,7 @@ goog.require('ff.fisher.ui.soy');
 goog.require('ff.model.Fish');
 goog.require('ff.model.Weather');
 goog.require('ff.service.FishService');
+goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.log');
 goog.require('goog.soy');
@@ -51,7 +52,8 @@ goog.inherits(ff.fisher.ui.NewFishDialog, goog.ui.Dialog);
  */
 ff.fisher.ui.NewFishDialog.Id_ = {
   CONFIRM_BUTTON: ff.getUniqueId('confirm-button'),
-  NAME_INPUT: ff.getUniqueId('name-input')
+  NAME_INPUT: ff.getUniqueId('name-input'),
+  WEATHER_INPUT: ff.getUniqueId('weather-input')
 };
 
 
@@ -117,9 +119,26 @@ ff.fisher.ui.NewFishDialog.prototype.onSelect_ = function(e) {
       return;
     }
 
-    // TODO Create input for this.
+    // Validate the weather.
+    var weatherInput = this.getElementByFragment(
+        ff.fisher.ui.NewFishDialog.Id_.WEATHER_INPUT);
+    var weatherString = weatherInput.value;
+    var weatherSplits = weatherString.split(',');
     var weatherSet = new goog.structs.Set();
-    weatherSet.add(ff.model.Weather.GLOOM);
+    goog.array.forEach(weatherSplits, function(weatherSplit) {
+      weatherSplit = goog.string.trim(weatherSplit);
+      if (!goog.string.isEmptySafe(weatherSplit)) {
+        var weather = ff.stringValueToEnum(weatherSplit, ff.model.Weather);
+        if (weather) {
+          weatherSet.add(weather);
+        }
+      }
+    });
+    if (weatherSet.getCount() == 0) {
+      weatherInput.select();
+      e.preventDefault();
+      return;
+    }
 
     // Create the fish and store it.
     this.fishService_.storeNewFish(new ff.model.Fish(

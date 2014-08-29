@@ -1,0 +1,7 @@
+/**
+ * CSS for the new fish dialog.
+ */
+
+.ff-new-fish-dialog input[type=text] {
+  margin-left: 10px;
+}

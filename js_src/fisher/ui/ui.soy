@@ -24,10 +24,20 @@
  * @param ids
  */
 {template .NEW_FISH_DIALOG}
-  <div class="{css ff-table}">
+  <div class="{css ff-table}{sp}{css ff-new-fish-dialog}">
     <div class="{css ff-row}">
-      Name:
-      <input type="text" id="{$ids.NAME_INPUT|id}" />
+      <div class="{css ff-cell}">
+        Name:
+      </div>
+      <input type="text" id="{$ids.NAME_INPUT|id}"
+          class="{css ff-fish-name-input}" />
+    </div>
+    <div class="{css ff-row}">
+      <div class="{css ff-cell}">
+        Weather:
+      </div>
+      <input type="text" id="{$ids.WEATHER_INPUT|id}"
+          class="{css ff-fish-weather-input}" />
     </div>
   </div>
 {/template}

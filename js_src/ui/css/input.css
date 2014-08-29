@@ -6,5 +6,11 @@ input[type=text] {
 	border: 1px solid #8d8d8d;
 	font-family: FONT_FAMILY;
 	font-size: FONT_SIZE_NORMAL;
+	outline-color: ACTIVE_BORDER_COLOR;
 	padding: 4px 8px;
+}
+
+input[type=text]:focus,
+input[type=text]:hover {
+  border-color: ACTIVE_BORDER_COLOR;
 }

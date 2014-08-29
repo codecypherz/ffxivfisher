@@ -104,7 +104,7 @@ ff.model.Fish.fromJson = function(json) {
 
   var weatherSet = new goog.structs.Set();
   goog.array.forEach(json['weatherSet'], function(weatherString) {
-    var weather = ff.stringToEnum(weatherString, ff.model.Weather);
+    var weather = ff.stringKeyToEnum(weatherString, ff.model.Weather);
     if (goog.isDefAndNotNull(weather)) {
       weatherSet.add(weather);
     } else {
