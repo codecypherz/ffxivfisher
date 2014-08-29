@@ -5,6 +5,7 @@
 goog.provide('ff.fisher.Main');
 
 goog.require('ff.fisher.ui.Root');
+goog.require('ff.model.User');
 goog.require('goog.Disposable');
 goog.require('goog.debug.Console');
 /** @suppress {extraRequire} Needed for compilation warnings within closure. */
@@ -17,10 +18,11 @@ goog.require('goog.log');
 
 /**
  * The container for all the main components of the application.
+ * @param {string} userJson The user object as raw JSON.
  * @constructor
  * @extends {goog.Disposable}
  */
-ff.fisher.Main = function() {
+ff.fisher.Main = function(userJson) {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
@@ -36,6 +38,9 @@ ff.fisher.Main = function() {
 
   // Register an unload event to properly clean up resources.
   window.onbeforeunload = goog.bind(this.onUnload_, this);
+
+  // Setup any models/services.
+  ff.model.User.getInstance().parse(userJson);
 
   // Create and render the UI.
   var root = new ff.fisher.ui.Root();
@@ -56,9 +61,10 @@ ff.fisher.Main.prototype.onUnload_ = function() {
 
 /**
  * Main entry point to the program.  All bootstrapping happens here.
+ * @param {string} userJson The user object as raw JSON.
  */
-ff.fisher.Main.bootstrap = function() {
-  new ff.fisher.Main();
+ff.fisher.Main.bootstrap = function(userJson) {
+  new ff.fisher.Main(userJson);
 };
 
 

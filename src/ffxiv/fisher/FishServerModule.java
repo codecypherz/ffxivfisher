@@ -5,9 +5,11 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.servlet.RequestScoped;
 
 import ffxiv.fisher.Annotations.FrontendVersion;
 import ffxiv.fisher.model.TwigModule;
+import ffxiv.fisher.model.User;
 import ffxiv.fisher.servlet.FishServletModule;
 import ffxiv.fisher.servlet.HttpParameterModule;
 
@@ -33,5 +35,19 @@ public class FishServerModule extends AbstractModule {
 	@Provides @Singleton
 	public UserService provideUserService() {
 		return UserServiceFactory.getUserService();
+	}
+	
+	@Provides @RequestScoped
+	public User provideCurrentUser(UserService userService) {
+		User user = new User();
+		com.google.appengine.api.users.User currentUser = userService.getCurrentUser();
+		if (currentUser != null) {
+			user = new User(
+					currentUser.getNickname(),
+					currentUser.getEmail(),
+					true, // signed in
+					userService.isUserAdmin());
+		}
+		return user;
 	}
 }
