@@ -2,7 +2,7 @@
  * The prompt to create a new game.
  */
 
-goog.provide('ff.fisher.ui.NewFishDialog');
+goog.provide('ff.fisher.ui.AdminFishDialog');
 
 goog.require('ff');
 goog.require('ff.fisher.ui.soy');
@@ -23,11 +23,11 @@ goog.require('goog.ui.Dialog');
  * @constructor
  * @extends {goog.ui.Dialog}
  */
-ff.fisher.ui.NewFishDialog = function() {
+ff.fisher.ui.AdminFishDialog = function() {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
-  this.logger = goog.log.getLogger('ff.fisher.ui.NewFishDialog');
+  this.logger = goog.log.getLogger('ff.fisher.ui.AdminFishDialog');
 
   /** @private {!ff.service.FishService} */
   this.fishService_ = ff.service.FishService.getInstance();
@@ -37,20 +37,20 @@ ff.fisher.ui.NewFishDialog = function() {
 
   var buttonSet = new goog.ui.Dialog.ButtonSet()
       .addButton({
-        key: ff.fisher.ui.NewFishDialog.Id_.CONFIRM_BUTTON,
+        key: ff.fisher.ui.AdminFishDialog.Id_.CONFIRM_BUTTON,
         caption: 'Create'
       }, true)
       .addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
   this.setButtonSet(buttonSet);
 };
-goog.inherits(ff.fisher.ui.NewFishDialog, goog.ui.Dialog);
+goog.inherits(ff.fisher.ui.AdminFishDialog, goog.ui.Dialog);
 
 
 /**
  * @enum {string}
  * @private
  */
-ff.fisher.ui.NewFishDialog.Id_ = {
+ff.fisher.ui.AdminFishDialog.Id_ = {
   CONFIRM_BUTTON: ff.getUniqueId('confirm-button'),
   END_HOUR_INPUT: ff.getUniqueId('end-hour-input'),
   NAME_INPUT: ff.getUniqueId('name-input'),
@@ -62,32 +62,32 @@ ff.fisher.ui.NewFishDialog.Id_ = {
 /**
  * Shows the dialog.
  */
-ff.fisher.ui.NewFishDialog.prototype.show = function() {
+ff.fisher.ui.AdminFishDialog.prototype.show = function() {
   this.setVisible(true);
 };
 
 
 /** @override */
-ff.fisher.ui.NewFishDialog.prototype.createDom = function() {
+ff.fisher.ui.AdminFishDialog.prototype.createDom = function() {
   goog.base(this, 'createDom');
 
   // Don't use setContent because that requires a string.  It doesn't make sense
   // to render the template as a string just to accommodate a limitation in the
   // dialog class.
   this.getContentElement().appendChild(goog.soy.renderAsElement(
-      ff.fisher.ui.soy.NEW_FISH_DIALOG, {
-        ids: this.makeIds(ff.fisher.ui.NewFishDialog.Id_)
+      ff.fisher.ui.soy.ADMIN_FISH_DIALOG, {
+        ids: this.makeIds(ff.fisher.ui.AdminFishDialog.Id_)
       }));
 
   var confirmButton = this.getButtonSet().getButton(
-      ff.fisher.ui.NewFishDialog.Id_.CONFIRM_BUTTON);
+      ff.fisher.ui.AdminFishDialog.Id_.CONFIRM_BUTTON);
 
   goog.dom.setTextContent(this.getTitleCloseElement(), 'X');
 };
 
 
 /** @override */
-ff.fisher.ui.NewFishDialog.prototype.enterDocument = function() {
+ff.fisher.ui.AdminFishDialog.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
 
   this.getHandler().listen(this,
@@ -97,10 +97,10 @@ ff.fisher.ui.NewFishDialog.prototype.enterDocument = function() {
 
 
 /** @override */
-ff.fisher.ui.NewFishDialog.prototype.focus = function() {
+ff.fisher.ui.AdminFishDialog.prototype.focus = function() {
   goog.base(this, 'focus');
   this.getElementByFragment(
-      ff.fisher.ui.NewFishDialog.Id_.NAME_INPUT).focus();
+      ff.fisher.ui.AdminFishDialog.Id_.NAME_INPUT).focus();
 };
 
 
@@ -108,12 +108,12 @@ ff.fisher.ui.NewFishDialog.prototype.focus = function() {
  * @param {!goog.ui.Dialog.Event} e
  * @private
  */
-ff.fisher.ui.NewFishDialog.prototype.onSelect_ = function(e) {
-  if (ff.fisher.ui.NewFishDialog.Id_.CONFIRM_BUTTON == e.key) {
+ff.fisher.ui.AdminFishDialog.prototype.onSelect_ = function(e) {
+  if (ff.fisher.ui.AdminFishDialog.Id_.CONFIRM_BUTTON == e.key) {
 
     // Validate the name.
     var nameInput = this.getElementByFragment(
-        ff.fisher.ui.NewFishDialog.Id_.NAME_INPUT);
+        ff.fisher.ui.AdminFishDialog.Id_.NAME_INPUT);
     var name = nameInput.value;
     if (goog.string.isEmptySafe(name)) {
       nameInput.select();
@@ -123,19 +123,19 @@ ff.fisher.ui.NewFishDialog.prototype.onSelect_ = function(e) {
 
     // Validate time.
     var startHour = this.getHour_(
-        ff.fisher.ui.NewFishDialog.Id_.START_HOUR_INPUT, e);
+        ff.fisher.ui.AdminFishDialog.Id_.START_HOUR_INPUT, e);
     if (startHour < 0) {
       return;
     }
     var endHour = this.getHour_(
-        ff.fisher.ui.NewFishDialog.Id_.END_HOUR_INPUT, e);
+        ff.fisher.ui.AdminFishDialog.Id_.END_HOUR_INPUT, e);
     if (endHour < 0) {
       return;
     }
 
     // Validate the weather.
     var weatherInput = this.getElementByFragment(
-        ff.fisher.ui.NewFishDialog.Id_.WEATHER_INPUT);
+        ff.fisher.ui.AdminFishDialog.Id_.WEATHER_INPUT);
     var weatherString = weatherInput.value;
     var weatherSplits = weatherString.split(',');
     var weatherSet = new goog.structs.Set();
@@ -169,12 +169,12 @@ ff.fisher.ui.NewFishDialog.prototype.onSelect_ = function(e) {
 
 /**
  * Gets the hour value from the given input.
- * @param {!ff.fisher.ui.NewFishDialog.Id_} id The id of the input.
+ * @param {!ff.fisher.ui.AdminFishDialog.Id_} id The id of the input.
  * @param {!goog.ui.Dialog.Event} e The submit event.
  * @return {number} The hour from the input or -1 if parse failed.
  * @private
  */
-ff.fisher.ui.NewFishDialog.prototype.getHour_ = function(id, e) {
+ff.fisher.ui.AdminFishDialog.prototype.getHour_ = function(id, e) {
   var input = this.getElementByFragment(id);
   var string = input.value;
   try {

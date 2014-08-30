@@ -4,8 +4,8 @@
 
 goog.provide('ff.fisher.ui.Root');
 
+goog.require('ff.fisher.ui.AdminFishDialog');
 goog.require('ff.fisher.ui.FishTable');
-goog.require('ff.fisher.ui.NewFishDialog');
 goog.require('ff.model.User');
 goog.require('ff.ui.Css');
 goog.require('goog.dom.classlist');
@@ -74,7 +74,7 @@ ff.fisher.ui.Root.prototype.enterDocument = function() {
     this.getHandler().listen(this.newFishButton_,
         goog.ui.Component.EventType.ACTION,
         function() {
-          new ff.fisher.ui.NewFishDialog().show();
+          new ff.fisher.ui.AdminFishDialog().show();
         });
   }
 };
