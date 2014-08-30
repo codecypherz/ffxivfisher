@@ -42,6 +42,8 @@ ff.fisher.ui.FishTable.prototype.createDom = function() {
 
   goog.dom.classlist.addAll(this.getElement(),
       [ff.ui.Css.TABLE, ff.fisher.ui.FishTable.Css_.ROOT]);
+
+  this.renderFish_();
 };
 
 
@@ -49,16 +51,19 @@ ff.fisher.ui.FishTable.prototype.createDom = function() {
 ff.fisher.ui.FishTable.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
 
-  this.fishService_.getAll().addCallback(
-      goog.bind(this.renderFish_, this));
+  this.getHandler().listen(
+      this.fishService_,
+      ff.service.FishService.EventType.FISH_CHANGED,
+      this.renderFish_);
 };
 
 
 /**
- * @param {!Array.<!ff.model.Fish>} fishes The fishes to render.
  * @private
  */
-ff.fisher.ui.FishTable.prototype.renderFish_ = function(fishes) {
+ff.fisher.ui.FishTable.prototype.renderFish_ = function() {
+  var fishes = this.fishService_.getAll();
+
   // Clear existing fish.
   goog.disposeAll(this.removeChildren(true));
 

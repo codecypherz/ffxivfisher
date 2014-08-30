@@ -6,6 +6,7 @@ goog.provide('ff.fisher.Main');
 
 goog.require('ff.fisher.ui.Root');
 goog.require('ff.model.User');
+goog.require('ff.service.FishService');
 goog.require('goog.Disposable');
 goog.require('goog.debug.Console');
 /** @suppress {extraRequire} Needed for compilation warnings within closure. */
@@ -41,6 +42,7 @@ ff.fisher.Main = function(userJson) {
 
   // Setup any models/services.
   ff.model.User.getInstance().parse(userJson);
+  ff.service.FishService.getInstance().loadAll();
 
   // Create and render the UI.
   var root = new ff.fisher.ui.Root();

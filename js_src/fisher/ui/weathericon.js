@@ -5,6 +5,7 @@
 goog.provide('ff.fisher.ui.WeatherIcon');
 
 goog.require('ff.fisher.ui.soy');
+goog.require('ff.model.Weather');
 goog.require('ff.service.WeatherService');
 goog.require('goog.soy');
 goog.require('goog.ui.Component');

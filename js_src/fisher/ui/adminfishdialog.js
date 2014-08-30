@@ -160,8 +160,8 @@ ff.fisher.ui.AdminFishDialog.prototype.onSelect_ = function(e) {
     }
 
     // Create the fish and store it.
-    this.fishService_.storeNewFish(new ff.model.Fish(
-        '', name, weatherSet, startHour, endHour));
+    this.fishService_.create(
+        new ff.model.Fish('', name, weatherSet, startHour, endHour));
   }
   this.setVisible(false);
 };
