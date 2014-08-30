@@ -3,5 +3,6 @@
  */
 
 .ff-new-fish-dialog input[type=text] {
+  margin-bottom: 5px;
   margin-left: 10px;
 }

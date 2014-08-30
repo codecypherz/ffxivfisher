@@ -52,7 +52,9 @@ goog.inherits(ff.fisher.ui.NewFishDialog, goog.ui.Dialog);
  */
 ff.fisher.ui.NewFishDialog.Id_ = {
   CONFIRM_BUTTON: ff.getUniqueId('confirm-button'),
+  END_HOUR_INPUT: ff.getUniqueId('end-hour-input'),
   NAME_INPUT: ff.getUniqueId('name-input'),
+  START_HOUR_INPUT: ff.getUniqueId('start-hour-input'),
   WEATHER_INPUT: ff.getUniqueId('weather-input')
 };
 
@@ -119,22 +121,39 @@ ff.fisher.ui.NewFishDialog.prototype.onSelect_ = function(e) {
       return;
     }
 
+    // Validate time.
+    var startHour = this.getHour_(
+        ff.fisher.ui.NewFishDialog.Id_.START_HOUR_INPUT, e);
+    if (startHour < 0) {
+      return;
+    }
+    var endHour = this.getHour_(
+        ff.fisher.ui.NewFishDialog.Id_.END_HOUR_INPUT, e);
+    if (endHour < 0) {
+      return;
+    }
+
     // Validate the weather.
     var weatherInput = this.getElementByFragment(
         ff.fisher.ui.NewFishDialog.Id_.WEATHER_INPUT);
     var weatherString = weatherInput.value;
     var weatherSplits = weatherString.split(',');
     var weatherSet = new goog.structs.Set();
+    var weatherInvalid = false;
     goog.array.forEach(weatherSplits, function(weatherSplit) {
       weatherSplit = goog.string.trim(weatherSplit);
       if (!goog.string.isEmptySafe(weatherSplit)) {
         var weather = ff.stringValueToEnum(weatherSplit, ff.model.Weather);
         if (weather) {
           weatherSet.add(weather);
+        } else {
+          weatherInvalid = true;
         }
+      } else {
+        weatherInvalid = true;
       }
     });
-    if (weatherSet.getCount() == 0) {
+    if (weatherInvalid) {
       weatherInput.select();
       e.preventDefault();
       return;
@@ -142,7 +161,32 @@ ff.fisher.ui.NewFishDialog.prototype.onSelect_ = function(e) {
 
     // Create the fish and store it.
     this.fishService_.storeNewFish(new ff.model.Fish(
-        '', name, weatherSet, 0, 5));
+        '', name, weatherSet, startHour, endHour));
   }
   this.setVisible(false);
+};
+
+
+/**
+ * Gets the hour value from the given input.
+ * @param {!ff.fisher.ui.NewFishDialog.Id_} id The id of the input.
+ * @param {!goog.ui.Dialog.Event} e The submit event.
+ * @return {number} The hour from the input or -1 if parse failed.
+ * @private
+ */
+ff.fisher.ui.NewFishDialog.prototype.getHour_ = function(id, e) {
+  var input = this.getElementByFragment(id);
+  var string = input.value;
+  try {
+    var hour = parseInt(string, 10);
+    if (hour >= 0 && hour <= 23) {
+      return hour;
+    }
+  } catch (error) {
+  }
+
+  // Invalid so cancel.
+  input.select();
+  e.preventDefault();
+  return -1;
 };
