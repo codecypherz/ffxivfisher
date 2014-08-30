@@ -4,12 +4,14 @@
 /**
  * HTML for the component that renders a fish as a row.
  * @param ids
+ * @param name
  */
 {template .FISH_ROW}
   <div class="{css ff-row}{sp}{css ff-fish-row}">
     <img src="/images/fish/gigantshark.png" class="{css ff-cell}{sp}{css ff-fish-row-icon}">
     </img>
     <div id="{$ids.NAME|id}" class="{css ff-cell}{sp}{css ff-fish-row-name}">
+      {$name}
     </div>
     <div id="{$ids.TIME|id}" class="{css ff-cell}{sp}{css ff-fish-row-time}">
     </div>
@@ -20,7 +22,16 @@
 
 
 /**
- * HTML for creating a new fish.
+ * HTML for a weather icon.
+ * @param imageSrc The source for the image.
+ */
+{template .WEATHER_ICON}
+  <img src="{$imageSrc}" class="{css ff-weather}" />
+{/template}
+
+
+/**
+ * HTML for creating a new fish.  Admin only.
  * @param ids
  */
 {template .NEW_FISH_DIALOG}

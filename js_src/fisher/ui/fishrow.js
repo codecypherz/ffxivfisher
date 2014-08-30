@@ -5,6 +5,7 @@
 goog.provide('ff.fisher.ui.FishRow');
 
 goog.require('ff');
+goog.require('ff.fisher.ui.WeatherIcon');
 goog.require('ff.fisher.ui.soy');
 goog.require('ff.ui');
 goog.require('goog.soy');
@@ -40,28 +41,21 @@ ff.fisher.ui.FishRow.Id_ = {
 
 /** @override */
 ff.fisher.ui.FishRow.prototype.createDom = function() {
+  // Render soy template.
   this.setElementInternal(goog.soy.renderAsElement(
       ff.fisher.ui.soy.FISH_ROW, {
-        ids: this.makeIds(ff.fisher.ui.FishRow.Id_)
+        ids: this.makeIds(ff.fisher.ui.FishRow.Id_),
+        name: this.fish_.getName()
       }));
-};
-
-
-/** @override */
-ff.fisher.ui.FishRow.prototype.enterDocument = function() {
-  goog.base(this, 'enterDocument');
-
-  ff.ui.getElementByFragment(this, ff.fisher.ui.FishRow.Id_.NAME).innerHTML =
-      this.fish_.getName();
-
-  // TODO Improve.
-  var weatherStr = '[';
-  goog.structs.forEach(this.fish_.getWeatherSet(), function(weather) {
-    weatherStr += (weather + ', ');
-  });
-  weatherStr += ']';
-  ff.ui.getElementByFragment(this, ff.fisher.ui.FishRow.Id_.WEATHER).innerHTML =
-      weatherStr;
 
   // TODO Render Time component.
+
+  // Render weather.
+  var weatherElement = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.FishRow.Id_.WEATHER);
+  goog.structs.forEach(this.fish_.getWeatherSet(), function(weather) {
+    var weatherIcon = new ff.fisher.ui.WeatherIcon(weather);
+    this.addChild(weatherIcon);
+    weatherIcon.render(weatherElement);
+  }, this);
 };

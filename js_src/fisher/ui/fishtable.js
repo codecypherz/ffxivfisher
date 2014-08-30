@@ -1,5 +1,5 @@
 /**
- * The top level component for the home page.
+ * The component that contains fish rows.
  */
 
 goog.provide('ff.fisher.ui.FishTable');
@@ -37,11 +37,17 @@ ff.fisher.ui.FishTable.Css_ = {
 
 
 /** @override */
-ff.fisher.ui.FishTable.prototype.enterDocument = function() {
-  goog.base(this, 'enterDocument');
+ff.fisher.ui.FishTable.prototype.createDom = function() {
+  goog.base(this, 'createDom');
 
   goog.dom.classlist.addAll(this.getElement(),
       [ff.ui.Css.TABLE, ff.fisher.ui.FishTable.Css_.ROOT]);
+};
+
+
+/** @override */
+ff.fisher.ui.FishTable.prototype.enterDocument = function() {
+  goog.base(this, 'enterDocument');
 
   this.fishService_.getAll().addCallback(
       goog.bind(this.renderFish_, this));
