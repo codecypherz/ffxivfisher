@@ -32,6 +32,7 @@ goog.inherits(ff.fisher.ui.WeatherIcon, goog.ui.Component);
 ff.fisher.ui.WeatherIcon.prototype.createDom = function() {
   this.setElementInternal(goog.soy.renderAsElement(
       ff.fisher.ui.soy.WEATHER_ICON, {
-        imageSrc: this.weatherService_.getImageUrl(this.weather_)
+        imageSrc: this.weatherService_.getImageUrl(this.weather_),
+        tooltip: ff.model.Weather[this.weather_]
       }));
 };

@@ -29,6 +29,5 @@ goog.addSingletonGetter(ff.service.WeatherService);
  * @return {string}
  */
 ff.service.WeatherService.prototype.getImageUrl = function(weather) {
-  var weatherString = weather.replace('/\s/', '_').toLowerCase();
-  return '/images/weather/' + weatherString + '.png';
+  return '/images/weather/' + weather.toLowerCase() + '.png';
 };
