@@ -36,18 +36,24 @@ public class AdminFishServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
-		// TODO If key is specified, update instead.
-		
+
+		// Parse the fish.
 		Gson gson = new Gson();
 		Fish fish = gson.fromJson(req.getReader(), Fish.class);
+		
 		try {
-			fishService.storeNewFish(fish);
+			if (fish.getKey() != null && !fish.getKey().isEmpty()) {
+				fish = fishService.update(fish);
+			} else {
+				fish = fishService.create(fish);
+			}
 		} catch (IllegalArgumentException e) {
 			log.severe(e.getMessage());
 			resp.sendError(HttpResponseCode.BAD_REQUEST.getCode());
 			return;
 		}
 		
+		// Write the fish back out to the client.
+		resp.getWriter().write(gson.toJson(fish));
 	}
 }

@@ -61,15 +61,29 @@ public class FishService {
 		return fishList;
 	}
 	
+	public Fish update(Fish fish) {
+		validate(fish, false);
+		
+		// Update the fish.
+		Key key = KeyFactory.stringToKey(fish.getKey());
+		ObjectDatastore datastore = datastoreProvider.get();
+		datastore.update(fish);
+		
+		// Read the latest.
+		fish = datastore.load(key);
+		if (fish == null) {
+			throw new RuntimeException("Can't load fish after update.");
+		}
+		fish.setKey(KeyFactory.keyToString(key));
+		
+		return fish;
+	}
+	
 	/**
 	 * Stores a new fish.  For admin use only.
 	 */
-	public Fish storeNewFish(Fish fish) {
-		// Validate fish.
-		checkArgument(
-				fish.getKey() == null || fish.getKey().isEmpty(), "A key is already set.");
-		checkArgument(fish.getName() != null, "Name must not be null");
-		checkArgument(fish.getWeatherSet() != null, "Weather set must not be null");
+	public Fish create(Fish fish) {
+		validate(fish, true);
 		
 		// Store the fish.
 		ObjectDatastore datastore = datastoreProvider.get();
@@ -78,5 +92,25 @@ public class FishService {
 		fish.setKey(KeyFactory.keyToString(key));
 		
 		return fish;
+	}
+	
+	private void validate(Fish fish, boolean create) throws IllegalArgumentException {
+		if (create) {
+			checkArgument(fish.getKey() == null || fish.getKey().isEmpty(),
+					"A key is already set.");
+		} else {
+			checkArgument(fish.getKey() != null && !fish.getKey().isEmpty(),
+					"A key must be specified.");
+		}
+		
+		checkArgument(fish.getName() != null && !fish.getName().isEmpty(),
+				"Name must not be null");
+		checkArgument(fish.getWeatherSet() != null, "Weather set must not be null");
+		checkArgument(fish.getStartHour() >= 0&& fish.getStartHour() <= 23,
+				"Start hour must be between 0 and 23 inclusive.");
+		checkArgument(fish.getEndHour() >= 0&& fish.getEndHour() <= 23,
+				"End hour must be between 0 and 23 inclusive.");
+		checkArgument(fish.getStartHour() <= fish.getEndHour(),
+				"Start hour must come before end hour.");
 	}
 }
