@@ -30,6 +30,5 @@ goog.inherits(ff.fisher.ui.Time, goog.ui.Component);
 ff.fisher.ui.Time.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
 
-  this.getElement().innerHTML =
-      '<div>' + this.startHour_ + '-' + this.endHour_ + '</div>';
+  this.getElement().innerHTML = this.startHour_ + '-' + this.endHour_;
 };

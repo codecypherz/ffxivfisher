@@ -18,10 +18,10 @@ public class Fish {
 	public Fish() {
 		this(
 			"",
-			"",
+			"Not Set",
 			new HashSet<Weather>(),
-			0,
-			0);
+			-1,
+			-1);
 	}
 	
 	private Fish(

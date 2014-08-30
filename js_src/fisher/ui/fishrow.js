@@ -5,6 +5,7 @@
 goog.provide('ff.fisher.ui.FishRow');
 
 goog.require('ff');
+goog.require('ff.fisher.ui.Time');
 goog.require('ff.fisher.ui.WeatherIcon');
 goog.require('ff.fisher.ui.soy');
 goog.require('ff.ui');
@@ -24,6 +25,10 @@ ff.fisher.ui.FishRow = function(fish) {
 
   /** @private {!ff.model.Fish} */
   this.fish_ = fish;
+
+  /** @private {!ff.fisher.ui.Time} */
+  this.time_ = new ff.fisher.ui.Time(fish.getStartHour(), fish.getEndHour());
+  this.addChild(this.time_);
 };
 goog.inherits(ff.fisher.ui.FishRow, goog.ui.Component);
 
@@ -48,7 +53,9 @@ ff.fisher.ui.FishRow.prototype.createDom = function() {
         name: this.fish_.getName()
       }));
 
-  // TODO Render Time component.
+  // Render time.
+  this.time_.render(ff.ui.getElementByFragment(
+      this, ff.fisher.ui.FishRow.Id_.TIME));
 
   // Render weather.
   var weatherElement = ff.ui.getElementByFragment(
