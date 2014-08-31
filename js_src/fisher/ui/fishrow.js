@@ -5,10 +5,13 @@
 goog.provide('ff.fisher.ui.FishRow');
 
 goog.require('ff');
+goog.require('ff.fisher.ui.AdminFishDialog');
 goog.require('ff.fisher.ui.Time');
 goog.require('ff.fisher.ui.WeatherIcon');
 goog.require('ff.fisher.ui.soy');
+goog.require('ff.model.User');
 goog.require('ff.ui');
+goog.require('goog.events.EventType');
 goog.require('goog.soy');
 goog.require('goog.structs');
 goog.require('goog.ui.Component');
@@ -25,6 +28,9 @@ ff.fisher.ui.FishRow = function(fish) {
 
   /** @private {!ff.model.Fish} */
   this.fish_ = fish;
+
+  /** @private {!ff.model.User} */
+  this.user_ = ff.model.User.getInstance();
 
   /** @private {!ff.fisher.ui.Time} */
   this.time_ = new ff.fisher.ui.Time(fish.getStartHour(), fish.getEndHour());
@@ -65,4 +71,21 @@ ff.fisher.ui.FishRow.prototype.createDom = function() {
     this.addChild(weatherIcon);
     weatherIcon.render(weatherElement);
   }, this);
+};
+
+
+/** @override */
+ff.fisher.ui.FishRow.prototype.enterDocument = function() {
+  goog.base(this, 'enterDocument');
+
+  if (this.user_.isAdmin()) {
+    this.getHandler().listen(
+        this.getElement(),
+        goog.events.EventType.CLICK,
+        function(e) {
+          if (e.altKey) {
+            new ff.fisher.ui.AdminFishDialog(this.fish_).show();
+          }
+        });
+  }
 };

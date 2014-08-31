@@ -61,22 +61,26 @@ public class FishService {
 		return fishList;
 	}
 	
+	public Fish get(String key) {
+		ObjectDatastore datastore = datastoreProvider.get();
+		Fish fish = datastore.load(KeyFactory.stringToKey(key));
+		fish.setKey(key);
+		return fish;
+	}
+	
 	public Fish update(Fish fish) {
 		validate(fish, false);
 		
-		// Update the fish.
-		Key key = KeyFactory.stringToKey(fish.getKey());
+		// Load the fish.
 		ObjectDatastore datastore = datastoreProvider.get();
-		datastore.update(fish);
+		Fish loadedFish = datastore.load(KeyFactory.stringToKey(fish.getKey()));
+		loadedFish.setKey(fish.getKey());
 		
-		// Read the latest.
-		fish = datastore.load(key);
-		if (fish == null) {
-			throw new RuntimeException("Can't load fish after update.");
-		}
-		fish.setKey(KeyFactory.keyToString(key));
+		// Update the fish.
+		loadedFish.setFromFish(fish);
+		datastore.update(loadedFish);
 		
-		return fish;
+		return loadedFish;
 	}
 	
 	/**

@@ -88,6 +88,7 @@ ff.model.Fish.prototype.toJson = function() {
   });
 
   return {
+    'key': this.key_,
     'name': this.name_,
     'weatherSet': weatherArray,
     'startHour': this.startHour_,

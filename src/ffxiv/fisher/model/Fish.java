@@ -40,7 +40,6 @@ public class Fish {
 	public String getKey() {
 		return key;
 	}
-	// Mutable for convenience.
 	public void setKey(String key) {
 		this.key = key;
 	}
@@ -56,5 +55,12 @@ public class Fish {
 	}
 	public int getEndHour() {
 		return endHour;
+	}
+	
+	public void setFromFish(Fish other) {
+		name = other.name;
+		weatherSet = other.weatherSet;
+		startHour = other.startHour;
+		endHour = other.endHour;
 	}
 }
