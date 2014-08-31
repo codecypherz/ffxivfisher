@@ -2,9 +2,10 @@
  * Service for dealing with time.
  */
 
-goog.provide('ff.model.EorzeaTime');
+goog.provide('ff.service.EorzeaTime');
 
 goog.require('goog.Timer');
+goog.require('goog.date.UtcDateTime');
 goog.require('goog.events.EventTarget');
 goog.require('goog.log');
 
@@ -14,11 +15,11 @@ goog.require('goog.log');
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-ff.model.EorzeaTime = function() {
+ff.service.EorzeaTime = function() {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
-  this.logger = goog.log.getLogger('ff.model.EorzeaTime');
+  this.logger = goog.log.getLogger('ff.service.EorzeaTime');
 
   /** @private {!goog.Timer} */
   this.timer_ = new goog.Timer(1000);
@@ -27,8 +28,8 @@ ff.model.EorzeaTime = function() {
   this.timer_.setParentEventTarget(this);
   this.timer_.start();
 };
-goog.inherits(ff.model.EorzeaTime, goog.events.EventTarget);
-goog.addSingletonGetter(ff.model.EorzeaTime);
+goog.inherits(ff.service.EorzeaTime, goog.events.EventTarget);
+goog.addSingletonGetter(ff.service.EorzeaTime);
 
 
 /**
@@ -37,7 +38,7 @@ goog.addSingletonGetter(ff.model.EorzeaTime);
  * @const
  * @private
  */
-ff.model.EorzeaTime.EARTH_TO_EORZEA_ =
+ff.service.EorzeaTime.EARTH_TO_EORZEA_ =
     3600 / // Eorzean seconds in an hour.
     175; // Earth seconds.
 
@@ -46,6 +47,7 @@ ff.model.EorzeaTime.EARTH_TO_EORZEA_ =
  * Gets the current time in Eorzea.
  * @return {number} The milliseconds since epoc for Eorzea.
  */
-ff.model.EorzeaTime.prototype.getTime = function() {
-  return new Date().getTime() * ff.model.EorzeaTime.EARTH_TO_EORZEA_;
+ff.service.EorzeaTime.prototype.getTime = function() {
+  return new goog.date.UtcDateTime().getTime() *
+      ff.service.EorzeaTime.EARTH_TO_EORZEA_;
 };

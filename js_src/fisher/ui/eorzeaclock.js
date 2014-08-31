@@ -6,9 +6,11 @@ goog.provide('ff.fisher.ui.EorzeaClock');
 
 goog.require('ff');
 goog.require('ff.fisher.ui.soy');
-goog.require('ff.model.EorzeaTime');
+goog.require('ff.service.EorzeaTime');
 goog.require('ff.ui');
 goog.require('goog.Timer');
+goog.require('goog.date.UtcDateTime');
+goog.require('goog.i18n.DateTimeFormat');
 goog.require('goog.soy');
 goog.require('goog.ui.Component');
 
@@ -21,8 +23,8 @@ goog.require('goog.ui.Component');
 ff.fisher.ui.EorzeaClock = function() {
   goog.base(this);
 
-  /** @private {!ff.model.EorzeaTime} */
-  this.eorzeaTime_ = ff.model.EorzeaTime.getInstance();
+  /** @private {!ff.service.EorzeaTime} */
+  this.eorzeaTime_ = ff.service.EorzeaTime.getInstance();
 };
 goog.inherits(ff.fisher.ui.EorzeaClock, goog.ui.Component);
 
@@ -34,6 +36,15 @@ goog.inherits(ff.fisher.ui.EorzeaClock, goog.ui.Component);
 ff.fisher.ui.EorzeaClock.Id_ = {
   TIME: ff.getUniqueId('time')
 };
+
+
+/**
+ * The format to display the time.
+ * @type {!goog.i18n.DateTimeFormate}
+ * @private
+ * @const
+ */
+ff.fisher.ui.EorzeaClock.FORMAT_ = new goog.i18n.DateTimeFormat('hh:mm a');
 
 
 /** @override */
@@ -63,5 +74,7 @@ ff.fisher.ui.EorzeaClock.prototype.enterDocument = function() {
 ff.fisher.ui.EorzeaClock.prototype.update_ = function() {
   var timeElement = ff.ui.getElementByFragment(
       this, ff.fisher.ui.EorzeaClock.Id_.TIME);
-  timeElement.innerHTML = this.eorzeaTime_.getTime();
+  var time = goog.date.UtcDateTime.fromTimestamp(this.eorzeaTime_.getTime());
+  var timeString = ff.fisher.ui.EorzeaClock.FORMAT_.format(time);
+  timeElement.innerHTML = timeString;
 };
