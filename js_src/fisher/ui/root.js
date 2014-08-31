@@ -5,6 +5,7 @@
 goog.provide('ff.fisher.ui.Root');
 
 goog.require('ff.fisher.ui.AdminFishDialog');
+goog.require('ff.fisher.ui.EorzeaClock');
 goog.require('ff.fisher.ui.FishTable');
 goog.require('ff.model.User');
 goog.require('ff.ui.Css');
@@ -23,6 +24,10 @@ ff.fisher.ui.Root = function() {
 
   /** @private {!ff.model.User} */
   this.user_ = ff.model.User.getInstance();
+
+  /** @private {!ff.fisher.ui.EorzeaClock} */
+  this.eorzeaClock_ = new ff.fisher.ui.EorzeaClock();
+  this.addChild(this.eorzeaClock_);
 
   /** @private {!ff.fisher.ui.FishTable} */
   this.fishTable_ = new ff.fisher.ui.FishTable();
@@ -55,6 +60,8 @@ ff.fisher.ui.Root.prototype.createDom = function() {
 
   goog.dom.classlist.addAll(this.getElement(),
       [ff.ui.Css.CARD, ff.fisher.ui.Root.Css_.ROOT]);
+
+  this.eorzeaClock_.render(this.getElement());
 
   this.fishTable_.render(this.getElement());
 

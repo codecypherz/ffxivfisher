@@ -13,12 +13,14 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.code.twig.ObjectDatastore;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 import ffxiv.fisher.model.Fish;
 
 /**
  * Service for interacting with fish data.
  */
+@Singleton
 public class FishService {
 
 	private final Provider<ObjectDatastore> datastoreProvider;
