@@ -77,6 +77,15 @@ ff.model.Fish.prototype.getEndHour = function() {
 
 
 /**
+ * Gets the URL for the fish image.
+ * @return {string}
+ */
+ff.model.Fish.prototype.getImageUrl = function() {
+  return '/images/fish/' + this.name_.replace(/\s/, '_').toLowerCase() + '.png';
+};
+
+
+/**
  * Converts the fish to JSON.
  * @return {!Object}
  */

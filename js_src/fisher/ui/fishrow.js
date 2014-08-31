@@ -56,7 +56,8 @@ ff.fisher.ui.FishRow.prototype.createDom = function() {
   this.setElementInternal(goog.soy.renderAsElement(
       ff.fisher.ui.soy.FISH_ROW, {
         ids: this.makeIds(ff.fisher.ui.FishRow.Id_),
-        name: this.fish_.getName()
+        name: this.fish_.getName(),
+        imageSrc: this.fish_.getImageUrl()
       }));
 
   // Render time.
