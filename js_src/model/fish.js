@@ -165,9 +165,6 @@ ff.model.Fish.prototype.toJson = function() {
  */
 ff.model.Fish.fromJson = function(json) {
 
-  var fishLocation = ff.stringKeyToEnum(
-      json['location'], ff.model.LocationEnum);
-
   var weatherSet = new goog.structs.Set();
   goog.array.forEach(json['weatherSet'], function(weatherString) {
     var weather = ff.stringKeyToEnum(weatherString, ff.model.Weather);
@@ -177,6 +174,12 @@ ff.model.Fish.fromJson = function(json) {
       throw Error('Unknown weather: ' + weatherString);
     }
   });
+
+  var fishLocation = ff.stringKeyToEnum(
+      json['location'], ff.model.LocationEnum);
+  if (!fishLocation) {
+    throw Error('Unknown location: ' + json['location']);
+  }
 
   return new ff.model.Fish(
       json['key'],

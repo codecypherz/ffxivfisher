@@ -161,8 +161,7 @@ ff.service.FishService.prototype.save_ = function(fish) {
     try {
       var fishFromServer = ff.model.Fish.fromJson(fishJson);
     } catch (e) {
-      goog.log.error(
-          this.logger, 'Failed to build fish from this JSON: ' + fishJson);
+      goog.log.error(this.logger, 'Failed to build fish from JSON', e);
       throw e;
     }
 
@@ -196,8 +195,7 @@ ff.service.FishService.prototype.onFishLoaded_ = function(fishesJson) {
       this.fish_.push(ff.model.Fish.fromJson(fishJson));
     } catch (e) {
       // Catch the error so other fish still make it through.
-      goog.log.error(
-          this.logger, 'Failed to build fish from this JSON: ' + fishJson);
+      goog.log.error(this.logger, 'Failed to build fish from JSON', e);
     }
   }, this);
 
