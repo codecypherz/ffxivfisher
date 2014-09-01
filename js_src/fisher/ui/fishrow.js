@@ -6,7 +6,7 @@ goog.provide('ff.fisher.ui.FishRow');
 
 goog.require('ff');
 goog.require('ff.fisher.ui.AdminFishDialog');
-goog.require('ff.fisher.ui.Time');
+goog.require('ff.fisher.ui.FishTime');
 goog.require('ff.fisher.ui.WeatherIcon');
 goog.require('ff.fisher.ui.soy');
 goog.require('ff.model.Fish');
@@ -38,8 +38,9 @@ ff.fisher.ui.FishRow = function(fish) {
   /** @private {!ff.model.User} */
   this.user_ = ff.model.User.getInstance();
 
-  /** @private {!ff.fisher.ui.Time} */
-  this.time_ = new ff.fisher.ui.Time(fish.getStartHour(), fish.getEndHour());
+  /** @private {!ff.fisher.ui.FishTime} */
+  this.time_ = new ff.fisher.ui.FishTime(
+      fish.getStartHour(), fish.getEndHour());
   this.addChild(this.time_);
 };
 goog.inherits(ff.fisher.ui.FishRow, goog.ui.Component);

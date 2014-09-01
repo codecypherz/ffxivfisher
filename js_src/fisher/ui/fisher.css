@@ -68,3 +68,42 @@
   height: 30px;
   width: 30px;
 }
+
+.ff-fish-time {
+  border: 1px solid #fff;
+  height: 30px;
+  position: relative;
+  width: 300px;
+}
+
+.ff-fish-time-range {
+  background: #2B73C5;
+  /*background: #133D6E;*/
+  bottom: 0;
+  position: absolute;
+  top: 0;
+}
+
+.ff-fish-time-change {
+  background: #fff;
+  bottom: 0;
+  position: absolute;
+  top: 0;
+  width: 1px;
+}
+
+.ff-8am {
+  left: 33.333%;
+}
+
+.ff-4pm {
+  left: 66.666%;
+}
+
+.ff-fish-time-current {
+  background: #FFF0A0;
+  bottom: 0;
+  position: absolute;
+  top: 0;
+  width: 3px;
+}
