@@ -42,8 +42,20 @@ ff.model.Fish = function(key, name, weatherSet, startHour, endHour) {
 
   /** @private {number} */
   this.endHour_ = endHour;
+
+  /** @private {boolean} */
+  this.catchable_ = false;
 };
 goog.inherits(ff.model.Fish, goog.events.EventTarget);
+
+
+/**
+ * The events dispatched by this object.
+ * @enum {string}
+ */
+ff.model.Fish.EventType = {
+  CATCHABLE_CHANGED: ff.getUniqueId('catchable-changed')
+};
 
 
 /** @return {string} */
@@ -73,6 +85,22 @@ ff.model.Fish.prototype.getStartHour = function() {
 /** @return {number} */
 ff.model.Fish.prototype.getEndHour = function() {
   return this.endHour_;
+};
+
+
+/** @return {boolean} */
+ff.model.Fish.prototype.isCatchable = function() {
+  return this.catchable_;
+};
+
+
+/** @param {boolean} catchable */
+ff.model.Fish.prototype.setCatchable = function(catchable) {
+  var oldCatchable = this.catchable_;
+  this.catchable_ = catchable;
+  if (oldCatchable != catchable) {
+    this.dispatchEvent(ff.model.Fish.EventType.CATCHABLE_CHANGED);
+  }
 };
 
 

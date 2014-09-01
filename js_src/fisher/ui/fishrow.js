@@ -9,8 +9,10 @@ goog.require('ff.fisher.ui.AdminFishDialog');
 goog.require('ff.fisher.ui.Time');
 goog.require('ff.fisher.ui.WeatherIcon');
 goog.require('ff.fisher.ui.soy');
+goog.require('ff.model.Fish');
 goog.require('ff.model.User');
 goog.require('ff.ui');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.soy');
 goog.require('goog.structs');
@@ -47,6 +49,15 @@ ff.fisher.ui.FishRow.Id_ = {
   NAME: ff.getUniqueId('name'),
   TIME: ff.getUniqueId('time'),
   WEATHER: ff.getUniqueId('weather')
+};
+
+
+/**
+ * @enum {string}
+ * @private
+ */
+ff.fisher.ui.FishRow.Css_ = {
+  CATCHABLE: goog.getCssName('ff-fish-catchable')
 };
 
 
@@ -89,4 +100,27 @@ ff.fisher.ui.FishRow.prototype.enterDocument = function() {
           }
         });
   }
+
+  this.getHandler().listen(
+      this.fish_,
+      ff.model.Fish.EventType.CATCHABLE_CHANGED,
+      this.updateCatchable_);
+
+  this.updateCatchable_();
+};
+
+
+/**
+ * Updates the row to reflect if the fish is catchable.
+ * @private
+ */
+ff.fisher.ui.FishRow.prototype.updateCatchable_ = function() {
+  if (!this.isInDocument()) {
+    return;
+  }
+
+  goog.dom.classlist.enable(
+      this.getElement(),
+      ff.fisher.ui.FishRow.Css_.CATCHABLE,
+      this.fish_.isCatchable());
 };

@@ -9,7 +9,6 @@ goog.require('ff.fisher.ui.soy');
 goog.require('ff.service.EorzeaTime');
 goog.require('ff.ui');
 goog.require('goog.Timer');
-goog.require('goog.date.UtcDateTime');
 goog.require('goog.i18n.DateTimeFormat');
 goog.require('goog.soy');
 goog.require('goog.ui.Component');
@@ -40,7 +39,7 @@ ff.fisher.ui.EorzeaClock.Id_ = {
 
 /**
  * The format to display the time.
- * @type {!goog.i18n.DateTimeFormate}
+ * @type {!goog.i18n.DateTimeFormat}
  * @private
  * @const
  */
@@ -74,7 +73,7 @@ ff.fisher.ui.EorzeaClock.prototype.enterDocument = function() {
 ff.fisher.ui.EorzeaClock.prototype.update_ = function() {
   var timeElement = ff.ui.getElementByFragment(
       this, ff.fisher.ui.EorzeaClock.Id_.TIME);
-  var time = goog.date.UtcDateTime.fromTimestamp(this.eorzeaTime_.getTime());
-  var timeString = ff.fisher.ui.EorzeaClock.FORMAT_.format(time);
+  var timeString = ff.fisher.ui.EorzeaClock.FORMAT_.format(
+      this.eorzeaTime_.getUtcDate());
   timeElement.innerHTML = timeString;
 };

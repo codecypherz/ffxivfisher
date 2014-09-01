@@ -17,7 +17,12 @@
 }
 
 .ff-fish-row {
+  opacity: 0.5;
   width: 100%;
+}
+
+.ff-fish-row.ff-fish-catchable {
+  opacity: 1;
 }
 
 .ff-fish-row > .ff-cell {

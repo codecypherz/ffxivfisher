@@ -6,9 +6,11 @@ goog.provide('ff.fisher.ui.FishTable');
 
 goog.require('ff.fisher.ui.FishRow');
 goog.require('ff.service.FishService');
+goog.require('ff.service.FishWatcher');
 goog.require('ff.ui.Css');
 goog.require('goog.array');
 goog.require('goog.dom.classlist');
+goog.require('goog.log');
 goog.require('goog.ui.Component');
 
 
@@ -20,8 +22,14 @@ goog.require('goog.ui.Component');
 ff.fisher.ui.FishTable = function() {
   goog.base(this);
 
+  /** @protected {goog.log.Logger} */
+  this.logger = goog.log.getLogger('ff.fisher.ui.FishTable');
+
   /** @private {!ff.service.FishService} */
   this.fishService_ = ff.service.FishService.getInstance();
+
+  /** @private {!ff.service.FishWatcher} */
+  this.fishWatcher_ = ff.service.FishWatcher.getInstance();
 };
 goog.inherits(ff.fisher.ui.FishTable, goog.ui.Component);
 
@@ -55,6 +63,11 @@ ff.fisher.ui.FishTable.prototype.enterDocument = function() {
       this.fishService_,
       ff.service.FishService.EventType.FISH_CHANGED,
       this.renderFish_);
+
+  this.getHandler().listen(
+      this.fishWatcher_,
+      ff.service.FishWatcher.EventType.CATCHABLE_SET_CHANGED,
+      this.renderFish_);
 };
 
 
@@ -62,6 +75,7 @@ ff.fisher.ui.FishTable.prototype.enterDocument = function() {
  * @private
  */
 ff.fisher.ui.FishTable.prototype.renderFish_ = function() {
+  this.logger.info('Rendering fish.');
   var fishes = this.fishService_.getAll();
 
   // Clear existing fish.
