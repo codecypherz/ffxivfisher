@@ -7,12 +7,14 @@ goog.provide('ff.fisher.ui.AdminFishDialog');
 goog.require('ff');
 goog.require('ff.fisher.ui.soy');
 goog.require('ff.model.Fish');
+goog.require('ff.model.LocationEnum');
 goog.require('ff.model.Weather');
 goog.require('ff.service.FishService');
 goog.require('ff.ui');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.log');
+goog.require('goog.object');
 goog.require('goog.soy');
 goog.require('goog.string');
 goog.require('goog.structs');
@@ -64,6 +66,7 @@ goog.inherits(ff.fisher.ui.AdminFishDialog, goog.ui.Dialog);
 ff.fisher.ui.AdminFishDialog.Id_ = {
   CONFIRM_BUTTON: ff.getUniqueId('confirm-button'),
   END_HOUR_INPUT: ff.getUniqueId('end-hour-input'),
+  LOCATION_INPUT: ff.getUniqueId('location-input'),
   NAME_INPUT: ff.getUniqueId('name-input'),
   START_HOUR_INPUT: ff.getUniqueId('start-hour-input'),
   WEATHER_INPUT: ff.getUniqueId('weather-input')
@@ -115,12 +118,18 @@ ff.fisher.ui.AdminFishDialog.prototype.createDom = function() {
         ff.fisher.ui.AdminFishDialog.Id_.WEATHER_INPUT,
         weatherStr);
 
+    // Set time.
     this.setValue_(
         ff.fisher.ui.AdminFishDialog.Id_.START_HOUR_INPUT,
         this.fishToEdit_.getStartHour() + '');
     this.setValue_(
         ff.fisher.ui.AdminFishDialog.Id_.END_HOUR_INPUT,
         this.fishToEdit_.getEndHour() + '');
+
+    // Set location.
+    this.setValue_(
+        ff.fisher.ui.AdminFishDialog.Id_.LOCATION_INPUT,
+        this.fishToEdit_.getLocation().getName());
   }
 };
 
@@ -199,8 +208,6 @@ ff.fisher.ui.AdminFishDialog.prototype.onSelect_ = function(e) {
         } else {
           weatherInvalid = true;
         }
-      } else {
-        weatherInvalid = true;
       }
     });
     if (weatherInvalid) {
@@ -209,14 +216,32 @@ ff.fisher.ui.AdminFishDialog.prototype.onSelect_ = function(e) {
       return;
     }
 
-    if (goog.isDefAndNotNull(this.fishToEdit_)) {
-      var updatedFish = new ff.model.Fish(
-          this.fishToEdit_.getKey(), name, weatherSet, startHour, endHour);
-      this.fishService_.update(updatedFish);
+    // Validate location.
+    var locationInput = ff.ui.getElementByFragment(
+        this, ff.fisher.ui.AdminFishDialog.Id_.LOCATION_INPUT);
+    var locationString = locationInput.value;
+    var fishLocation = goog.object.findValue(
+        ff.model.LocationEnum,
+        function(value, key, object) {
+          return goog.string.caseInsensitiveCompare(
+              value.getName(), locationString) == 0;
+        });
+    if (!fishLocation) {
+      locationInput.select();
+      e.preventDefault();
+      return;
+    }
+
+    // Create the fish with the given data.
+    var fishKey = this.fishToEdit_ ? this.fishToEdit_.getKey() : '';
+    var fish = new ff.model.Fish(
+        fishKey, name, weatherSet, startHour, endHour, fishLocation);
+
+    // Save the fish.
+    if (this.fishToEdit_) {
+      this.fishService_.update(fish);
     } else {
-      // Create the fish and store it.
-      this.fishService_.create(
-          new ff.model.Fish('', name, weatherSet, startHour, endHour));
+      this.fishService_.create(fish);
     }
   }
   this.setVisible(false);

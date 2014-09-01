@@ -14,14 +14,17 @@ public class Fish {
 	private Set<Weather> weatherSet;
 	private int startHour; // inclusive
 	private int endHour; // inclusive
+	private Location location;
 	
 	public Fish() {
 		this(
-			"",
-			"Not Set",
+			"",  // key
+			"Not Set", // name
 			new HashSet<Weather>(),
-			-1,
-			-1);
+			-1,  // start hour
+			-1,  // end hour
+			null // location
+			);
 	}
 	
 	private Fish(
@@ -29,12 +32,14 @@ public class Fish {
 			String name,
 			Set<Weather> weatherSet,
 			int startHour,
-			int endHour) {
+			int endHour,
+			Location location) {
 		this.key = key;
 		this.name = name;
 		this.weatherSet = weatherSet;
 		this.startHour = startHour;
 		this.endHour = endHour;
+		this.location = location;
 	}
 	
 	public String getKey() {
@@ -56,11 +61,20 @@ public class Fish {
 	public int getEndHour() {
 		return endHour;
 	}
+	public Location getLocation() {
+		return location;
+	}
+
+	// TODO Remove - just for testing.
+	public void setLocation(Location location) {
+		this.location = location;
+	}
 	
 	public void setFromFish(Fish other) {
 		name = other.name;
 		weatherSet = other.weatherSet;
 		startHour = other.startHour;
 		endHour = other.endHour;
+		location = other.location;
 	}
 }

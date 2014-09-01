@@ -2,11 +2,13 @@
 goog.provide('ff.model.Fish');
 
 goog.require('ff');
+goog.require('ff.model.LocationEnum');
 goog.require('ff.model.Weather');
 goog.require('goog.array');
 goog.require('goog.events.EventTarget');
 goog.require('goog.log');
 goog.require('goog.object');
+goog.require('goog.string');
 goog.require('goog.structs');
 goog.require('goog.structs.Set');
 
@@ -19,10 +21,12 @@ goog.require('goog.structs.Set');
  * @param {!goog.structs.Set} weatherSet
  * @param {number} startHour
  * @param {number} endHour
+ * @param {!ff.model.Location} fishLocation
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-ff.model.Fish = function(key, name, weatherSet, startHour, endHour) {
+ff.model.Fish = function(
+    key, name, weatherSet, startHour, endHour, fishLocation) {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
@@ -42,6 +46,9 @@ ff.model.Fish = function(key, name, weatherSet, startHour, endHour) {
 
   /** @private {number} */
   this.endHour_ = endHour;
+
+  /** @private {!ff.model.Location} */
+  this.location_ = fishLocation;
 
   /** @private {boolean} */
   this.catchable_ = false;
@@ -88,6 +95,12 @@ ff.model.Fish.prototype.getEndHour = function() {
 };
 
 
+/** @return {!ff.model.Location} */
+ff.model.Fish.prototype.getLocation = function() {
+  return this.location_;
+};
+
+
 /** @return {boolean} */
 ff.model.Fish.prototype.isCatchable = function() {
   return this.catchable_;
@@ -128,12 +141,20 @@ ff.model.Fish.prototype.toJson = function() {
     weatherArray.push(transposedWeather[weather]);
   });
 
+  var fishLocationKey = goog.object.findKey(
+      ff.model.LocationEnum,
+      function(value, key, object) {
+        return goog.string.caseInsensitiveCompare(
+            value.getName(), this.location_.getName()) == 0;
+      }, this);
+
   return {
     'key': this.key_,
     'name': this.name_,
     'weatherSet': weatherArray,
     'startHour': this.startHour_,
-    'endHour': this.endHour_
+    'endHour': this.endHour_,
+    'location': fishLocationKey
   };
 };
 
@@ -143,6 +164,9 @@ ff.model.Fish.prototype.toJson = function() {
  * @return {!ff.model.Fish} The parsed fish model.
  */
 ff.model.Fish.fromJson = function(json) {
+
+  var fishLocation = ff.stringKeyToEnum(
+      json['location'], ff.model.LocationEnum);
 
   var weatherSet = new goog.structs.Set();
   goog.array.forEach(json['weatherSet'], function(weatherString) {
@@ -159,5 +183,6 @@ ff.model.Fish.fromJson = function(json) {
       json['name'],
       weatherSet,
       json['startHour'],
-      json['endHour']);
+      json['endHour'],
+      ff.model.LocationEnum[fishLocation]);
 };
