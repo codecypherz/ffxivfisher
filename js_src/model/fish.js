@@ -109,7 +109,11 @@ ff.model.Fish.prototype.setCatchable = function(catchable) {
  * @return {string}
  */
 ff.model.Fish.prototype.getImageUrl = function() {
-  return '/images/fish/' + this.name_.replace(/\s/, '_').toLowerCase() + '.png';
+  var imageName = this.name_
+      .replace(/\s/, '_')
+      .replace(/\'/, '')
+      .toLowerCase();
+  return '/images/fish/' + imageName + '.png';
 };
 
 

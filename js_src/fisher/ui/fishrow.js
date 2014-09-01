@@ -28,6 +28,9 @@ goog.require('goog.ui.Component');
 ff.fisher.ui.FishRow = function(fish) {
   goog.base(this);
 
+  /** @protected {goog.log.Logger} */
+  this.logger = goog.log.getLogger('ff.fisher.ui.FishRow');
+
   /** @private {!ff.model.Fish} */
   this.fish_ = fish;
 

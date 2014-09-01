@@ -34,7 +34,21 @@ ff.service.FishWatcher = function() {
   this.handler_ = new goog.events.EventHandler(this);
   this.registerDisposable(this.handler_);
 
-  this.handler_.listen(this.eorzeaTime_, goog.Timer.TICK, this.checkFish_);
+  // Check fish whenever the fish data changes.
+  this.handler_.listen(
+      this.fishService_,
+      ff.service.FishService.EventType.FISH_CHANGED,
+      this.checkFish_);
+
+  // Check fish whenever the clock ticks.
+  this.handler_.listen(
+      this.eorzeaTime_,
+      goog.Timer.TICK,
+      this.checkFish_);
+
+  // Check fish right now.
+  this.logger.info('Checking fish for the first time.');
+  this.checkFish_();
 };
 goog.inherits(ff.service.FishWatcher, goog.events.EventTarget);
 goog.addSingletonGetter(ff.service.FishWatcher);
