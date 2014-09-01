@@ -14,6 +14,7 @@ goog.require('ff.model.User');
 goog.require('ff.ui');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
+goog.require('goog.log');
 goog.require('goog.soy');
 goog.require('goog.structs');
 goog.require('goog.ui.Component');

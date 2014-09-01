@@ -4,13 +4,15 @@
 
 goog.provide('ff.fisher.ui.FishTable');
 
+goog.require('ff');
 goog.require('ff.fisher.ui.FishRow');
+goog.require('ff.fisher.ui.soy');
 goog.require('ff.service.FishService');
 goog.require('ff.service.FishWatcher');
-goog.require('ff.ui.Css');
+goog.require('ff.ui');
 goog.require('goog.array');
-goog.require('goog.dom.classlist');
 goog.require('goog.log');
+goog.require('goog.soy');
 goog.require('goog.ui.Component');
 
 
@@ -35,21 +37,21 @@ goog.inherits(ff.fisher.ui.FishTable, goog.ui.Component);
 
 
 /**
- * CSS for this component.
  * @enum {string}
  * @private
  */
-ff.fisher.ui.FishTable.Css_ = {
-  ROOT: goog.getCssName('ff-fish-table')
+ff.fisher.ui.FishTable.Id_ = {
+  FISH_ROWS: ff.getUniqueId('fish-rows')
 };
 
 
 /** @override */
 ff.fisher.ui.FishTable.prototype.createDom = function() {
-  goog.base(this, 'createDom');
-
-  goog.dom.classlist.addAll(this.getElement(),
-      [ff.ui.Css.TABLE, ff.fisher.ui.FishTable.Css_.ROOT]);
+  // Render soy template.
+  this.setElementInternal(goog.soy.renderAsElement(
+      ff.fisher.ui.soy.FISH_TABLE, {
+        ids: this.makeIds(ff.fisher.ui.FishTable.Id_)
+      }));
 
   this.renderFish_();
 };
@@ -81,10 +83,13 @@ ff.fisher.ui.FishTable.prototype.renderFish_ = function() {
   // Clear existing fish.
   goog.disposeAll(this.removeChildren(true));
 
+  var fishRowsElement = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.FishTable.Id_.FISH_ROWS);
+
   // Render the fish.
   goog.array.forEach(fishes, function(fish) {
     var fishRow = new ff.fisher.ui.FishRow(fish);
     this.addChild(fishRow);
-    fishRow.render(this.getElement());
+    fishRow.render(fishRowsElement);
   }, this);
 };

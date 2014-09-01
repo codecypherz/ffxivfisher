@@ -7,6 +7,9 @@
 
 @def ACTIVE_BORDER_COLOR           #00ADFF;
 
+@def CARD_BACKGROUND_COLOR         #333;
+@def CARD_BORDER_COLOR             #555;
+
 body {
   background-color: #111;
   color: #ddd;
@@ -29,8 +32,8 @@ body {
 }
 
 .ff-card {
-  background-color: #333;
-  border: 1px solid #555;
+  background-color: CARD_BACKGROUND_COLOR;
+  border: 1px solid CARD_BORDER_COLOR;
   padding: 10px;
   @mixin border_radius(5px);
 }

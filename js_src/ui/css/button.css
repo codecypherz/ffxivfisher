@@ -23,6 +23,7 @@ button {
 }
 
 button:hover {
+  color: #fff;
   border-color: ACTIVE_BORDER_COLOR;
   @mixin linear_gradient(BUTTON_GRADIENT_HOVER, BUTTON_BACKGROUND_COLOR_LIGHT);
 }
