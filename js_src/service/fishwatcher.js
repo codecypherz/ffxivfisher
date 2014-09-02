@@ -87,6 +87,24 @@ ff.service.FishWatcher.prototype.checkFish_ = function() {
  * @private
  */
 ff.service.FishWatcher.prototype.isCatchable_ = function(fish, currentHour) {
-  return (fish.getStartHour() <= currentHour) &&
-      (currentHour <= fish.getEndHour());
+  var wrapAround = fish.getEndHour() < fish.getStartHour();
+  if (wrapAround) {
+    return this.isHourInRange_(currentHour, 0, fish.getEndHour()) ||
+        this.isHourInRange_(currentHour, fish.getStartHour(), 23);
+  } else {
+    return this.isHourInRange_(
+        currentHour, fish.getStartHour(), fish.getEndHour());
+  }
+};
+
+
+/**
+ * @param {number} hour
+ * @param {number} start
+ * @param {number} end
+ * @return {boolean}
+ * @private
+ */
+ff.service.FishWatcher.prototype.isHourInRange_ = function(hour, start, end) {
+  return (start <= hour) && (hour <= end);
 };

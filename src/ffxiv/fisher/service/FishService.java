@@ -112,11 +112,9 @@ public class FishService {
 		checkArgument(fish.getName() != null && !fish.getName().isEmpty(),
 				"Name must not be null");
 		checkArgument(fish.getWeatherSet() != null, "Weather set must not be null");
-		checkArgument(fish.getStartHour() >= 0&& fish.getStartHour() <= 23,
+		checkArgument(fish.getStartHour() >= 0 && fish.getStartHour() <= 23,
 				"Start hour must be between 0 and 23 inclusive.");
-		checkArgument(fish.getEndHour() >= 0&& fish.getEndHour() <= 23,
+		checkArgument(fish.getEndHour() >= 0 && fish.getEndHour() <= 23,
 				"End hour must be between 0 and 23 inclusive.");
-		checkArgument(fish.getStartHour() <= fish.getEndHour(),
-				"Start hour must come before end hour.");
 	}
 }

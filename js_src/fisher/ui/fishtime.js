@@ -10,6 +10,7 @@ goog.require('ff.service.EorzeaTime');
 goog.require('ff.ui');
 goog.require('goog.Timer');
 goog.require('goog.soy');
+goog.require('goog.style');
 goog.require('goog.ui.Component');
 
 
@@ -41,7 +42,8 @@ goog.inherits(ff.fisher.ui.FishTime, goog.ui.Component);
  */
 ff.fisher.ui.FishTime.Id_ = {
   CURRENT_TIME: ff.getUniqueId('current-time'),
-  RANGE: ff.getUniqueId('range')
+  RANGE: ff.getUniqueId('range'),
+  RANGE_WRAP: ff.getUniqueId('range-wrap')
 };
 
 
@@ -59,11 +61,18 @@ ff.fisher.ui.FishTime.prototype.createDom = function() {
         tooltip: tooltip
       }));
 
-  // Update the bounds of the range element.
+  var wrapAround = this.endHour_ < this.startHour_;
   var rangeElement = ff.ui.getElementByFragment(
       this, ff.fisher.ui.FishTime.Id_.RANGE);
-  rangeElement.style.left = ((this.startHour_ / 24.0) * 100) + '%';
-  rangeElement.style.right = (((23 - this.endHour_) / 24.0) * 100) + '%';
+  var rangeWrapElement = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.FishTime.Id_.RANGE_WRAP);
+  goog.style.setElementShown(rangeWrapElement, wrapAround);
+  if (wrapAround) {
+    this.renderRange_(rangeElement, 0, this.endHour_);
+    this.renderRange_(rangeWrapElement, this.startHour_, 23);
+  } else {
+    this.renderRange_(rangeElement, this.startHour_, this.endHour_);
+  }
 };
 
 
@@ -77,6 +86,20 @@ ff.fisher.ui.FishTime.prototype.enterDocument = function() {
       this.updateCurrentTime_);
 
   this.updateCurrentTime_();
+};
+
+
+/**
+ * Renders the range for the given interval.
+ * @param {Element} range
+ * @param {number} startHour
+ * @param {number} endHour
+ * @private
+ */
+ff.fisher.ui.FishTime.prototype.renderRange_ = function(
+    range, startHour, endHour) {
+  range.style.left = ((startHour / 24.0) * 100) + '%';
+  range.style.right = (((23 - endHour) / 24.0) * 100) + '%';
 };
 
 
