@@ -113,7 +113,7 @@ ff.fisher.ui.FishTime.prototype.formatHour_ = function(hour) {
     hour = 12;
   }
   if (hour > 12) {
-    hour = 24 - hour;
+    hour = hour - 12;
   }
   return hour + ':00 ' + amPm;
 };
