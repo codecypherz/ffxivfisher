@@ -88,6 +88,18 @@ ff.service.FishService.prototype.getAll = function() {
 
 
 /**
+ * Gets all the fish for the given area.
+ * @param {!ff.model.Area} area
+ * @return {!Array.<!ff.model.Fish>}
+ */
+ff.service.FishService.prototype.getForArea = function(area) {
+  return goog.array.filter(this.fish_, function(fish, i, arr) {
+    return fish.getLocation().getArea().getName() == area.getName();
+  });
+};
+
+
+/**
  * Stores a new fish.  The server will authenticate and validate this.
  * @param {!ff.model.Fish} fish
  * @return {!goog.async.Deferred.<!ff.model.Fish>}

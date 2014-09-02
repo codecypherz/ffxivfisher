@@ -28,6 +28,31 @@
 
 
 /**
+ * HTML for the component that shows fish in all areas.
+ */
+{template .AREAS}
+  <div class="{css ff-card}{sp}{css ff-fisher-areas}">
+  </div>
+{/template}
+
+
+/**
+ * HTML for the component that shows fish in a single area.
+ * @param ids
+ * @param name
+ */
+{template .AREA}
+  <div class="{css ff-fisher-area}">
+    <div class="{css ff-fisher-area-name}">
+      {$name}
+    </div>
+    <div id="{$ids.FISH_ROWS}" class="{css ff-table}{sp}{css ff-fish-table}">
+    </div>
+  </div>
+{/template}
+
+
+/**
  * HTML for the fish table.
  * @param ids
  */

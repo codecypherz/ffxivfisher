@@ -74,6 +74,6 @@ ff.fisher.ui.EorzeaClock.prototype.update_ = function() {
   var timeElement = ff.ui.getElementByFragment(
       this, ff.fisher.ui.EorzeaClock.Id_.TIME);
   var timeString = ff.fisher.ui.EorzeaClock.FORMAT_.format(
-      this.eorzeaTime_.getUtcDate());
+      this.eorzeaTime_.getCurrentEorzeaDate());
   timeElement.innerHTML = timeString;
 };

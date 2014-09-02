@@ -4,7 +4,7 @@
 
 goog.provide('ff.fisher.ui.Root');
 
-goog.require('ff.fisher.ui.FishTable');
+goog.require('ff.fisher.ui.Areas');
 goog.require('ff.fisher.ui.Header');
 goog.require('goog.dom.classlist');
 goog.require('goog.ui.Component');
@@ -22,9 +22,9 @@ ff.fisher.ui.Root = function() {
   this.header_ = new ff.fisher.ui.Header();
   this.addChild(this.header_);
 
-  /** @private {!ff.fisher.ui.FishTable} */
-  this.fishTable_ = new ff.fisher.ui.FishTable();
-  this.addChild(this.fishTable_);
+  /** @private {!ff.fisher.ui.Areas} */
+  this.areas_ = new ff.fisher.ui.Areas();
+  this.addChild(this.areas_);
 };
 goog.inherits(ff.fisher.ui.Root, goog.ui.Component);
 
@@ -46,5 +46,5 @@ ff.fisher.ui.Root.prototype.createDom = function() {
   goog.dom.classlist.add(this.getElement(), ff.fisher.ui.Root.Css_.ROOT);
 
   this.header_.render(this.getElement());
-  this.fishTable_.render(this.getElement());
+  this.areas_.render(this.getElement());
 };

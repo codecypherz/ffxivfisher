@@ -69,7 +69,7 @@ ff.service.FishWatcher.EventType = {
  * @private
  */
 ff.service.FishWatcher.prototype.checkFish_ = function() {
-  var utcDate = this.eorzeaTime_.getUtcDate();
+  var utcDate = this.eorzeaTime_.getCurrentEorzeaDate();
   goog.array.forEach(this.fishService_.getAll(), function(fish) {
     fish.setCatchable(this.isCatchable_(fish, utcDate.getUTCHours()));
   }, this);

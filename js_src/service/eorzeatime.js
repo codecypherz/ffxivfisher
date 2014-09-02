@@ -44,19 +44,20 @@ ff.service.EorzeaTime.EARTH_TO_EORZEA_ =
 
 
 /**
- * Gets the current time in Eorzea as UTC milliseconds since epoc.
- * @return {number}
+ * Gets the current time in Eorzea.
+ * @return {!goog.date.UtcDateTime}
  */
-ff.service.EorzeaTime.prototype.getUtcMs = function() {
-  return new goog.date.UtcDateTime().getTime() *
-      ff.service.EorzeaTime.EARTH_TO_EORZEA_;
+ff.service.EorzeaTime.prototype.getCurrentEorzeaDate = function() {
+  return this.toEorzea(new goog.date.UtcDateTime());
 };
 
 
 /**
- * Gets the current time in Eorzea as a UTC date.
+ * Converts Earth time to Eorzea time.
+ * @param {!goog.date.UtcDateTime} earthDate
  * @return {!goog.date.UtcDateTime}
  */
-ff.service.EorzeaTime.prototype.getUtcDate = function() {
-  return goog.date.UtcDateTime.fromTimestamp(this.getUtcMs());
+ff.service.EorzeaTime.prototype.toEorzea = function(earthDate) {
+  var eorzeaMs = earthDate.getTime() * ff.service.EorzeaTime.EARTH_TO_EORZEA_;
+  return goog.date.UtcDateTime.fromTimestamp(eorzeaMs);
 };

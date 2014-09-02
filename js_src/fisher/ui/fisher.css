@@ -46,6 +46,19 @@
 .ff-fisher-new-fish-button {
 }
 
+.ff-fisher-area {
+  margin-top: 16px;
+}
+.ff-fisher-area:first-child {
+  margin-top: 0;
+}
+
+.ff-fisher-area-name {
+  color: #DEB887;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
 .ff-fish-table {
   width: 100%;
 }
@@ -66,6 +79,7 @@
 
 .ff-fish-row-icon {
   height: 30px;
+  margin-left: 10px;
   width: 30px;
 }
 

@@ -91,7 +91,7 @@ ff.fisher.ui.FishTime.prototype.updateCurrentTime_ = function() {
 
   var currentTimeElement = ff.ui.getElementByFragment(
       this, ff.fisher.ui.FishTime.Id_.CURRENT_TIME);
-  var date = this.eorzeaTime_.getUtcDate();
+  var date = this.eorzeaTime_.getCurrentEorzeaDate();
   var time = date.getUTCHours() + (date.getUTCMinutes() / 60.0);
   currentTimeElement.style.left = (time / 24.0) * 100 + '%';
 };
