@@ -96,12 +96,11 @@
 
 
 /**
- * HTML for a fishing time interval
+ * HTML for a fishing time interval.
  * @param ids
- * @param tooltip
  */
 {template .FISH_TIME}
-  <div class="{css ff-fish-time}" title="{$tooltip}">
+  <div class="{css ff-fish-time}">
     <div id="{$ids.RANGE}" class="{css ff-fish-time-range}">
     </div>
     <div id="{$ids.RANGE_WRAP}" class="{css ff-fish-time-range}">
@@ -111,6 +110,8 @@
     <div class="{css ff-fish-time-change}{sp}{css ff-4pm}">
     </div>
     <div id="{$ids.CURRENT_TIME}" class="{css ff-fish-time-current}">
+    </div>
+    <div id="{$ids.CURSOR_TIME}" class="{css ff-fish-time-cursor}">
     </div>
   </div>
 {/template}

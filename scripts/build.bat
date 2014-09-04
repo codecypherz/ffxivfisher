@@ -1,5 +1,8 @@
 @echo off
 
+echo Running fixjs...
+call fixjs.bat
+
 echo Running the linter...
 call linter.bat
 

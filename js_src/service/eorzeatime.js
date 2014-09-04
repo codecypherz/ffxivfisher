@@ -33,14 +33,24 @@ goog.addSingletonGetter(ff.service.EorzeaTime);
 
 
 /**
- * Ratio used to convert Earth time to Eorzean time.
+ * Ratio used to convert Earth time to Eorzea time.
  * @type {number}
  * @const
  * @private
  */
 ff.service.EorzeaTime.EARTH_TO_EORZEA_ =
-    3600 / // Eorzean seconds in an hour.
-    175; // Earth seconds.
+    3600 / // Eorzean seconds in an Eorzean hour.
+    175; // Earth seconds in an Eorzean hour.
+
+
+/**
+ * Ratio used to convert Eorzea time to Earth time.
+ * @type {number}
+ * @const
+ * @private
+ */
+ff.service.EorzeaTime.EORZEA_TO_EARTH_ =
+    1 / ff.service.EorzeaTime.EARTH_TO_EORZEA_;
 
 
 /**
@@ -60,4 +70,15 @@ ff.service.EorzeaTime.prototype.getCurrentEorzeaDate = function() {
 ff.service.EorzeaTime.prototype.toEorzea = function(earthDate) {
   var eorzeaMs = earthDate.getTime() * ff.service.EorzeaTime.EARTH_TO_EORZEA_;
   return goog.date.UtcDateTime.fromTimestamp(eorzeaMs);
+};
+
+
+/**
+ * Converts Eorzea time to Earth time.
+ * @param {!goog.date.UtcDateTime} eorzeaDate
+ * @return {!goog.date.UtcDateTime}
+ */
+ff.service.EorzeaTime.prototype.toEarth = function(eorzeaDate) {
+  var earthMs = eorzeaDate.getTime() * ff.service.EorzeaTime.EORZEA_TO_EARTH_;
+  return goog.date.UtcDateTime.fromTimestamp(earthMs);
 };
