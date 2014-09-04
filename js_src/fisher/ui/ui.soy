@@ -2,11 +2,21 @@
 
 
 /**
+ * HTML for the root page.
+ * @param ids
+ */
+{template .ROOT}
+  <div id="{$ids.CENTERED_CONTENT}" class="{css ff-fisher-root}">
+  </div>
+{/template}
+
+
+/**
  * HTML for the header.
  * @param ids
  */
 {template .HEADER}
-  <div class="{css ff-fisher-header}">
+  <div class="{css ff-fisher-header}{sp}{css ff-card}">
     <div class="{css ff-fisher-header-clock-label}">
       Eorzean Time:&nbsp;
     </div>

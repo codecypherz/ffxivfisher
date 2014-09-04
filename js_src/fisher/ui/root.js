@@ -4,9 +4,12 @@
 
 goog.provide('ff.fisher.ui.Root');
 
+goog.require('ff');
 goog.require('ff.fisher.ui.Areas');
 goog.require('ff.fisher.ui.Header');
-goog.require('goog.dom.classlist');
+goog.require('ff.fisher.ui.soy');
+goog.require('ff.ui');
+goog.require('goog.soy');
 goog.require('goog.ui.Component');
 
 
@@ -30,21 +33,23 @@ goog.inherits(ff.fisher.ui.Root, goog.ui.Component);
 
 
 /**
- * CSS for this component.
  * @enum {string}
  * @private
  */
-ff.fisher.ui.Root.Css_ = {
-  ROOT: goog.getCssName('ff-fisher-root')
+ff.fisher.ui.Root.Id_ = {
+  CENTERED_CONTENT: ff.getUniqueId('centered-content')
 };
 
 
 /** @override */
 ff.fisher.ui.Root.prototype.createDom = function() {
-  goog.base(this, 'createDom');
+  this.setElementInternal(goog.soy.renderAsElement(
+      ff.fisher.ui.soy.ROOT, {
+        ids: this.makeIds(ff.fisher.ui.Root.Id_)
+      }));
 
-  goog.dom.classlist.add(this.getElement(), ff.fisher.ui.Root.Css_.ROOT);
-
-  this.header_.render(this.getElement());
-  this.areas_.render(this.getElement());
+  var centered = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.Root.Id_.CENTERED_CONTENT);
+  this.header_.render(centered);
+  this.areas_.render(centered);
 };

@@ -2,21 +2,20 @@
  * CSS for the root of the fisher page.
  */
 
-@def HEADER_HEIGHT             50px;
+@def HEADER_HEIGHT             30px;
 
 .ff-fisher-root {
-  margin: 20px;
-  margin-top: 70px;
+  margin: auto;
+  width: 900px;
 }
 
-.ff-fisher-header{
-  background-color: CARD_BACKGROUND_COLOR;
-  border-bottom: 1px solid CARD_BORDER_COLOR;
-  height: HEADER_HEIGHT;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
+.ff-fisher-header {
+  margin-bottom: 15px;
+}
+.ff-fisher-header.ff-card {
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 .ff-fisher-header-clock-label,
@@ -31,15 +30,10 @@
   font-weight: bold;
 }
 
-.ff-fisher-header-clock-label {
-  margin-left: 30px;
-}
-
 .ff-fisher-header-new-fish {
   display: inline-block;
   float: right;
   line-height: HEADER_HEIGHT;
-  margin-right: 30px;
   vertical-align: middle;
 }
 
