@@ -65,8 +65,8 @@ ff.model.LocationEnum = {
       ff.model.AreaEnum.LOWER_LA_NOSCEA, 'The Mourning Widow'),
   'MORABY_BAY': new ff.model.Location(
       ff.model.AreaEnum.LOWER_LA_NOSCEA, 'Moraby Bay'),
-  'CEDAR_WOOD': new ff.model.Location(
-      ff.model.AreaEnum.LOWER_LA_NOSCEA, 'Cedar Wood'),
+  'CEDARWOOD': new ff.model.Location(
+      ff.model.AreaEnum.LOWER_LA_NOSCEA, 'Cedarwood'),
   'MORABY_DRYDOCKS': new ff.model.Location(
       ff.model.AreaEnum.LOWER_LA_NOSCEA, 'Moraby Drydocks'),
   'OSCHONS_TORCH': new ff.model.Location(
