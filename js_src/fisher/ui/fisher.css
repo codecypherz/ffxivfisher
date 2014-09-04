@@ -77,6 +77,18 @@
   width: 30px;
 }
 
+.ff-fish-row-name {
+  width: 170px;
+}
+
+.ff-fish-row-time {
+  min-width: 350px;
+}
+
+.ff-fish-row-weather {
+  width: 100px;
+}
+
 .ff-fish-time {
   border: 1px solid #fff;
   height: 30px;

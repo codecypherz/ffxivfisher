@@ -13,6 +13,7 @@ goog.require('ff.ui');
 goog.require('goog.array');
 goog.require('goog.log');
 goog.require('goog.soy');
+goog.require('goog.style');
 goog.require('goog.ui.Component');
 
 
@@ -98,4 +99,7 @@ ff.fisher.ui.Area.prototype.renderFish_ = function() {
     this.addChild(fishRow);
     fishRow.render(fishRowsElement);
   }, this);
+
+  // Hide the component if there are no fish.
+  goog.style.setElementShown(this.getElement(), fishes.length > 0);
 };
