@@ -123,8 +123,8 @@ ff.model.Fish.prototype.setCatchable = function(catchable) {
  */
 ff.model.Fish.prototype.getImageUrl = function() {
   var imageName = this.name_
-      .replace(/\s/, '_')
-      .replace(/\'/, '')
+      .replace(/\s/g, '_')
+      .replace(/\'/g, '')
       .toLowerCase();
   return '/images/fish/' + imageName + '.png';
 };
