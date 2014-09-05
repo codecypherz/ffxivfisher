@@ -27,6 +27,7 @@ ff.service.EorzeaTime = function() {
 
   this.timer_.setParentEventTarget(this);
   this.timer_.start();
+  this.timer_.dispatchTick();
 };
 goog.inherits(ff.service.EorzeaTime, goog.events.EventTarget);
 goog.addSingletonGetter(ff.service.EorzeaTime);
