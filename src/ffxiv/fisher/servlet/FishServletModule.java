@@ -22,5 +22,6 @@ public class FishServletModule extends ServletModule {
 		// Normal web access.
 		serve("/").with(FisherServlet.class);
 		serve("/fishes").with(FishesServlet.class);
+		serve("/skywatcher").with(SkywatcherServlet.class);
 	}
 }
