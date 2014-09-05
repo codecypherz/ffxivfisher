@@ -56,18 +56,21 @@
     <div class="{css ff-fisher-area-name}">
       {$name}
     </div>
-    <div id="{$ids.FISH_ROWS}" class="{css ff-table}{sp}{css ff-fish-table}">
+    <div class="{css ff-table}{sp}{css ff-fish-table}{sp}{css ff-area-weather-table}">
+      <div class="{css ff-row}{sp}{css ff-area-weather-row}">
+	    <div class="{css ff-cell}{sp}{css ff-area-weather-row-spacer}">
+	    </div>
+	    <div class="{css ff-cell}{sp}{css ff-fish-row-time}{sp}{css ff-area-weather-list}">
+	      <div id="{$ids.WEATHER_1|id}" class="{css ff-area-weather}{sp}{css ff-1}">
+	      </div>
+	      <div id="{$ids.WEATHER_2|id}" class="{css ff-area-weather}{sp}{css ff-2}">
+	      </div>
+	      <div id="{$ids.WEATHER_3|id}" class="{css ff-area-weather}{sp}{css ff-3}">
+	      </div>
+	      // TODO LINK TO SOURCE
+	    </div>
+      </div>
     </div>
-  </div>
-{/template}
-
-
-/**
- * HTML for the fish table.
- * @param ids
- */
-{template .FISH_TABLE}
-  <div class="{css ff-card}">
     <div id="{$ids.FISH_ROWS}" class="{css ff-table}{sp}{css ff-fish-table}">
     </div>
   </div>

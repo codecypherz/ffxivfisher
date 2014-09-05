@@ -15,6 +15,7 @@ goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.log');
 goog.require('goog.object');
+goog.require('goog.string');
 
 
 
@@ -31,7 +32,7 @@ ff.service.SkywatcherService = function() {
   /** @private {!ff.service.XhrService} */
   this.xhrService_ = ff.service.XhrService.getInstance();
 
-  /** @private {!Object.<!ff.model.Area, !Array.<!ff.model.Weather>>} */
+  /** @private {!Object.<string, !Array.<!ff.model.Weather>>} */
   this.weather_ = {};
 
   /** @private {!goog.Timer} */
@@ -74,10 +75,20 @@ ff.service.SkywatcherService.prototype.startPolling = function() {
 
 
 /**
- * @return {!Object.<!ff.model.Area, !Array.<!ff.model.Weather>>}
+ * @param {!ff.model.Area} area
+ * @return {!Array.<!ff.model.Weather>}
  */
-ff.service.SkywatcherService.prototype.getWeather = function() {
-  return this.weather_;
+ff.service.SkywatcherService.prototype.getWeatherForArea = function(area) {
+  var areaEnum = goog.object.findKey(
+      ff.model.AreaEnum,
+      function(value, key, object) {
+        return goog.string.caseInsensitiveCompare(
+            value.getName(), area.getName()) == 0;
+      });
+  if (areaEnum) {
+    return this.weather_[areaEnum];
+  }
+  throw Error('Failed to find this area: ' + area.getName());
 };
 
 
@@ -114,9 +125,11 @@ ff.service.SkywatcherService.prototype.onWeatherLoaded_ = function(json) {
         var weatherList = [];
         goog.array.forEach(rawWeatherList, function(rawWeather) {
           var weather = ff.stringKeyToEnum(rawWeather, ff.model.Weather);
-          weatherList.push(weather);
+          if (weather) {
+            weatherList.push(weather);
+          }
         });
-        this.weather_[area] = weatherList;
+        this.weather_[key] = weatherList;
       },
       this);
 

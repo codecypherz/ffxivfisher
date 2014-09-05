@@ -53,6 +53,40 @@
   margin-bottom: 10px;
 }
 
+.ff-area-weather-table {
+  margin-top: -39px;
+}
+
+.ff-area-weather-row {
+  height: 37px;
+  width: 100%;
+}
+
+.ff-area-weather-row-spacer {
+  width: 227px;
+}
+
+.ff-fish-row-time.ff-area-weather-list {
+  position: relative;
+}
+
+.ff-area-weather {
+  display: inline-block;
+  position: absolute;
+}
+
+.ff-area-weather.ff-1 {
+  left: 38px;
+}
+
+.ff-area-weather.ff-2 {
+  left: 140px;
+}
+
+.ff-area-weather.ff-3 {
+  left: 235px;
+}
+
 .ff-fish-table {
   width: 100%;
 }
@@ -83,10 +117,6 @@
 
 .ff-fish-row-time {
   min-width: 350px;
-}
-
-.ff-fish-row-weather {
-  width: 100px;
 }
 
 .ff-fish-time {
