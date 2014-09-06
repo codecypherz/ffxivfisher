@@ -56,6 +56,10 @@ ff.fisher.ui.FishTime = function(startHour, endHour) {
 
   /** @private {Element} */
   this.cursor_ = null;
+
+  /** @private {!goog.Timer} */
+  this.timer_ = new goog.Timer(ff.fisher.ui.FishTime.UPDATE_INTERVAL_MS_);
+  this.registerDisposable(this.timer_);
 };
 goog.inherits(ff.fisher.ui.FishTime, goog.ui.Component);
 
@@ -72,6 +76,14 @@ ff.fisher.ui.FishTime.Id_ = {
   WEATHER_CHANGE_2: ff.getUniqueId('weather-change-2'),
   WEATHER_CHANGE_3: ff.getUniqueId('weather-change-3')
 };
+
+
+/**
+ * @type {number}
+ * @const
+ * @private
+ */
+ff.fisher.ui.FishTime.UPDATE_INTERVAL_MS_ = 3000;
 
 
 /**
@@ -118,6 +130,7 @@ ff.fisher.ui.FishTime.prototype.enterDocument = function() {
 
   this.tooltip_ = new ff.fisher.ui.FishTimeTooltip(this.getElement());
 
+  // Listen for cursor changes.
   this.getHandler().listen(
       this.getElement(),
       goog.events.EventType.MOUSEOUT,
@@ -131,21 +144,29 @@ ff.fisher.ui.FishTime.prototype.enterDocument = function() {
         this.updateCursorTime_(true, e);
       });
 
+  // Update the cursor.
+  this.updateCursorTime_(false);
+
+  // Listen for when to update.
   this.getHandler().listen(
-      this.eorzeaTime_,
+      this.timer_,
       goog.Timer.TICK,
       this.update_);
 
-  this.update_();
-  this.updateCursorTime_(false);
+  // Update regularly and right now.
+  this.timer_.start();
+  goog.Timer.callOnce(this.update_, 0, this);
 };
 
 
 /** @override */
 ff.fisher.ui.FishTime.prototype.exitDocument = function() {
-  goog.base(this, 'exitDocument');
+  this.timer_.stop();
+
   goog.dispose(this.tooltip_);
   this.tooltip_ = null;
+
+  goog.base(this, 'exitDocument');
 };
 
 
