@@ -62,7 +62,7 @@ ff.service.SkywatcherService.EventType = {
  * @const
  * @private
  */
-ff.service.SkywatcherService.POLL_INTERVAL_MS_ = 5 * 60 * 1000;
+ff.service.SkywatcherService.POLL_INTERVAL_MS_ = 60 * 1000;
 
 
 /**

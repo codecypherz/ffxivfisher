@@ -55,6 +55,9 @@ ff.fisher.ui.FishTime = function(startHour, endHour) {
   this.weatherChange2_ = null;
 
   /** @private {Element} */
+  this.weatherChange3_ = null;
+
+  /** @private {Element} */
   this.cursor_ = null;
 
   /** @private {!goog.Timer} */
@@ -183,36 +186,20 @@ ff.fisher.ui.FishTime.prototype.update_ = function() {
   var currentHour =
       eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
 
-  var hoursUntilNextStart = this.getHoursUntilNextHour_(
+  var hoursUntilNextStart = this.eorzeaTime_.getHoursUntilNextHour(
       currentHour, this.startHour_);
   this.setLeft_(this.range1_, hoursUntilNextStart);
   this.setLeft_(this.range2_, hoursUntilNextStart - 24);
 
   this.setLeft_(
-      this.weatherChange1_, this.getHoursUntilNextHour_(currentHour, 0));
+      this.weatherChange1_,
+      this.eorzeaTime_.getHoursUntilNextHour(currentHour, 0));
   this.setLeft_(
-      this.weatherChange2_, this.getHoursUntilNextHour_(currentHour, 8));
+      this.weatherChange2_,
+      this.eorzeaTime_.getHoursUntilNextHour(currentHour, 8));
   this.setLeft_(
-      this.weatherChange3_, this.getHoursUntilNextHour_(currentHour, 16));
-};
-
-
-/**
- * Figures out the number of hours (including minutes) until the target appears
- * relative to the current time.
- * @param {number} current The current hours (including minutes) of the day
- *     (e.g. 4.5 is 4:30am).
- * @param {number} target The target hour.
- * @return {number} The number of hours until the target.  Never negative.
- * @private
- */
-ff.fisher.ui.FishTime.prototype.getHoursUntilNextHour_ = function(
-    current, target) {
-  if (current <= target) {
-    return target - current;
-  } else {
-    return 24 + target - current;
-  }
+      this.weatherChange3_,
+      this.eorzeaTime_.getHoursUntilNextHour(currentHour, 16));
 };
 
 

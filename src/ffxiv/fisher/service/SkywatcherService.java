@@ -77,7 +77,7 @@ public class SkywatcherService {
 			.put(18, Weather.GLOOM)
 			.build();
 	
-	private static final long MIN_WAIT_TIME_MS = 5 * 60 * 1000; // 5 minutes.
+	private static final long MIN_WAIT_TIME_MS = 60 * 1000; // 1 minute.
 	
 	private Map<Area, List<Weather>> weatherMap;
 	private long lastUpdate;

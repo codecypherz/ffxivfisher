@@ -56,20 +56,20 @@
     <div class="{css ff-fisher-area-name}">
       {$name}
     </div>
-    <div class="{css ff-table}{sp}{css ff-fish-table}{sp}{css ff-area-weather-table}">
-      <div class="{css ff-row}{sp}{css ff-area-weather-row}">
-	    <div class="{css ff-cell}{sp}{css ff-area-weather-row-spacer}">
+    <div class="{css ff-area-weather-container}">
+      <div class="{css ff-area-weather-spacer}">
+	  </div>
+	  <div id="{$ids.WEATHER_LIST|id}" class="{css ff-area-weather-list}">
+	    <div id="{$ids.WEATHER_1|id}" class="{css ff-area-weather}">
 	    </div>
-	    <div class="{css ff-cell}{sp}{css ff-fish-row-time}{sp}{css ff-area-weather-list}">
-	      <div id="{$ids.WEATHER_1|id}" class="{css ff-area-weather}{sp}{css ff-1}">
-	      </div>
-	      <div id="{$ids.WEATHER_2|id}" class="{css ff-area-weather}{sp}{css ff-2}">
-	      </div>
-	      <div id="{$ids.WEATHER_3|id}" class="{css ff-area-weather}{sp}{css ff-3}">
-	      </div>
-	      // TODO LINK TO SOURCE
+	    <div id="{$ids.WEATHER_2|id}" class="{css ff-area-weather}">
 	    </div>
-      </div>
+	    <div id="{$ids.WEATHER_3|id}" class="{css ff-area-weather}">
+	    </div>
+	    <div id="{$ids.WEATHER_4|id}" class="{css ff-area-weather}">
+	    </div>
+	    // TODO LINK TO SOURCE
+	  </div>
     </div>
     <div id="{$ids.FISH_ROWS}" class="{css ff-table}{sp}{css ff-fish-table}">
     </div>

@@ -8,10 +8,12 @@ goog.require('ff');
 goog.require('ff.fisher.ui.FishRow');
 goog.require('ff.fisher.ui.WeatherIcon');
 goog.require('ff.fisher.ui.soy');
+goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.FishService');
 goog.require('ff.service.FishWatcher');
 goog.require('ff.service.SkywatcherService');
 goog.require('ff.ui');
+goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.log');
 goog.require('goog.soy');
@@ -48,6 +50,28 @@ ff.fisher.ui.Area = function(area) {
 
   /** @private {!ff.service.SkywatcherService} */
   this.skywatcherService_ = ff.service.SkywatcherService.getInstance();
+
+  /** @private {!ff.service.EorzeaTime} */
+  this.eorzeaTime_ = ff.service.EorzeaTime.getInstance();
+
+  /** @private {Element} */
+  this.weatherList_ = null;
+
+  /** @private {Element} */
+  this.weather1_ = null;
+
+  /** @private {Element} */
+  this.weather2_ = null;
+
+  /** @private {Element} */
+  this.weather3_ = null;
+
+  /** @private {Element} */
+  this.weather4_ = null;
+
+  /** @private {!goog.Timer} */
+  this.timer_ = new goog.Timer(ff.fisher.ui.Area.UPDATE_INTERVAL_MS_);
+  this.registerDisposable(this.timer_);
 };
 goog.inherits(ff.fisher.ui.Area, goog.ui.Component);
 
@@ -58,10 +82,20 @@ goog.inherits(ff.fisher.ui.Area, goog.ui.Component);
  */
 ff.fisher.ui.Area.Id_ = {
   FISH_ROWS: ff.getUniqueId('fish-rows'),
+  WEATHER_LIST: ff.getUniqueId('weather-list'),
   WEATHER_1: ff.getUniqueId('weather-1'),
   WEATHER_2: ff.getUniqueId('weather-2'),
-  WEATHER_3: ff.getUniqueId('weather-3')
+  WEATHER_3: ff.getUniqueId('weather-3'),
+  WEATHER_4: ff.getUniqueId('weather-4')
 };
+
+
+/**
+ * @type {number}
+ * @const
+ * @private
+ */
+ff.fisher.ui.Area.UPDATE_INTERVAL_MS_ = 3000;
 
 
 /** @override */
@@ -72,6 +106,17 @@ ff.fisher.ui.Area.prototype.createDom = function() {
         ids: this.makeIds(ff.fisher.ui.Area.Id_),
         name: this.area_.getName()
       }));
+
+  this.weatherList_ = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.Area.Id_.WEATHER_LIST);
+  this.weather1_ = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.Area.Id_.WEATHER_1);
+  this.weather2_ = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.Area.Id_.WEATHER_2);
+  this.weather3_ = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.Area.Id_.WEATHER_3);
+  this.weather4_ = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.Area.Id_.WEATHER_4);
 
   this.renderFish_();
   this.renderWeather_();
@@ -97,6 +142,23 @@ ff.fisher.ui.Area.prototype.enterDocument = function() {
       this.skywatcherService_,
       ff.service.SkywatcherService.EventType.WEATHER_UPDATED,
       this.renderWeather_);
+
+  // Listen for when to update.
+  this.getHandler().listen(
+      this.timer_,
+      goog.Timer.TICK,
+      this.updateWeatherBlocks_);
+
+  // Update regularly and right now.
+  this.timer_.start();
+  goog.Timer.callOnce(this.updateWeatherBlocks_, 50, this);
+};
+
+
+/** @override */
+ff.fisher.ui.Area.prototype.exitDocument = function() {
+  this.timer_.stop();
+  goog.base(this, 'exitDocument');
 };
 
 
@@ -131,10 +193,67 @@ ff.fisher.ui.Area.prototype.renderFish_ = function() {
 
 
 /**
+ * Updates the positions of the weather rectangles based on the current time.
+ * @private
+ */
+ff.fisher.ui.Area.prototype.updateWeatherBlocks_ = function() {
+  if (!this.isInDocument()) {
+    return;
+  }
+
+  var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
+  var currentHour =
+      eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
+
+  var nextPositiveStartHour;
+  if (currentHour < 8) {
+    nextPositiveStartHour = 8;
+  } else if (currentHour < 16) {
+    nextPositiveStartHour = 16;
+  } else {
+    nextPositiveStartHour = 24;
+  }
+
+  var hoursUntilNextPositiveStart = this.eorzeaTime_.getHoursUntilNextHour(
+      currentHour, nextPositiveStartHour);
+
+  this.setLeft_(
+      this.weather1_,
+      hoursUntilNextPositiveStart - 8);
+  this.setLeft_(
+      this.weather2_,
+      hoursUntilNextPositiveStart);
+  this.setLeft_(
+      this.weather3_,
+      hoursUntilNextPositiveStart + 8);
+  this.setLeft_(
+      this.weather4_,
+      hoursUntilNextPositiveStart + 16);
+};
+
+
+/**
+ * Sets the left side of the element relative to the current time assuming the
+ * current time is at relative position 0.
+ * @param {Element} el
+ * @param {number} hoursFromLeft
+ * @private
+ */
+ff.fisher.ui.Area.prototype.setLeft_ = function(el, hoursFromLeft) {
+  var width = this.weatherList_.offsetWidth;
+  var offsetPercent = hoursFromLeft / 24.0;
+  var offsetInPixels = width * offsetPercent;
+  el.style.left = offsetInPixels + 'px';
+};
+
+
+/**
  * Renders the current weather for this area.
  * @private
  */
 ff.fisher.ui.Area.prototype.renderWeather_ = function() {
+  this.updateWeatherBlocks_();
+
   var weatherList = this.skywatcherService_.getWeatherForArea(this.area_);
 
   // Clear existing weather icons.
@@ -144,12 +263,11 @@ ff.fisher.ui.Area.prototype.renderWeather_ = function() {
   }, this);
   this.weatherIcons_ = [];
 
-  // TODO Make this work based on how far along the time is.  Right now this
-  // is setting weather for the incorrect times.
   if (goog.isDefAndNotNull(weatherList)) {
     this.renderWeatherIcon_(ff.fisher.ui.Area.Id_.WEATHER_1, weatherList[0]);
     this.renderWeatherIcon_(ff.fisher.ui.Area.Id_.WEATHER_2, weatherList[1]);
     this.renderWeatherIcon_(ff.fisher.ui.Area.Id_.WEATHER_3, weatherList[2]);
+    this.renderWeatherIcon_(ff.fisher.ui.Area.Id_.WEATHER_4, weatherList[3]);
   }
 };
 
