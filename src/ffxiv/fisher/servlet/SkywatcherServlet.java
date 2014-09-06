@@ -29,6 +29,6 @@ public class SkywatcherServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		Gson gson = new Gson();
-	    resp.getWriter().write(gson.toJson(skywatcherService.getCurrentWeather()));
+	    resp.getWriter().write(gson.toJson(skywatcherService.getCurrentWeatherReport()));
 	}
 }

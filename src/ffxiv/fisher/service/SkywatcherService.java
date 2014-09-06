@@ -79,22 +79,22 @@ public class SkywatcherService {
 	
 	private static final long MIN_WAIT_TIME_MS = 60 * 1000; // 1 minute.
 	
-	private Map<Area, List<Weather>> weatherMap;
+	private WeatherReport weatherReport;
 	private long lastUpdate;
 	
 	@Inject
 	public SkywatcherService() {
-		weatherMap = null;
+		weatherReport = null;
 		lastUpdate = 0;
 	}
 	
-	public synchronized Map<Area, List<Weather>> getCurrentWeather() {
+	public synchronized WeatherReport getCurrentWeatherReport() {
 		long currentMs = System.currentTimeMillis();
-		if (weatherMap == null || ((currentMs - lastUpdate) > MIN_WAIT_TIME_MS)) {
+		if (weatherReport == null || ((currentMs - lastUpdate) > MIN_WAIT_TIME_MS)) {
 			updateFromSource();
 			lastUpdate = System.currentTimeMillis();
 		}
-		return weatherMap;
+		return weatherReport;
 	}
 	
 	private void updateFromSource() {
@@ -107,7 +107,7 @@ public class SkywatcherService {
 		Gson gson = new Gson();
 		RawData rawData = gson.fromJson(rawDataString, RawData.class);
 		
-		Map<Area, List<Weather>> newMap = new HashMap<Area, List<Weather>>();
+		Map<Area, List<Weather>> weatherMap = new HashMap<Area, List<Weather>>();
 		for (RawDataPoint dataPoint : rawData.data) {
 			Area area = TO_AREA.get(dataPoint.area);
 			
@@ -117,7 +117,7 @@ public class SkywatcherService {
 			}
 			
 			// Setup the weather array if need be.
-			List<Weather> weatherList = newMap.get(area);
+			List<Weather> weatherList = weatherMap.get(area);
 			if (weatherList == null) {
 				weatherList = new ArrayList<Weather>(4);
 				for (int i = 0; i < 4; i++) {
@@ -128,16 +128,17 @@ public class SkywatcherService {
 			// Parse and set weather.
 			Weather weather = TO_WEATHER.get(dataPoint.weather);
 			weatherList.set(dataPoint.time, weather);
-			newMap.put(area, weatherList);
+			weatherMap.put(area, weatherList);
 			
 			// Special case the areas that share weather.
 			if (area == Area.LIMSA_LOMINSA_LOWER_DECKS) {
-				newMap.put(Area.LIMSA_LOMINSA_UPPER_DECKS, weatherList);
+				weatherMap.put(Area.LIMSA_LOMINSA_UPPER_DECKS, weatherList);
 			} else if (area == Area.NEW_GRIDANIA) {
-				newMap.put(Area.OLD_GRIDANIA, weatherList);
+				weatherMap.put(Area.OLD_GRIDANIA, weatherList);
 			}
 		}
-		weatherMap = newMap;
+		
+		weatherReport = new WeatherReport(weatherMap, rawData.hour);
 	}
 	
 	private String getRawData() {
@@ -191,5 +192,23 @@ public class SkywatcherService {
 		int area;
 		int weather;
 		transient int html;
+	}
+	
+	public static class WeatherReport {
+		private final Map<Area, List<Weather>> weatherMap;
+		private final int eorzeaHour;
+		
+		public WeatherReport(Map<Area, List<Weather>> weatherMap, int eorzeaHour) {
+			this.weatherMap = weatherMap;
+			this.eorzeaHour = eorzeaHour;
+		}
+		
+		public Map<Area, List<Weather>> getWeatherMap() {
+			return weatherMap;
+		}
+		
+		public int getEorzeaHour() {
+			return eorzeaHour;
+		}
 	}
 }

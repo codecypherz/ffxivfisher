@@ -35,6 +35,9 @@ ff.service.SkywatcherService = function() {
   /** @private {!Object.<string, !Array.<!ff.model.Weather>>} */
   this.weather_ = {};
 
+  /** @private {number} */
+  this.eorzeaHour_ = 0;
+
   /** @private {!goog.Timer} */
   this.timer_ = new goog.Timer(ff.service.SkywatcherService.POLL_INTERVAL_MS_);
   this.registerDisposable(this.timer_);
@@ -93,6 +96,15 @@ ff.service.SkywatcherService.prototype.getWeatherForArea = function(area) {
 
 
 /**
+ * Gets the hour of the current weather report.
+ * @return {number}
+ */
+ff.service.SkywatcherService.prototype.getWeatherReportHour = function() {
+  return this.eorzeaHour_;
+};
+
+
+/**
  * Gets the current weather from the server.
  * @private
  */
@@ -118,10 +130,13 @@ ff.service.SkywatcherService.prototype.getCurrentWeather_ = function() {
 ff.service.SkywatcherService.prototype.onWeatherLoaded_ = function(json) {
   goog.log.info(this.logger, 'Weather arrived from server.');
 
+  this.eorzeaHour_ = json['eorzeaHour'];
+
+  var weatherMap = json['weatherMap'];
   goog.object.forEach(
       ff.model.AreaEnum,
       function(area, key, obj) {
-        var rawWeatherList = json[key];
+        var rawWeatherList = weatherMap[key];
         var weatherList = [];
         goog.array.forEach(rawWeatherList, function(rawWeather) {
           var weather = ff.stringKeyToEnum(rawWeather, ff.model.Weather);

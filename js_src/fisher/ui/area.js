@@ -255,6 +255,23 @@ ff.fisher.ui.Area.prototype.renderWeather_ = function() {
   this.updateWeatherBlocks_();
 
   var weatherList = this.skywatcherService_.getWeatherForArea(this.area_);
+  var reportHour = this.skywatcherService_.getWeatherReportHour();
+
+  // Figure out the starting index.
+  var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
+  var currentHour =
+      eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
+
+  // Corresponds to index 1 (not index 0)
+  var nextPositiveStartHour;
+  if (currentHour < 8) {
+    nextPositiveStartHour = 8;
+  } else if (currentHour < 16) {
+    nextPositiveStartHour = 16;
+  } else {
+    nextPositiveStartHour = 24;
+  }
+  // TODO
 
   // Clear existing weather icons.
   goog.array.forEach(this.weatherIcons_, function(weatherIcon) {
