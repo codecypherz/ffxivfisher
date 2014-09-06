@@ -61,14 +61,14 @@
 .ff-area-weather-spacer {
   display: inline-block;
   height: 37px;
-  width: 227px;
+  width: 231px;
 }
 
 .ff-area-weather-list {
   display: inline-block;
   height: 37px;
   position: relative;
-  width: 300px;
+  width: 302px;
 }
 
 .ff-area-weather {
@@ -170,4 +170,8 @@
   font-size: 12px;
   margin-left: 5px;
   margin-top: -1px;
+}
+
+.ff-fish-row-weather {
+  width: 100px;
 }
