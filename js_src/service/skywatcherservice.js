@@ -137,6 +137,9 @@ ff.service.SkywatcherService.prototype.onWeatherLoaded_ = function(json) {
       ff.model.AreaEnum,
       function(area, key, obj) {
         var rawWeatherList = weatherMap[key];
+        if (!rawWeatherList) {
+          return; // No weather data for this location.
+        }
         var weatherList = [];
         goog.array.forEach(rawWeatherList, function(rawWeather) {
           var weather = ff.stringKeyToEnum(rawWeather, ff.model.Weather);
