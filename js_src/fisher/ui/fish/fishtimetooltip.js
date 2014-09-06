@@ -2,7 +2,7 @@
  * Renders a tooltip for the fish time component.
  */
 
-goog.provide('ff.fisher.ui.FishTimeTooltip');
+goog.provide('ff.fisher.ui.fish.FishTimeTooltip');
 
 goog.require('goog.positioning.AnchoredPosition');
 goog.require('goog.positioning.Corner');
@@ -15,18 +15,19 @@ goog.require('goog.ui.Tooltip');
  * @constructor
  * @extends {goog.ui.Tooltip}
  */
-ff.fisher.ui.FishTimeTooltip = function(element) {
+ff.fisher.ui.fish.FishTimeTooltip = function(element) {
   goog.base(this, element);
 
   this.setShowDelayMs(0);
 };
-goog.inherits(ff.fisher.ui.FishTimeTooltip, goog.ui.Tooltip);
+goog.inherits(ff.fisher.ui.fish.FishTimeTooltip, goog.ui.Tooltip);
 
 
 /** @override */
-ff.fisher.ui.FishTimeTooltip.prototype.getPositioningStrategy = function(
+ff.fisher.ui.fish.FishTimeTooltip.prototype.getPositioningStrategy = function(
     activationType) {
-  return new ff.fisher.ui.FishTimeTooltip.Position(this.getActiveElement());
+  return new ff.fisher.ui.fish.FishTimeTooltip.Position(
+      this.getActiveElement());
 };
 
 
@@ -36,9 +37,9 @@ ff.fisher.ui.FishTimeTooltip.prototype.getPositioningStrategy = function(
  * @constructor
  * @extends {goog.positioning.AnchoredPosition}
  */
-ff.fisher.ui.FishTimeTooltip.Position = function(element) {
+ff.fisher.ui.fish.FishTimeTooltip.Position = function(element) {
   goog.positioning.AnchoredPosition.call(this, element,
       goog.positioning.Corner.TOP_RIGHT);
 };
-goog.inherits(ff.fisher.ui.FishTimeTooltip.Position,
+goog.inherits(ff.fisher.ui.fish.FishTimeTooltip.Position,
               goog.positioning.AnchoredPosition);

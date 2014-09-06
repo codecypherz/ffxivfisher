@@ -38,64 +38,6 @@
 
 
 /**
- * HTML for the component that renders a fish as a row.
- * @param ids
- * @param name
- * @param imageSrc
- */
-{template .FISH_ROW}
-  <div class="{css ff-row}{sp}{css ff-fish-row}">
-    <img src="{$imageSrc}" class="{css ff-cell}{sp}{css ff-fish-row-icon}">
-    </img>
-    <div id="{$ids.NAME|id}" class="{css ff-cell}{sp}{css ff-fish-row-name}">
-      {$name}
-    </div>
-    <div id="{$ids.TIME|id}" class="{css ff-cell}{sp}{css ff-fish-row-time}">
-    </div>
-    <div id="{$ids.WEATHER|id}" class="{css ff-cell}{sp}{css ff-fish-row-weather}">
-    </div>
-  </div>
-{/template}
-
-
-/**
- * HTML for a fishing time interval.
- * @param ids
- */
-{template .FISH_TIME}
-  <div class="{css ff-fish-time}">
-    <div id="{$ids.RANGE_1}" class="{css ff-fish-time-range}">
-    </div>
-    <div id="{$ids.RANGE_2}" class="{css ff-fish-time-range}">
-    </div>
-    <div id="{$ids.WEATHER_CHANGE_1}" class="{css ff-fish-time-change}">
-      <div class="{css ff-fish-time-change-label-container}">
-        <div class="{css ff-fish-time-change-label}{sp}{css ff-12am}">
-          12 am
-        </div>
-      </div>
-    </div>
-    <div id="{$ids.WEATHER_CHANGE_2}" class="{css ff-fish-time-change}">
-      <div class="{css ff-fish-time-change-label-container}">
-        <div class="{css ff-fish-time-change-label}{sp}{css ff-8am}">
-          8 am
-        </div>
-      </div>
-    </div>
-    <div id="{$ids.WEATHER_CHANGE_3}" class="{css ff-fish-time-change}">
-      <div class="{css ff-fish-time-change-label-container}">
-        <div class="{css ff-fish-time-change-label}{sp}{css ff-4pm}">
-          4 pm
-        </div>
-      </div>
-    </div>
-    <div id="{$ids.CURSOR}" class="{css ff-fish-time-cursor}">
-    </div>
-  </div>
-{/template}
-
-\
-/**
  * HTML for a weather icon.
  * @param imageSrc The source for the image.
  * @param tooltip The tooltip for the icon.

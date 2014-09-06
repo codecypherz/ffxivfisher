@@ -1,0 +1,97 @@
+/**
+ * CSS for a single fish.
+ */
+
+.ff-fish-row {
+  opacity: 0.4;
+  width: 100%;
+}
+
+.ff-fish-row.ff-fish-catchable {
+  opacity: 1;
+}
+
+.ff-fish-row > .ff-cell {
+  margin-bottom: 5px;
+  vertical-align: middle;
+}
+
+.ff-fish-row-icon {
+  height: 30px;
+  margin-left: 10px;
+  width: 30px;
+}
+
+.ff-fish-row-name {
+  width: 170px;
+}
+
+.ff-fish-row-time {
+  min-width: 350px;
+}
+
+.ff-fish-time {
+  border: 1px solid #fff;
+  height: 30px;
+  overflow: hidden;
+  position: relative;
+  width: 300px;
+}
+
+.ff-fish-time-range {
+  background: #2B73C5;
+  /*background: #133D6E;*/
+  bottom: 0;
+  position: absolute;
+  top: 0;
+}
+
+.ff-fish-time-change {
+  background: #fff;
+  bottom: 0;
+  position: absolute;
+  top: 0;
+  width: 1px;
+}
+
+.ff-fish-time-change-label-container {
+  position: relative;
+}
+
+.ff-fish-time-change-label {
+  color: TIME_COLOR;
+  font-size: 11px;
+  line-height: 30px;
+  text-align: center;
+  vertical-align: middle;
+  width: 35px;
+}
+
+.ff-fish-time-change-label.ff-12am {
+  margin-left: -15px;
+}
+
+.ff-fish-time-change-label.ff-8am,
+.ff-fish-time-change-label.ff-4pm {
+  margin-left: -12px;
+}
+
+.ff-fish-time-cursor {
+  background: red;
+  bottom: 0;
+  position: absolute;
+  top: 0;
+  width: 1px;
+}
+
+/* For the FishTimeToolip */
+.goog-tooltip {
+  color: TIME_COLOR;
+  font-size: 12px;
+  margin-left: 5px;
+  margin-top: -1px;
+}
+
+.ff-fish-row-weather {
+  width: 100px;
+}

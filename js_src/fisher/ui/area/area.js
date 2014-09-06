@@ -5,9 +5,9 @@
 goog.provide('ff.fisher.ui.area.Area');
 
 goog.require('ff');
-goog.require('ff.fisher.ui.FishRow');
 goog.require('ff.fisher.ui.WeatherIcon');
 goog.require('ff.fisher.ui.area.soy');
+goog.require('ff.fisher.ui.fish.FishRow');
 goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.FishService');
 goog.require('ff.service.FishWatcher');
@@ -39,7 +39,7 @@ ff.fisher.ui.area.Area = function(area) {
   /** @private {!Array.<!ff.fisher.ui.WeatherIcon>} */
   this.weatherIcons_ = [];
 
-  /** @private {!Array.<!ff.fisher.ui.FishRow>} */
+  /** @private {!Array.<!ff.fisher.ui.fish.FishRow>} */
   this.fishRows_ = [];
 
   /** @private {!ff.service.FishService} */
@@ -181,7 +181,7 @@ ff.fisher.ui.area.Area.prototype.renderFish_ = function() {
 
   // Render the fish.
   goog.array.forEach(fishes, function(fish) {
-    var fishRow = new ff.fisher.ui.FishRow(fish);
+    var fishRow = new ff.fisher.ui.fish.FishRow(fish);
     this.fishRows_.push(fishRow);
     this.addChild(fishRow);
     fishRow.render(fishRowsElement);

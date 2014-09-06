@@ -2,11 +2,11 @@
  * Renders a time component.
  */
 
-goog.provide('ff.fisher.ui.FishTime');
+goog.provide('ff.fisher.ui.fish.FishTime');
 
 goog.require('ff');
-goog.require('ff.fisher.ui.FishTimeTooltip');
-goog.require('ff.fisher.ui.soy');
+goog.require('ff.fisher.ui.fish.FishTimeTooltip');
+goog.require('ff.fisher.ui.fish.soy');
 goog.require('ff.service.EorzeaTime');
 goog.require('ff.ui');
 goog.require('goog.Timer');
@@ -27,7 +27,7 @@ goog.require('goog.ui.Component');
  * @constructor
  * @extends {goog.ui.Component}
  */
-ff.fisher.ui.FishTime = function(startHour, endHour) {
+ff.fisher.ui.fish.FishTime = function(startHour, endHour) {
   goog.base(this);
 
   /** @private {number} */
@@ -39,7 +39,7 @@ ff.fisher.ui.FishTime = function(startHour, endHour) {
   /** @private {!ff.service.EorzeaTime} */
   this.eorzeaTime_ = ff.service.EorzeaTime.getInstance();
 
-  /** @private {ff.fisher.ui.FishTimeTooltip} */
+  /** @private {ff.fisher.ui.fish.FishTimeTooltip} */
   this.tooltip_ = null;
 
   /** @private {Element} */
@@ -61,17 +61,17 @@ ff.fisher.ui.FishTime = function(startHour, endHour) {
   this.cursor_ = null;
 
   /** @private {!goog.Timer} */
-  this.timer_ = new goog.Timer(ff.fisher.ui.FishTime.UPDATE_INTERVAL_MS_);
+  this.timer_ = new goog.Timer(ff.fisher.ui.fish.FishTime.UPDATE_INTERVAL_MS_);
   this.registerDisposable(this.timer_);
 };
-goog.inherits(ff.fisher.ui.FishTime, goog.ui.Component);
+goog.inherits(ff.fisher.ui.fish.FishTime, goog.ui.Component);
 
 
 /**
  * @enum {string}
  * @private
  */
-ff.fisher.ui.FishTime.Id_ = {
+ff.fisher.ui.fish.FishTime.Id_ = {
   CURSOR: ff.getUniqueId('cursor'),
   RANGE_1: ff.getUniqueId('range-1'),
   RANGE_2: ff.getUniqueId('range-2'),
@@ -86,7 +86,7 @@ ff.fisher.ui.FishTime.Id_ = {
  * @const
  * @private
  */
-ff.fisher.ui.FishTime.UPDATE_INTERVAL_MS_ = 3000;
+ff.fisher.ui.fish.FishTime.UPDATE_INTERVAL_MS_ = 3000;
 
 
 /**
@@ -95,28 +95,28 @@ ff.fisher.ui.FishTime.UPDATE_INTERVAL_MS_ = 3000;
  * @private
  * @const
  */
-ff.fisher.ui.FishTime.FORMAT_ = new goog.i18n.DateTimeFormat('hh:mm a');
+ff.fisher.ui.fish.FishTime.FORMAT_ = new goog.i18n.DateTimeFormat('hh:mm a');
 
 
 /** @override */
-ff.fisher.ui.FishTime.prototype.createDom = function() {
+ff.fisher.ui.fish.FishTime.prototype.createDom = function() {
   this.setElementInternal(goog.soy.renderAsElement(
-      ff.fisher.ui.soy.FISH_TIME, {
-        ids: this.makeIds(ff.fisher.ui.FishTime.Id_)
+      ff.fisher.ui.fish.soy.FISH_TIME, {
+        ids: this.makeIds(ff.fisher.ui.fish.FishTime.Id_)
       }));
 
   this.range1_ = ff.ui.getElementByFragment(
-      this, ff.fisher.ui.FishTime.Id_.RANGE_1);
+      this, ff.fisher.ui.fish.FishTime.Id_.RANGE_1);
   this.range2_ = ff.ui.getElementByFragment(
-      this, ff.fisher.ui.FishTime.Id_.RANGE_2);
+      this, ff.fisher.ui.fish.FishTime.Id_.RANGE_2);
   this.weatherChange1_ = ff.ui.getElementByFragment(
-      this, ff.fisher.ui.FishTime.Id_.WEATHER_CHANGE_1);
+      this, ff.fisher.ui.fish.FishTime.Id_.WEATHER_CHANGE_1);
   this.weatherChange2_ = ff.ui.getElementByFragment(
-      this, ff.fisher.ui.FishTime.Id_.WEATHER_CHANGE_2);
+      this, ff.fisher.ui.fish.FishTime.Id_.WEATHER_CHANGE_2);
   this.weatherChange3_ = ff.ui.getElementByFragment(
-      this, ff.fisher.ui.FishTime.Id_.WEATHER_CHANGE_3);
+      this, ff.fisher.ui.fish.FishTime.Id_.WEATHER_CHANGE_3);
   this.cursor_ = ff.ui.getElementByFragment(
-      this, ff.fisher.ui.FishTime.Id_.CURSOR);
+      this, ff.fisher.ui.fish.FishTime.Id_.CURSOR);
 
   // Set the widths of the two ranges.
   var diff = Math.abs((this.endHour_ + 1) - this.startHour_);
@@ -128,10 +128,10 @@ ff.fisher.ui.FishTime.prototype.createDom = function() {
 
 
 /** @override */
-ff.fisher.ui.FishTime.prototype.enterDocument = function() {
+ff.fisher.ui.fish.FishTime.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
 
-  this.tooltip_ = new ff.fisher.ui.FishTimeTooltip(this.getElement());
+  this.tooltip_ = new ff.fisher.ui.fish.FishTimeTooltip(this.getElement());
 
   // Listen for cursor changes.
   this.getHandler().listen(
@@ -163,7 +163,7 @@ ff.fisher.ui.FishTime.prototype.enterDocument = function() {
 
 
 /** @override */
-ff.fisher.ui.FishTime.prototype.exitDocument = function() {
+ff.fisher.ui.fish.FishTime.prototype.exitDocument = function() {
   this.timer_.stop();
 
   goog.dispose(this.tooltip_);
@@ -177,7 +177,7 @@ ff.fisher.ui.FishTime.prototype.exitDocument = function() {
  * Updates the widget based on the current time.
  * @private
  */
-ff.fisher.ui.FishTime.prototype.update_ = function() {
+ff.fisher.ui.fish.FishTime.prototype.update_ = function() {
   if (!this.isInDocument()) {
     return;
   }
@@ -210,7 +210,7 @@ ff.fisher.ui.FishTime.prototype.update_ = function() {
  * @param {number} hoursFromLeft
  * @private
  */
-ff.fisher.ui.FishTime.prototype.setLeft_ = function(el, hoursFromLeft) {
+ff.fisher.ui.fish.FishTime.prototype.setLeft_ = function(el, hoursFromLeft) {
   var width = this.getElement().offsetWidth - 2; // -2 for borders
   var offsetPercent = hoursFromLeft / 24.0;
   var offsetInPixels = width * offsetPercent;
@@ -223,7 +223,8 @@ ff.fisher.ui.FishTime.prototype.setLeft_ = function(el, hoursFromLeft) {
  * @param {goog.events.BrowserEvent=} opt_e
  * @private
  */
-ff.fisher.ui.FishTime.prototype.updateCursorTime_ = function(visible, opt_e) {
+ff.fisher.ui.fish.FishTime.prototype.updateCursorTime_ = function(
+    visible, opt_e) {
   goog.style.setElementShown(this.cursor_, visible);
 
   if (!visible || !goog.isDefAndNotNull(opt_e)) {
@@ -243,12 +244,12 @@ ff.fisher.ui.FishTime.prototype.updateCursorTime_ = function(visible, opt_e) {
   var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
   var deltaEorzeaHours = percent * 24.0;
   eorzeaDate.add(new goog.date.Interval(0, 0, 0, deltaEorzeaHours));
-  var eorzeaString = ff.fisher.ui.FishTime.FORMAT_.format(eorzeaDate);
+  var eorzeaString = ff.fisher.ui.fish.FishTime.FORMAT_.format(eorzeaDate);
 
   // Figure out the Earth date based on the Eorzea date.
   var earthUtcDate = this.eorzeaTime_.toEarth(eorzeaDate);
   var earthDate = goog.date.DateTime.fromTimestamp(earthUtcDate.getTime());
-  var earthString = ff.fisher.ui.FishTime.FORMAT_.format(earthDate);
+  var earthString = ff.fisher.ui.fish.FishTime.FORMAT_.format(earthDate);
 
   this.tooltip_.setHtml(
       eorzeaString + ' (Eorzea)<br>' +
