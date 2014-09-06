@@ -2,12 +2,12 @@
  * Renders fish for a single area.
  */
 
-goog.provide('ff.fisher.ui.Area');
+goog.provide('ff.fisher.ui.area.Area');
 
 goog.require('ff');
 goog.require('ff.fisher.ui.FishRow');
 goog.require('ff.fisher.ui.WeatherIcon');
-goog.require('ff.fisher.ui.soy');
+goog.require('ff.fisher.ui.area.soy');
 goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.FishService');
 goog.require('ff.service.FishWatcher');
@@ -27,11 +27,11 @@ goog.require('goog.ui.Component');
  * @constructor
  * @extends {goog.ui.Component}
  */
-ff.fisher.ui.Area = function(area) {
+ff.fisher.ui.area.Area = function(area) {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
-  this.logger = goog.log.getLogger('ff.fisher.ui.Area');
+  this.logger = goog.log.getLogger('ff.fisher.ui.area.Area');
 
   /** @private {!ff.model.Area} */
   this.area_ = area;
@@ -70,17 +70,17 @@ ff.fisher.ui.Area = function(area) {
   this.weather4_ = null;
 
   /** @private {!goog.Timer} */
-  this.timer_ = new goog.Timer(ff.fisher.ui.Area.UPDATE_INTERVAL_MS_);
+  this.timer_ = new goog.Timer(ff.fisher.ui.area.Area.UPDATE_INTERVAL_MS_);
   this.registerDisposable(this.timer_);
 };
-goog.inherits(ff.fisher.ui.Area, goog.ui.Component);
+goog.inherits(ff.fisher.ui.area.Area, goog.ui.Component);
 
 
 /**
  * @enum {string}
  * @private
  */
-ff.fisher.ui.Area.Id_ = {
+ff.fisher.ui.area.Area.Id_ = {
   FISH_ROWS: ff.getUniqueId('fish-rows'),
   WEATHER_LIST: ff.getUniqueId('weather-list'),
   WEATHER_1: ff.getUniqueId('weather-1'),
@@ -95,28 +95,28 @@ ff.fisher.ui.Area.Id_ = {
  * @const
  * @private
  */
-ff.fisher.ui.Area.UPDATE_INTERVAL_MS_ = 3000;
+ff.fisher.ui.area.Area.UPDATE_INTERVAL_MS_ = 3000;
 
 
 /** @override */
-ff.fisher.ui.Area.prototype.createDom = function() {
+ff.fisher.ui.area.Area.prototype.createDom = function() {
   // Render soy template.
   this.setElementInternal(goog.soy.renderAsElement(
-      ff.fisher.ui.soy.AREA, {
-        ids: this.makeIds(ff.fisher.ui.Area.Id_),
+      ff.fisher.ui.area.soy.AREA, {
+        ids: this.makeIds(ff.fisher.ui.area.Area.Id_),
         name: this.area_.getName()
       }));
 
   this.weatherList_ = ff.ui.getElementByFragment(
-      this, ff.fisher.ui.Area.Id_.WEATHER_LIST);
+      this, ff.fisher.ui.area.Area.Id_.WEATHER_LIST);
   this.weather1_ = ff.ui.getElementByFragment(
-      this, ff.fisher.ui.Area.Id_.WEATHER_1);
+      this, ff.fisher.ui.area.Area.Id_.WEATHER_1);
   this.weather2_ = ff.ui.getElementByFragment(
-      this, ff.fisher.ui.Area.Id_.WEATHER_2);
+      this, ff.fisher.ui.area.Area.Id_.WEATHER_2);
   this.weather3_ = ff.ui.getElementByFragment(
-      this, ff.fisher.ui.Area.Id_.WEATHER_3);
+      this, ff.fisher.ui.area.Area.Id_.WEATHER_3);
   this.weather4_ = ff.ui.getElementByFragment(
-      this, ff.fisher.ui.Area.Id_.WEATHER_4);
+      this, ff.fisher.ui.area.Area.Id_.WEATHER_4);
 
   this.renderFish_();
   this.renderWeather_();
@@ -124,7 +124,7 @@ ff.fisher.ui.Area.prototype.createDom = function() {
 
 
 /** @override */
-ff.fisher.ui.Area.prototype.enterDocument = function() {
+ff.fisher.ui.area.Area.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
 
   // Listen for fish updates.
@@ -156,7 +156,7 @@ ff.fisher.ui.Area.prototype.enterDocument = function() {
 
 
 /** @override */
-ff.fisher.ui.Area.prototype.exitDocument = function() {
+ff.fisher.ui.area.Area.prototype.exitDocument = function() {
   this.timer_.stop();
   goog.base(this, 'exitDocument');
 };
@@ -166,7 +166,7 @@ ff.fisher.ui.Area.prototype.exitDocument = function() {
  * Renders the fish in this area.
  * @private
  */
-ff.fisher.ui.Area.prototype.renderFish_ = function() {
+ff.fisher.ui.area.Area.prototype.renderFish_ = function() {
   var fishes = this.fishService_.getForArea(this.area_);
 
   // Clear existing fish.
@@ -177,7 +177,7 @@ ff.fisher.ui.Area.prototype.renderFish_ = function() {
   this.fishRows_ = [];
 
   var fishRowsElement = ff.ui.getElementByFragment(
-      this, ff.fisher.ui.Area.Id_.FISH_ROWS);
+      this, ff.fisher.ui.area.Area.Id_.FISH_ROWS);
 
   // Render the fish.
   goog.array.forEach(fishes, function(fish) {
@@ -196,7 +196,7 @@ ff.fisher.ui.Area.prototype.renderFish_ = function() {
  * Updates the positions of the weather rectangles based on the current time.
  * @private
  */
-ff.fisher.ui.Area.prototype.updateWeatherBlocks_ = function() {
+ff.fisher.ui.area.Area.prototype.updateWeatherBlocks_ = function() {
   if (!this.isInDocument()) {
     return;
   }
@@ -230,7 +230,7 @@ ff.fisher.ui.Area.prototype.updateWeatherBlocks_ = function() {
  * @param {number} hoursFromLeft
  * @private
  */
-ff.fisher.ui.Area.prototype.setLeft_ = function(el, hoursFromLeft) {
+ff.fisher.ui.area.Area.prototype.setLeft_ = function(el, hoursFromLeft) {
   var width = this.weatherList_.offsetWidth;
   var offsetPercent = hoursFromLeft / 24.0;
   var offsetInPixels = width * offsetPercent;
@@ -242,7 +242,7 @@ ff.fisher.ui.Area.prototype.setLeft_ = function(el, hoursFromLeft) {
  * Renders the current weather for this area.
  * @private
  */
-ff.fisher.ui.Area.prototype.renderWeather_ = function() {
+ff.fisher.ui.area.Area.prototype.renderWeather_ = function() {
   this.updateWeatherBlocks_();
 
   var weatherList = this.skywatcherService_.getWeatherForArea(this.area_);
@@ -272,13 +272,13 @@ ff.fisher.ui.Area.prototype.renderWeather_ = function() {
 
   if (goog.isDefAndNotNull(weatherList)) {
     this.renderWeatherIcon_(
-        ff.fisher.ui.Area.Id_.WEATHER_1, weatherList[0 + offset]);
+        ff.fisher.ui.area.Area.Id_.WEATHER_1, weatherList[0 + offset]);
     this.renderWeatherIcon_(
-        ff.fisher.ui.Area.Id_.WEATHER_2, weatherList[1 + offset]);
+        ff.fisher.ui.area.Area.Id_.WEATHER_2, weatherList[1 + offset]);
     this.renderWeatherIcon_(
-        ff.fisher.ui.Area.Id_.WEATHER_3, weatherList[2 + offset]);
+        ff.fisher.ui.area.Area.Id_.WEATHER_3, weatherList[2 + offset]);
     this.renderWeatherIcon_(
-        ff.fisher.ui.Area.Id_.WEATHER_4, weatherList[3 + offset]);
+        ff.fisher.ui.area.Area.Id_.WEATHER_4, weatherList[3 + offset]);
   }
 };
 
@@ -288,7 +288,8 @@ ff.fisher.ui.Area.prototype.renderWeather_ = function() {
  * @return {number}
  * @private
  */
-ff.fisher.ui.Area.prototype.getNextWeatherChangeHour_ = function(currentHour) {
+ff.fisher.ui.area.Area.prototype.getNextWeatherChangeHour_ = function(
+    currentHour) {
   if (currentHour < 8) {
     return 8;
   } else if (currentHour < 16) {
@@ -299,11 +300,11 @@ ff.fisher.ui.Area.prototype.getNextWeatherChangeHour_ = function(currentHour) {
 
 
 /**
- * @param {!ff.fisher.ui.Area.Id_} id
+ * @param {!ff.fisher.ui.area.Area.Id_} id
  * @param {ff.model.Weather} weather
  * @private
  */
-ff.fisher.ui.Area.prototype.renderWeatherIcon_ = function(id, weather) {
+ff.fisher.ui.area.Area.prototype.renderWeatherIcon_ = function(id, weather) {
   if (!weather) {
     return;
   }

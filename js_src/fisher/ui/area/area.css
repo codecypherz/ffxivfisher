@@ -1,0 +1,40 @@
+/**
+ * CSS for an area on the fisher page.
+ */
+
+.ff-fisher-area {
+  margin-top: 16px;
+}
+.ff-fisher-area:first-child {
+  margin-top: 0;
+}
+
+.ff-fisher-area-name {
+  color: #DEB887;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.ff-area-weather-container {
+  height: 37px;
+}
+
+.ff-area-weather-spacer {
+  display: inline-block;
+  height: 37px;
+  width: 231px;
+}
+
+.ff-area-weather-list {
+  display: inline-block;
+  height: 37px;
+  position: relative;
+  width: 302px;
+}
+
+.ff-area-weather {
+  display: inline-block;
+  position: absolute;
+  text-align: center;
+  width: 100px;
+}

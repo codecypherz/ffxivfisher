@@ -5,8 +5,8 @@
 goog.provide('ff.fisher.ui.Root');
 
 goog.require('ff');
-goog.require('ff.fisher.ui.Areas');
 goog.require('ff.fisher.ui.Header');
+goog.require('ff.fisher.ui.area.Areas');
 goog.require('ff.fisher.ui.soy');
 goog.require('ff.ui');
 goog.require('goog.soy');
@@ -25,8 +25,8 @@ ff.fisher.ui.Root = function() {
   this.header_ = new ff.fisher.ui.Header();
   this.addChild(this.header_);
 
-  /** @private {!ff.fisher.ui.Areas} */
-  this.areas_ = new ff.fisher.ui.Areas();
+  /** @private {!ff.fisher.ui.area.Areas} */
+  this.areas_ = new ff.fisher.ui.area.Areas();
   this.addChild(this.areas_);
 };
 goog.inherits(ff.fisher.ui.Root, goog.ui.Component);

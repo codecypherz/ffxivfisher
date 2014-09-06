@@ -1,0 +1,40 @@
+{namespace ff.fisher.ui.area.soy}
+
+/**
+ * HTML for the component that shows fish in all areas.
+ */
+{template .AREAS}
+  <div class="{css ff-card}{sp}{css ff-fisher-areas}">
+  </div>
+{/template}
+
+
+/**
+ * HTML for the component that shows fish in a single area.
+ * @param ids
+ * @param name
+ */
+{template .AREA}
+  <div class="{css ff-fisher-area}">
+    <div class="{css ff-fisher-area-name}">
+      {$name}
+    </div>
+    <div class="{css ff-area-weather-container}">
+      <div class="{css ff-area-weather-spacer}">
+	  </div>
+	  <div id="{$ids.WEATHER_LIST|id}" class="{css ff-area-weather-list}">
+	    <div id="{$ids.WEATHER_1|id}" class="{css ff-area-weather}">
+	    </div>
+	    <div id="{$ids.WEATHER_2|id}" class="{css ff-area-weather}">
+	    </div>
+	    <div id="{$ids.WEATHER_3|id}" class="{css ff-area-weather}">
+	    </div>
+	    <div id="{$ids.WEATHER_4|id}" class="{css ff-area-weather}">
+	    </div>
+	    // TODO LINK TO SOURCE
+	  </div>
+    </div>
+    <div id="{$ids.FISH_ROWS}" class="{css ff-table}{sp}{css ff-fish-table}">
+    </div>
+  </div>
+{/template}
