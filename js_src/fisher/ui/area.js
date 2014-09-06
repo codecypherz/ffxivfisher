@@ -205,17 +205,8 @@ ff.fisher.ui.Area.prototype.updateWeatherBlocks_ = function() {
   var currentHour =
       eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
 
-  var nextPositiveStartHour;
-  if (currentHour < 8) {
-    nextPositiveStartHour = 8;
-  } else if (currentHour < 16) {
-    nextPositiveStartHour = 16;
-  } else {
-    nextPositiveStartHour = 24;
-  }
-
   var hoursUntilNextPositiveStart = this.eorzeaTime_.getHoursUntilNextHour(
-      currentHour, nextPositiveStartHour);
+      currentHour, this.getNextWeatherChangeHour_(currentHour));
 
   this.setLeft_(
       this.weather1_,
@@ -262,16 +253,15 @@ ff.fisher.ui.Area.prototype.renderWeather_ = function() {
   var currentHour =
       eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
 
-  // Corresponds to index 1 (not index 0)
-  var nextPositiveStartHour;
-  if (currentHour < 8) {
-    nextPositiveStartHour = 8;
-  } else if (currentHour < 16) {
-    nextPositiveStartHour = 16;
+  var nextWeatherChangeHour = this.getNextWeatherChangeHour_(currentHour);
+  var offset;
+  if (reportHour >= (nextWeatherChangeHour - 8)) {
+    offset = 0;
+  } else if (reportHour >= (nextWeatherChangeHour - 16)) {
+    offset = 1;
   } else {
-    nextPositiveStartHour = 24;
+    offset = 2;
   }
-  // TODO
 
   // Clear existing weather icons.
   goog.array.forEach(this.weatherIcons_, function(weatherIcon) {
@@ -281,11 +271,30 @@ ff.fisher.ui.Area.prototype.renderWeather_ = function() {
   this.weatherIcons_ = [];
 
   if (goog.isDefAndNotNull(weatherList)) {
-    this.renderWeatherIcon_(ff.fisher.ui.Area.Id_.WEATHER_1, weatherList[0]);
-    this.renderWeatherIcon_(ff.fisher.ui.Area.Id_.WEATHER_2, weatherList[1]);
-    this.renderWeatherIcon_(ff.fisher.ui.Area.Id_.WEATHER_3, weatherList[2]);
-    this.renderWeatherIcon_(ff.fisher.ui.Area.Id_.WEATHER_4, weatherList[3]);
+    this.renderWeatherIcon_(
+        ff.fisher.ui.Area.Id_.WEATHER_1, weatherList[0 + offset]);
+    this.renderWeatherIcon_(
+        ff.fisher.ui.Area.Id_.WEATHER_2, weatherList[1 + offset]);
+    this.renderWeatherIcon_(
+        ff.fisher.ui.Area.Id_.WEATHER_3, weatherList[2 + offset]);
+    this.renderWeatherIcon_(
+        ff.fisher.ui.Area.Id_.WEATHER_4, weatherList[3 + offset]);
   }
+};
+
+
+/**
+ * @param {number} currentHour
+ * @return {number}
+ * @private
+ */
+ff.fisher.ui.Area.prototype.getNextWeatherChangeHour_ = function(currentHour) {
+  if (currentHour < 8) {
+    return 8;
+  } else if (currentHour < 16) {
+    return 16;
+  }
+  return 24;
 };
 
 
