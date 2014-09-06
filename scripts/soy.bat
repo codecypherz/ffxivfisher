@@ -9,6 +9,7 @@ java -jar ..\closure\soy\SoyToJsSrcCompiler.jar ^
   --shouldGenerateJsdoc ^
   --inputPrefix ..\js_src\ ^
   --outputPathFormat ..\js_generated\{INPUT_DIRECTORY}{INPUT_FILE_NAME_NO_EXT}_soy.js ^
-  fisher\ui\ui.soy
+  fisher\ui\ui.soy ^
+  fisher\ui\admin\admin.soy
 
 echo Finished building the soy templates.

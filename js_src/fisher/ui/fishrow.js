@@ -5,9 +5,9 @@
 goog.provide('ff.fisher.ui.FishRow');
 
 goog.require('ff');
-goog.require('ff.fisher.ui.AdminFishDialog');
 goog.require('ff.fisher.ui.FishTime');
 goog.require('ff.fisher.ui.WeatherIcon');
+goog.require('ff.fisher.ui.admin.AdminFishDialog');
 goog.require('ff.fisher.ui.soy');
 goog.require('ff.model.Fish');
 goog.require('ff.model.User');
@@ -101,7 +101,7 @@ ff.fisher.ui.FishRow.prototype.enterDocument = function() {
         goog.events.EventType.CLICK,
         function(e) {
           if (e.altKey) {
-            new ff.fisher.ui.AdminFishDialog(this.fish_).show();
+            new ff.fisher.ui.admin.AdminFishDialog(this.fish_).show();
           }
         });
   }

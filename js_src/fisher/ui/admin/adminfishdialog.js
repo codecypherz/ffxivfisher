@@ -2,10 +2,10 @@
  * The prompt to create a new game.
  */
 
-goog.provide('ff.fisher.ui.AdminFishDialog');
+goog.provide('ff.fisher.ui.admin.AdminFishDialog');
 
 goog.require('ff');
-goog.require('ff.fisher.ui.soy');
+goog.require('ff.fisher.ui.admin.soy');
 goog.require('ff.model.Fish');
 goog.require('ff.model.LocationEnum');
 goog.require('ff.model.Weather');
@@ -28,11 +28,11 @@ goog.require('goog.ui.Dialog');
  * @constructor
  * @extends {goog.ui.Dialog}
  */
-ff.fisher.ui.AdminFishDialog = function(opt_fish) {
+ff.fisher.ui.admin.AdminFishDialog = function(opt_fish) {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
-  this.logger = goog.log.getLogger('ff.fisher.ui.AdminFishDialog');
+  this.logger = goog.log.getLogger('ff.fisher.ui.admin.AdminFishDialog');
 
   /** @private {!ff.service.FishService} */
   this.fishService_ = ff.service.FishService.getInstance();
@@ -50,20 +50,20 @@ ff.fisher.ui.AdminFishDialog = function(opt_fish) {
 
   var buttonSet = new goog.ui.Dialog.ButtonSet()
       .addButton({
-        key: ff.fisher.ui.AdminFishDialog.Id_.CONFIRM_BUTTON,
+        key: ff.fisher.ui.admin.AdminFishDialog.Id_.CONFIRM_BUTTON,
         caption: 'Save'
       }, true)
       .addButton(goog.ui.Dialog.ButtonSet.DefaultButtons.CANCEL, false, true);
   this.setButtonSet(buttonSet);
 };
-goog.inherits(ff.fisher.ui.AdminFishDialog, goog.ui.Dialog);
+goog.inherits(ff.fisher.ui.admin.AdminFishDialog, goog.ui.Dialog);
 
 
 /**
  * @enum {string}
  * @private
  */
-ff.fisher.ui.AdminFishDialog.Id_ = {
+ff.fisher.ui.admin.AdminFishDialog.Id_ = {
   CONFIRM_BUTTON: ff.getUniqueId('confirm-button'),
   END_HOUR_INPUT: ff.getUniqueId('end-hour-input'),
   LOCATION_INPUT: ff.getUniqueId('location-input'),
@@ -76,31 +76,31 @@ ff.fisher.ui.AdminFishDialog.Id_ = {
 /**
  * Shows the dialog.
  */
-ff.fisher.ui.AdminFishDialog.prototype.show = function() {
+ff.fisher.ui.admin.AdminFishDialog.prototype.show = function() {
   this.setVisible(true);
 };
 
 
 /** @override */
-ff.fisher.ui.AdminFishDialog.prototype.createDom = function() {
+ff.fisher.ui.admin.AdminFishDialog.prototype.createDom = function() {
   goog.base(this, 'createDom');
 
   // Don't use setContent because that requires a string.  It doesn't make sense
   // to render the template as a string just to accommodate a limitation in the
   // dialog class.
   this.getContentElement().appendChild(goog.soy.renderAsElement(
-      ff.fisher.ui.soy.ADMIN_FISH_DIALOG, {
-        ids: this.makeIds(ff.fisher.ui.AdminFishDialog.Id_)
+      ff.fisher.ui.admin.soy.ADMIN_FISH_DIALOG, {
+        ids: this.makeIds(ff.fisher.ui.admin.AdminFishDialog.Id_)
       }));
 
   var confirmButton = this.getButtonSet().getButton(
-      ff.fisher.ui.AdminFishDialog.Id_.CONFIRM_BUTTON);
+      ff.fisher.ui.admin.AdminFishDialog.Id_.CONFIRM_BUTTON);
 
   goog.dom.setTextContent(this.getTitleCloseElement(), 'X');
 
   if (goog.isDefAndNotNull(this.fishToEdit_)) {
     this.setValue_(
-        ff.fisher.ui.AdminFishDialog.Id_.NAME_INPUT,
+        ff.fisher.ui.admin.AdminFishDialog.Id_.NAME_INPUT,
         this.fishToEdit_.getName());
 
     // Set weather.
@@ -115,20 +115,20 @@ ff.fisher.ui.AdminFishDialog.prototype.createDom = function() {
       weatherStr += ff.model.Weather[weather];
     });
     this.setValue_(
-        ff.fisher.ui.AdminFishDialog.Id_.WEATHER_INPUT,
+        ff.fisher.ui.admin.AdminFishDialog.Id_.WEATHER_INPUT,
         weatherStr);
 
     // Set time.
     this.setValue_(
-        ff.fisher.ui.AdminFishDialog.Id_.START_HOUR_INPUT,
+        ff.fisher.ui.admin.AdminFishDialog.Id_.START_HOUR_INPUT,
         this.fishToEdit_.getStartHour() + '');
     this.setValue_(
-        ff.fisher.ui.AdminFishDialog.Id_.END_HOUR_INPUT,
+        ff.fisher.ui.admin.AdminFishDialog.Id_.END_HOUR_INPUT,
         this.fishToEdit_.getEndHour() + '');
 
     // Set location.
     this.setValue_(
-        ff.fisher.ui.AdminFishDialog.Id_.LOCATION_INPUT,
+        ff.fisher.ui.admin.AdminFishDialog.Id_.LOCATION_INPUT,
         this.fishToEdit_.getLocation().getName());
   }
 };
@@ -136,17 +136,17 @@ ff.fisher.ui.AdminFishDialog.prototype.createDom = function() {
 
 /**
  * Sets the value of the input to the given value.
- * @param {!ff.fisher.ui.AdminFishDialog.Id_} id
+ * @param {!ff.fisher.ui.admin.AdminFishDialog.Id_} id
  * @param {string} value
  * @private
  */
-ff.fisher.ui.AdminFishDialog.prototype.setValue_ = function(id, value) {
+ff.fisher.ui.admin.AdminFishDialog.prototype.setValue_ = function(id, value) {
   ff.ui.getElementByFragment(this, id).value = value;
 };
 
 
 /** @override */
-ff.fisher.ui.AdminFishDialog.prototype.enterDocument = function() {
+ff.fisher.ui.admin.AdminFishDialog.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
 
   this.getHandler().listen(this,
@@ -156,10 +156,10 @@ ff.fisher.ui.AdminFishDialog.prototype.enterDocument = function() {
 
 
 /** @override */
-ff.fisher.ui.AdminFishDialog.prototype.focus = function() {
+ff.fisher.ui.admin.AdminFishDialog.prototype.focus = function() {
   goog.base(this, 'focus');
   ff.ui.getElementByFragment(this,
-      ff.fisher.ui.AdminFishDialog.Id_.NAME_INPUT).focus();
+      ff.fisher.ui.admin.AdminFishDialog.Id_.NAME_INPUT).focus();
 };
 
 
@@ -167,12 +167,12 @@ ff.fisher.ui.AdminFishDialog.prototype.focus = function() {
  * @param {!goog.ui.Dialog.Event} e
  * @private
  */
-ff.fisher.ui.AdminFishDialog.prototype.onSelect_ = function(e) {
-  if (ff.fisher.ui.AdminFishDialog.Id_.CONFIRM_BUTTON == e.key) {
+ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
+  if (ff.fisher.ui.admin.AdminFishDialog.Id_.CONFIRM_BUTTON == e.key) {
 
     // Validate the name.
     var nameInput = ff.ui.getElementByFragment(this,
-        ff.fisher.ui.AdminFishDialog.Id_.NAME_INPUT);
+        ff.fisher.ui.admin.AdminFishDialog.Id_.NAME_INPUT);
     var name = nameInput.value;
     if (goog.string.isEmptySafe(name)) {
       nameInput.select();
@@ -182,19 +182,19 @@ ff.fisher.ui.AdminFishDialog.prototype.onSelect_ = function(e) {
 
     // Validate time.
     var startHour = this.getHour_(
-        ff.fisher.ui.AdminFishDialog.Id_.START_HOUR_INPUT, e);
+        ff.fisher.ui.admin.AdminFishDialog.Id_.START_HOUR_INPUT, e);
     if (startHour < 0) {
       return;
     }
     var endHour = this.getHour_(
-        ff.fisher.ui.AdminFishDialog.Id_.END_HOUR_INPUT, e);
+        ff.fisher.ui.admin.AdminFishDialog.Id_.END_HOUR_INPUT, e);
     if (endHour < 0) {
       return;
     }
 
     // Validate the weather.
     var weatherInput = ff.ui.getElementByFragment(this,
-        ff.fisher.ui.AdminFishDialog.Id_.WEATHER_INPUT);
+        ff.fisher.ui.admin.AdminFishDialog.Id_.WEATHER_INPUT);
     var weatherString = weatherInput.value;
     var weatherSplits = weatherString.split(',');
     var weatherSet = new goog.structs.Set();
@@ -218,7 +218,7 @@ ff.fisher.ui.AdminFishDialog.prototype.onSelect_ = function(e) {
 
     // Validate location.
     var locationInput = ff.ui.getElementByFragment(
-        this, ff.fisher.ui.AdminFishDialog.Id_.LOCATION_INPUT);
+        this, ff.fisher.ui.admin.AdminFishDialog.Id_.LOCATION_INPUT);
     var locationString = locationInput.value;
     var fishLocation = goog.object.findValue(
         ff.model.LocationEnum,
@@ -250,12 +250,12 @@ ff.fisher.ui.AdminFishDialog.prototype.onSelect_ = function(e) {
 
 /**
  * Gets the hour value from the given input.
- * @param {!ff.fisher.ui.AdminFishDialog.Id_} id The id of the input.
+ * @param {!ff.fisher.ui.admin.AdminFishDialog.Id_} id The id of the input.
  * @param {!goog.ui.Dialog.Event} e The submit event.
  * @return {number} The hour from the input or -1 if parse failed.
  * @private
  */
-ff.fisher.ui.AdminFishDialog.prototype.getHour_ = function(id, e) {
+ff.fisher.ui.admin.AdminFishDialog.prototype.getHour_ = function(id, e) {
   var input = ff.ui.getElementByFragment(this, id);
   var string = input.value;
   try {

@@ -5,8 +5,8 @@
 goog.provide('ff.fisher.ui.Header');
 
 goog.require('ff');
-goog.require('ff.fisher.ui.AdminFishDialog');
 goog.require('ff.fisher.ui.EorzeaClock');
+goog.require('ff.fisher.ui.admin.AdminFishDialog');
 goog.require('ff.fisher.ui.soy');
 goog.require('ff.model.User');
 goog.require('ff.ui');
@@ -88,7 +88,7 @@ ff.fisher.ui.Header.prototype.enterDocument = function() {
     this.getHandler().listen(this.newFishButton_,
         goog.ui.Component.EventType.ACTION,
         function() {
-          new ff.fisher.ui.AdminFishDialog().show();
+          new ff.fisher.ui.admin.AdminFishDialog().show();
         });
   }
 };
