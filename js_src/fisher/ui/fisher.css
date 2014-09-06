@@ -3,6 +3,7 @@
  */
 
 @def HEADER_HEIGHT             30px;
+@def TIME_COLOR                #FFF0A0;
 
 .ff-fisher-root {
   margin: auto;
@@ -26,7 +27,7 @@
 }
 
 .ff-eorzea-clock {
-  color: #FFF0A0;
+  color: TIME_COLOR;
   font-weight: bold;
 }
 
@@ -148,8 +149,21 @@
 }
 
 .ff-fish-time-change-label {
-  margin-left: -18px;
-  margin-top: 2px;
+  color: TIME_COLOR;
+  font-size: 11px;
+  line-height: 30px;
+  text-align: center;
+  vertical-align: middle;
+  width: 35px;
+}
+
+.ff-fish-time-change-label.ff-12am {
+  margin-left: -15px;
+}
+
+.ff-fish-time-change-label.ff-8am,
+.ff-fish-time-change-label.ff-4pm {
+  margin-left: -12px;
 }
 
 .ff-fish-time-cursor {
@@ -162,7 +176,7 @@
 
 /* For the FishTimeToolip */
 .goog-tooltip {
-  color: #FFF0A0;
+  color: TIME_COLOR;
   font-size: 12px;
   margin-left: 5px;
   margin-top: -1px;
