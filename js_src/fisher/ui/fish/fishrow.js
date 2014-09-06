@@ -5,10 +5,10 @@
 goog.provide('ff.fisher.ui.fish.FishRow');
 
 goog.require('ff');
-goog.require('ff.fisher.ui.WeatherIcon');
 goog.require('ff.fisher.ui.admin.AdminFishDialog');
 goog.require('ff.fisher.ui.fish.FishTime');
 goog.require('ff.fisher.ui.fish.soy');
+goog.require('ff.fisher.ui.weather.WeatherIcon');
 goog.require('ff.model.Fish');
 goog.require('ff.model.User');
 goog.require('ff.ui');
@@ -84,7 +84,7 @@ ff.fisher.ui.fish.FishRow.prototype.createDom = function() {
   var weatherElement = ff.ui.getElementByFragment(
       this, ff.fisher.ui.fish.FishRow.Id_.WEATHER);
   goog.structs.forEach(this.fish_.getWeatherSet(), function(weather) {
-    var weatherIcon = new ff.fisher.ui.WeatherIcon(weather);
+    var weatherIcon = new ff.fisher.ui.weather.WeatherIcon(weather);
     this.addChild(weatherIcon);
     weatherIcon.render(weatherElement);
   }, this);

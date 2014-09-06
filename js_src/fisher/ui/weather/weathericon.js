@@ -2,9 +2,9 @@
  * Renders a single weather icon.
  */
 
-goog.provide('ff.fisher.ui.WeatherIcon');
+goog.provide('ff.fisher.ui.weather.WeatherIcon');
 
-goog.require('ff.fisher.ui.soy');
+goog.require('ff.fisher.ui.weather.soy');
 goog.require('ff.model.Weather');
 goog.require('ff.service.WeatherService');
 goog.require('goog.soy');
@@ -17,7 +17,7 @@ goog.require('goog.ui.Component');
  * @constructor
  * @extends {goog.ui.Component}
  */
-ff.fisher.ui.WeatherIcon = function(weather) {
+ff.fisher.ui.weather.WeatherIcon = function(weather) {
   goog.base(this);
 
   /** @private {!ff.model.Weather} */
@@ -26,13 +26,13 @@ ff.fisher.ui.WeatherIcon = function(weather) {
   /** @private {!ff.service.WeatherService} */
   this.weatherService_ = ff.service.WeatherService.getInstance();
 };
-goog.inherits(ff.fisher.ui.WeatherIcon, goog.ui.Component);
+goog.inherits(ff.fisher.ui.weather.WeatherIcon, goog.ui.Component);
 
 
 /** @override */
-ff.fisher.ui.WeatherIcon.prototype.createDom = function() {
+ff.fisher.ui.weather.WeatherIcon.prototype.createDom = function() {
   this.setElementInternal(goog.soy.renderAsElement(
-      ff.fisher.ui.soy.WEATHER_ICON, {
+      ff.fisher.ui.weather.soy.WEATHER_ICON, {
         imageSrc: this.weatherService_.getImageUrl(this.weather_),
         tooltip: ff.model.Weather[this.weather_]
       }));

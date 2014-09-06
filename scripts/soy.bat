@@ -12,6 +12,7 @@ java -jar ..\closure\soy\SoyToJsSrcCompiler.jar ^
   fisher\ui\ui.soy ^
   fisher\ui\admin\admin.soy ^
   fisher\ui\area\area.soy ^
-  fisher\ui\fish\fish.soy
+  fisher\ui\fish\fish.soy ^
+  fisher\ui\weather\weather.soy
 
 echo Finished building the soy templates.

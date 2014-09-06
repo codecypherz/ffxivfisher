@@ -5,9 +5,9 @@
 goog.provide('ff.fisher.ui.area.Area');
 
 goog.require('ff');
-goog.require('ff.fisher.ui.WeatherIcon');
 goog.require('ff.fisher.ui.area.soy');
 goog.require('ff.fisher.ui.fish.FishRow');
+goog.require('ff.fisher.ui.weather.WeatherIcon');
 goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.FishService');
 goog.require('ff.service.FishWatcher');
@@ -36,7 +36,7 @@ ff.fisher.ui.area.Area = function(area) {
   /** @private {!ff.model.Area} */
   this.area_ = area;
 
-  /** @private {!Array.<!ff.fisher.ui.WeatherIcon>} */
+  /** @private {!Array.<!ff.fisher.ui.weather.WeatherIcon>} */
   this.weatherIcons_ = [];
 
   /** @private {!Array.<!ff.fisher.ui.fish.FishRow>} */
@@ -308,7 +308,7 @@ ff.fisher.ui.area.Area.prototype.renderWeatherIcon_ = function(id, weather) {
   if (!weather) {
     return;
   }
-  var weatherIcon = new ff.fisher.ui.WeatherIcon(weather);
+  var weatherIcon = new ff.fisher.ui.weather.WeatherIcon(weather);
   var container = ff.ui.getElementByFragment(this, id);
   this.addChild(weatherIcon);
   this.weatherIcons_.push(weatherIcon);
