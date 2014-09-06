@@ -120,6 +120,7 @@ ff.fisher.ui.Area.prototype.renderFish_ = function() {
   // Render the fish.
   goog.array.forEach(fishes, function(fish) {
     var fishRow = new ff.fisher.ui.FishRow(fish);
+    this.fishRows_.push(fishRow);
     this.addChild(fishRow);
     fishRow.render(fishRowsElement);
   }, this);
