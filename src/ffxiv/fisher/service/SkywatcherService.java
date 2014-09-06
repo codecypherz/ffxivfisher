@@ -66,7 +66,7 @@ public class SkywatcherService {
 			.put(7, Weather.RAIN)
 			.put(8, Weather.SHOWERS)
 			.put(9, Weather.THUNDER)
-			.put(10, Weather.THUNDERSTORM)
+			.put(10, Weather.THUNDERSTORMS)
 			.put(11, Weather.DUST_STORMS)
 			.put(12, Weather.SANDSTORMS)
 			.put(13, Weather.HOT_SPELLS)

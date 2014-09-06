@@ -104,22 +104,37 @@
  */
 {template .FISH_TIME}
   <div class="{css ff-fish-time}">
-    <div id="{$ids.RANGE}" class="{css ff-fish-time-range}">
+    <div id="{$ids.RANGE_1}" class="{css ff-fish-time-range}">
     </div>
-    <div id="{$ids.RANGE_WRAP}" class="{css ff-fish-time-range}">
+    <div id="{$ids.RANGE_2}" class="{css ff-fish-time-range}">
     </div>
-    <div class="{css ff-fish-time-change}{sp}{css ff-8am}">
+    <div id="{$ids.WEATHER_CHANGE_1}" class="{css ff-fish-time-change}">
+      <div class="{css ff-fish-time-change-label-container}">
+        <div class="{css ff-fish-time-change-label}">
+          12am
+        </div>
+      </div>
     </div>
-    <div class="{css ff-fish-time-change}{sp}{css ff-4pm}">
+    <div id="{$ids.WEATHER_CHANGE_2}" class="{css ff-fish-time-change}">
+      <div class="{css ff-fish-time-change-label-container}">
+        <div class="{css ff-fish-time-change-label}">
+          8am
+        </div>
+      </div>
     </div>
-    <div id="{$ids.CURRENT_TIME}" class="{css ff-fish-time-current}">
+    <div id="{$ids.WEATHER_CHANGE_3}" class="{css ff-fish-time-change}">
+      <div class="{css ff-fish-time-change-label-container}">
+        <div class="{css ff-fish-time-change-label}">
+          4pm
+        </div>
+      </div>
     </div>
-    <div id="{$ids.CURSOR_TIME}" class="{css ff-fish-time-cursor}">
+    <div id="{$ids.CURSOR}" class="{css ff-fish-time-cursor}">
     </div>
   </div>
 {/template}
 
-
+\
 /**
  * HTML for a weather icon.
  * @param imageSrc The source for the image.
