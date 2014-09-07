@@ -7,6 +7,7 @@ goog.provide('ff.service.FishWatcher');
 goog.require('ff');
 goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.FishService');
+goog.require('ff.service.SkywatcherService');
 goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.events.EventHandler');
@@ -30,6 +31,9 @@ ff.service.FishWatcher = function() {
 
   /** @private {!ff.service.FishService} */
   this.fishService_ = ff.service.FishService.getInstance();
+
+  /** @private {!ff.service.SkywatcherService} */
+  this.skywatcherService_ = ff.service.SkywatcherService.getInstance();
 
   this.handler_ = new goog.events.EventHandler(this);
   this.registerDisposable(this.handler_);
@@ -87,6 +91,45 @@ ff.service.FishWatcher.prototype.checkFish_ = function() {
  * @private
  */
 ff.service.FishWatcher.prototype.isCatchable_ = function(fish, currentHour) {
+  return this.isTimeValid_(fish, currentHour) && this.isWeatherValid_(fish);
+};
+
+
+/**
+ * Checks to see if the weather conditions are correct for the given fish.
+ * @param {!ff.model.Fish} fish
+ * @return {boolean}
+ * @private
+ */
+ff.service.FishWatcher.prototype.isWeatherValid_ = function(fish) {
+  var weatherSet = fish.getWeatherSet();
+
+  // Fish can be caught in any weather.
+  if (weatherSet.isEmpty()) {
+    return true;
+  }
+
+  // Current weather must be in the set.
+  var weatherList = this.skywatcherService_.getWeatherForArea(
+      fish.getLocation().getArea());
+  var currentWeather = weatherList[0];
+  if (currentWeather) {
+    return fish.getWeatherSet().contains(currentWeather);
+  }
+
+  // Don't know current weather, so weather isn't valid.
+  return false;
+};
+
+
+/**
+ * Checks to see if the current time condition is right for the given fish.
+ * @param {!ff.model.Fish} fish
+ * @param {number} currentHour
+ * @return {boolean}
+ * @private
+ */
+ff.service.FishWatcher.prototype.isTimeValid_ = function(fish, currentHour) {
   var wrapAround = fish.getEndHour() < fish.getStartHour();
   if (wrapAround) {
     return this.isHourInRange_(currentHour, 0, fish.getEndHour()) ||

@@ -7,6 +7,7 @@ goog.provide('ff.service.SkywatcherService');
 goog.require('ff');
 goog.require('ff.model.AreaEnum');
 goog.require('ff.model.Weather');
+goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.XhrService');
 goog.require('goog.Timer');
 goog.require('goog.Uri');
@@ -32,11 +33,14 @@ ff.service.SkywatcherService = function() {
   /** @private {!ff.service.XhrService} */
   this.xhrService_ = ff.service.XhrService.getInstance();
 
+  /** @private {!ff.service.EorzeaTime} */
+  this.eorzeaTime_ = ff.service.EorzeaTime.getInstance();
+
   /** @private {!Object.<string, !Array.<!ff.model.Weather>>} */
   this.weather_ = {};
 
   /** @private {number} */
-  this.eorzeaHour_ = 0;
+  this.reportHour_ = 0;
 
   /** @private {!goog.Timer} */
   this.timer_ = new goog.Timer(ff.service.SkywatcherService.POLL_INTERVAL_MS_);
@@ -82,25 +86,66 @@ ff.service.SkywatcherService.prototype.startPolling = function() {
  * @return {!Array.<!ff.model.Weather>}
  */
 ff.service.SkywatcherService.prototype.getWeatherForArea = function(area) {
+  // Figure out the area enum for the area model.
   var areaEnum = goog.object.findKey(
       ff.model.AreaEnum,
       function(value, key, object) {
         return goog.string.caseInsensitiveCompare(
             value.getName(), area.getName()) == 0;
       });
-  if (areaEnum) {
-    return this.weather_[areaEnum];
+
+  // This shouldn't happen unless a new area gets added to the game.
+  if (!areaEnum) {
+    throw Error('Failed to find this area: ' + area.getName());
   }
-  throw Error('Failed to find this area: ' + area.getName());
+
+  // Get the current time.
+  var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
+  var currentHour =
+      eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
+
+  // Compute the offset in order to ignore past weather.
+  var nextWeatherChangeHour = this.getNextWeatherChangeHour(currentHour);
+  var offset;
+  if (this.reportHour_ >= (nextWeatherChangeHour - 8)) {
+    offset = 0;
+  } else if (this.reportHour_ >= (nextWeatherChangeHour - 16)) {
+    offset = 1;
+  } else {
+    offset = 2;
+  }
+
+  var weatherSourceList = this.weather_[areaEnum];
+  if (!goog.isDefAndNotNull(weatherSourceList)) {
+    // No data for this area.
+    return [];
+  }
+
+  // Filter the source list based on the offset.
+  var currentWeather = [];
+  for (var i = 0; i < 4; i++) {
+    var weather = weatherSourceList[i + offset];
+    if (weather) {
+      currentWeather.push(weather);
+    }
+  }
+  return currentWeather;
 };
 
 
 /**
- * Gets the hour of the current weather report.
+ * Figures out the next hour that weather will change based on the current hour.
+ * @param {number} currentHour
  * @return {number}
  */
-ff.service.SkywatcherService.prototype.getWeatherReportHour = function() {
-  return this.eorzeaHour_;
+ff.service.SkywatcherService.prototype.getNextWeatherChangeHour = function(
+    currentHour) {
+  if (currentHour < 8) {
+    return 8;
+  } else if (currentHour < 16) {
+    return 16;
+  }
+  return 24;
 };
 
 
@@ -130,7 +175,7 @@ ff.service.SkywatcherService.prototype.getCurrentWeather_ = function() {
 ff.service.SkywatcherService.prototype.onWeatherLoaded_ = function(json) {
   goog.log.info(this.logger, 'Weather arrived from server.');
 
-  this.eorzeaHour_ = json['eorzeaHour'];
+  this.reportHour_ = json['eorzeaHour'];
 
   var weatherMap = json['weatherMap'];
   goog.object.forEach(
