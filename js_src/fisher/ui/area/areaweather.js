@@ -8,7 +8,7 @@ goog.require('ff');
 goog.require('ff.fisher.ui.area.soy');
 goog.require('ff.fisher.ui.weather.WeatherIcon');
 goog.require('ff.service.EorzeaTime');
-goog.require('ff.service.SkywatcherService');
+goog.require('ff.service.WeatherService');
 goog.require('ff.ui');
 goog.require('goog.Timer');
 goog.require('goog.array');
@@ -35,8 +35,8 @@ ff.fisher.ui.area.AreaWeather = function(area) {
   /** @private {!Array.<!ff.fisher.ui.weather.WeatherIcon>} */
   this.weatherIcons_ = [];
 
-  /** @private {!ff.service.SkywatcherService} */
-  this.skywatcherService_ = ff.service.SkywatcherService.getInstance();
+  /** @private {!ff.service.WeatherService} */
+  this.weatherService_ = ff.service.WeatherService.getInstance();
 
   /** @private {!ff.service.EorzeaTime} */
   this.eorzeaTime_ = ff.service.EorzeaTime.getInstance();
@@ -107,8 +107,8 @@ ff.fisher.ui.area.AreaWeather.prototype.enterDocument = function() {
 
   // Listen for weather updates.
   this.getHandler().listen(
-      this.skywatcherService_,
-      ff.service.SkywatcherService.EventType.WEATHER_UPDATED,
+      this.weatherService_,
+      ff.service.WeatherService.EventType.WEATHER_UPDATED,
       this.renderWeather_);
 
   // Update occasionally, but a little slower than time ticks.
@@ -145,7 +145,7 @@ ff.fisher.ui.area.AreaWeather.prototype.updateWeatherBlocks_ = function() {
 
   var hoursUntilNextPositiveStart = this.eorzeaTime_.getHoursUntilNextHour(
       currentHour,
-      this.skywatcherService_.getNextWeatherChangeHour(currentHour));
+      this.weatherService_.getNextWeatherChangeHour(currentHour));
 
   this.setLeft_(
       this.weather1_,
@@ -185,7 +185,7 @@ ff.fisher.ui.area.AreaWeather.prototype.renderWeather_ = function() {
   // TODO Render this when a new time block passes.
   this.updateWeatherBlocks_();
 
-  var weatherList = this.skywatcherService_.getWeatherForArea(this.area_);
+  var weatherList = this.weatherService_.getWeatherForArea(this.area_);
 
   // Clear existing weather icons.
   goog.array.forEach(this.weatherIcons_, function(weatherIcon) {

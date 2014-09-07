@@ -7,7 +7,7 @@ goog.provide('ff.service.FishWatcher');
 goog.require('ff');
 goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.FishService');
-goog.require('ff.service.SkywatcherService');
+goog.require('ff.service.WeatherService');
 goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.events.EventHandler');
@@ -32,8 +32,8 @@ ff.service.FishWatcher = function() {
   /** @private {!ff.service.FishService} */
   this.fishService_ = ff.service.FishService.getInstance();
 
-  /** @private {!ff.service.SkywatcherService} */
-  this.skywatcherService_ = ff.service.SkywatcherService.getInstance();
+  /** @private {!ff.service.WeatherService} */
+  this.skywatcherService_ = ff.service.WeatherService.getInstance();
 
   this.handler_ = new goog.events.EventHandler(this);
   this.registerDisposable(this.handler_);
