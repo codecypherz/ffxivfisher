@@ -15,6 +15,12 @@
   margin-bottom: 10px;
 }
 
+.ff-fisher-area-weather-source > a {
+  float: left;
+  font-size: 11px;
+  margin-top: -13px;
+}
+
 .ff-area-weather-container {
   height: 37px;
   margin-left: 231px;

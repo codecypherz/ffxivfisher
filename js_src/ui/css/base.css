@@ -37,3 +37,7 @@ body {
   padding: 15px;
   @mixin border_radius(5px);
 }
+
+a {
+  color: #00BFFF;
+}
