@@ -42,6 +42,9 @@ ff.service.WeatherService = function() {
   /** @private {number} */
   this.reportHour_ = 0;
 
+  /** @private {number} */
+  this.lastSeenHour_ = 0;
+
   /** @private {!goog.Timer} */
   this.timer_ = new goog.Timer(ff.service.WeatherService.POLL_INTERVAL_MS_);
   this.registerDisposable(this.timer_);
@@ -50,6 +53,7 @@ ff.service.WeatherService = function() {
   this.registerDisposable(handler);
 
   handler.listen(this.timer_, goog.Timer.TICK, this.getCurrentWeather_);
+  handler.listen(this.eorzeaTime_, goog.Timer.TICK, this.checkWeatherInterval_);
 };
 goog.inherits(ff.service.WeatherService, goog.events.EventTarget);
 goog.addSingletonGetter(ff.service.WeatherService);
@@ -207,4 +211,28 @@ ff.service.WeatherService.prototype.onWeatherLoaded_ = function(json) {
       this);
 
   this.dispatchEvent(ff.service.WeatherService.EventType.WEATHER_UPDATED);
+};
+
+
+/**
+ * Checks to see if a new weather interval was just entered.  If so, an event is
+ * dispatched.
+ * @private
+ */
+ff.service.WeatherService.prototype.checkWeatherInterval_ = function() {
+  var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
+  var currentHour = eorzeaDate.getUTCHours();
+  if (currentHour == this.lastSeenHour_) {
+    // Nothing changed, so don't do any more.
+    return;
+  }
+
+  // The hour changed, so save it.
+  this.lastSeenHour_ = currentHour;
+
+  // Check if this is a new weather interval too.
+  if (currentHour == 0 || currentHour == 8 || currentHour == 16) {
+    goog.log.info(this.logger, 'New weather interval identified.');
+    this.dispatchEvent(ff.service.WeatherService.EventType.WEATHER_UPDATED);
+  }
 };

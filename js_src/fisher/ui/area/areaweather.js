@@ -182,7 +182,10 @@ ff.fisher.ui.area.AreaWeather.prototype.setLeft_ = function(el, hoursFromLeft) {
  * @private
  */
 ff.fisher.ui.area.AreaWeather.prototype.renderWeather_ = function() {
-  // TODO Render this when a new time block passes.
+  if (!this.isInDocument()) {
+    return;
+  }
+
   this.updateWeatherBlocks_();
 
   var weatherList = this.weatherService_.getWeatherForArea(this.area_);
