@@ -194,16 +194,14 @@ ff.fisher.ui.area.AreaWeather.prototype.renderWeather_ = function() {
   }, this);
   this.weatherIcons_ = [];
 
-  if (goog.isDefAndNotNull(weatherList)) {
-    this.renderWeatherIcon_(
-        ff.fisher.ui.area.AreaWeather.Id_.WEATHER_1, weatherList[0]);
-    this.renderWeatherIcon_(
-        ff.fisher.ui.area.AreaWeather.Id_.WEATHER_2, weatherList[1]);
-    this.renderWeatherIcon_(
-        ff.fisher.ui.area.AreaWeather.Id_.WEATHER_3, weatherList[2]);
-    this.renderWeatherIcon_(
-        ff.fisher.ui.area.AreaWeather.Id_.WEATHER_4, weatherList[3]);
-  }
+  this.renderWeatherIcon_(
+      ff.fisher.ui.area.AreaWeather.Id_.WEATHER_1, weatherList[0]);
+  this.renderWeatherIcon_(
+      ff.fisher.ui.area.AreaWeather.Id_.WEATHER_2, weatherList[1]);
+  this.renderWeatherIcon_(
+      ff.fisher.ui.area.AreaWeather.Id_.WEATHER_3, weatherList[2]);
+  this.renderWeatherIcon_(
+      ff.fisher.ui.area.AreaWeather.Id_.WEATHER_4, weatherList[3]);
 };
 
 
