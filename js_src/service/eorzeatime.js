@@ -55,6 +55,22 @@ ff.service.EorzeaTime.EORZEA_TO_EARTH_ =
 
 
 /**
+ * The number of milliseconds in an hour.
+ * @type {number}
+ * @const
+ */
+ff.service.EorzeaTime.MS_IN_AN_HOUR = 60 * 60 * 1000;
+
+
+/**
+ * The number of milliseconds in a day.
+ * @type {number}
+ * @const
+ */
+ff.service.EorzeaTime.MS_IN_A_DAY = 24 * ff.service.EorzeaTime.MS_IN_AN_HOUR;
+
+
+/**
  * Gets the current time in Eorzea.
  * @return {!goog.date.UtcDateTime}
  */
@@ -100,4 +116,13 @@ ff.service.EorzeaTime.prototype.getHoursUntilNextHour = function(
   } else {
     return 24 + target - current;
   }
+};
+
+
+/**
+ * @param {number} hours The hours to convert (e.g. 1.45).
+ * @return {number} The number of ms in the time given.
+ */
+ff.service.EorzeaTime.prototype.hoursToMs = function(hours) {
+  return Math.floor(hours * ff.service.EorzeaTime.MS_IN_AN_HOUR);
 };

@@ -13,6 +13,7 @@ goog.require('goog.array');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.log');
+goog.require('goog.math.Range');
 
 
 
@@ -73,9 +74,29 @@ ff.service.FishWatcher.EventType = {
  * @private
  */
 ff.service.FishWatcher.prototype.checkFish_ = function() {
-  var utcDate = this.eorzeaTime_.getCurrentEorzeaDate();
+  var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
+
+  var currentHour =
+      eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
+
   goog.array.forEach(this.fishService_.getAll(), function(fish) {
-    fish.setCatchable(this.isCatchable_(fish, utcDate.getUTCHours()));
+
+    // Update time ranges on each fish.
+    var hoursUntilNextStart = this.eorzeaTime_.getHoursUntilNextHour(
+        currentHour, fish.getStartHour());
+    var nextStartMs = eorzeaDate.getTime() + this.eorzeaTime_.hoursToMs(
+        hoursUntilNextStart);
+    var nextRange = new goog.math.Range(
+        nextStartMs,
+        nextStartMs + this.eorzeaTime_.hoursToMs(fish.getRangeLength()));
+    var previousRange = new goog.math.Range(
+        nextRange.start - ff.service.EorzeaTime.MS_IN_A_DAY,
+        nextRange.end - ff.service.EorzeaTime.MS_IN_A_DAY);
+    fish.setTimeRanges(previousRange, nextRange);
+
+    // TODO Switch this to setting catchable ranges instead by intersecting
+    // weather ranges with time ranges.
+    fish.setCatchable(this.isCatchable_(fish, eorzeaDate.getUTCHours()));
   }, this);
 
   // TODO If the set of fish that is catchable has changed, dispatch an event.

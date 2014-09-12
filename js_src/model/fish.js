@@ -103,6 +103,16 @@ ff.model.Fish.prototype.getEndHour = function() {
 };
 
 
+/**
+ * Figures out how long a fish time range is based on start and end hour.
+ * @return {number} The length of the range in hours.
+ */
+ff.model.Fish.prototype.getRangeLength = function() {
+  var diff = Math.abs(this.endHour_ - this.startHour_);
+  return this.endHour_ < this.startHour_ ? 24 - diff : diff;
+};
+
+
 /** @return {!ff.model.Location} */
 ff.model.Fish.prototype.getLocation = function() {
   return this.location_;
