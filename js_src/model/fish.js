@@ -5,8 +5,10 @@ goog.require('ff');
 goog.require('ff.model.LocationEnum');
 goog.require('ff.model.Weather');
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.events.EventTarget');
 goog.require('goog.log');
+goog.require('goog.math.Range');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.structs');
@@ -49,6 +51,12 @@ ff.model.Fish = function(
 
   /** @private {!ff.model.Location} */
   this.location_ = fishLocation;
+
+  /** @private {!goog.math.Range} */
+  this.previousTimeRange_ = new goog.math.Range(0, 0);
+
+  /** @private {!goog.math.Range} */
+  this.nextTimeRange_ = new goog.math.Range(0, 0);
 
   /** @private {boolean} */
   this.catchable_ = false;
@@ -114,6 +122,48 @@ ff.model.Fish.prototype.setCatchable = function(catchable) {
   if (oldCatchable != catchable) {
     this.dispatchEvent(ff.model.Fish.EventType.CATCHABLE_CHANGED);
   }
+};
+
+
+/**
+ * Gets the previous time range for catching the fish which may overlap the
+ * current time.  This is just to represent the time range for the fish and does
+ * not necessarily mean the fish is catchable.
+ * @return {!goog.math.Range}
+ */
+ff.model.Fish.prototype.getPreviousTimeRange = function() {
+  return this.previousTimeRange_;
+};
+
+
+/**
+ * Gets the next time range for catching the fish which will always be in the
+ * future.  This is just to represent the time range for the fish and does not
+ * necessarily mean the fish is catchable.
+ * @return {!goog.math.Range}
+ */
+ff.model.Fish.prototype.getNextTimeRange = function() {
+  return this.nextTimeRange_;
+};
+
+
+/**
+ * Sets the previous and next time ranges for the fish.
+ * @param {!goog.math.Range} previous Previous time range for the fish which may
+ *     overlap with the current time.
+ * @param {!goog.math.Range} next Next time range for the fish which will always
+ *     be in the future.
+ */
+ff.model.Fish.prototype.setTimeRanges = function(previous, next) {
+  var intersection = goog.math.Range.intersection(previous, next);
+  // Null intersection means no intersection.
+  // Length of zero means end of previous runs right into beginning of next.
+  goog.asserts.assert(
+      goog.isNull(intersection) || intersection.getLength() == 0);
+  // Previous must always come before start.
+  goog.asserts.assert(previous.start < next.start);
+  this.previousTimeRange_ = previous;
+  this.nextTimeRange_ = next;
 };
 
 
