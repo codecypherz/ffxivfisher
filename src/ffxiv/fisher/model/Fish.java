@@ -13,7 +13,7 @@ public class Fish {
 	private String name;
 	private Set<Weather> weatherSet;
 	private int startHour; // inclusive
-	private int endHour; // inclusive
+	private int endHour; // exclusive
 	private Location location;
 	
 	public Fish() {
@@ -27,7 +27,7 @@ public class Fish {
 			);
 	}
 	
-	private Fish(
+	public Fish(
 			String key,
 			String name,
 			Set<Weather> weatherSet,
@@ -65,11 +65,6 @@ public class Fish {
 		return location;
 	}
 
-	// TODO Remove - just for testing.
-	public void setLocation(Location location) {
-		this.location = location;
-	}
-	
 	public void setFromFish(Fish other) {
 		name = other.name;
 		weatherSet = other.weatherSet;

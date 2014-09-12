@@ -4,6 +4,7 @@ import com.google.inject.servlet.ServletModule;
 
 import ffxiv.fisher.filter.AdminFilter;
 import ffxiv.fisher.servlet.admin.AdminFishServlet;
+import ffxiv.fisher.servlet.admin.TempFixEndOfRangeServlet;
 import ffxiv.fisher.servlet.dev.DevLoginServlet;
 
 public class FishServletModule extends ServletModule {
@@ -18,6 +19,7 @@ public class FishServletModule extends ServletModule {
 		// Admin only.
 		filter("/admin/*").through(AdminFilter.class);
 		serve("/admin/fish").with(AdminFishServlet.class);
+		serve("/admin/tempfixendofrange").with(TempFixEndOfRangeServlet.class);
 
 		// Normal web access.
 		serve("/").with(FisherServlet.class);
