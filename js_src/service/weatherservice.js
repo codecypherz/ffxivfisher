@@ -39,7 +39,10 @@ ff.service.WeatherService = function() {
   this.eorzeaTime_ = ff.service.EorzeaTime.getInstance();
 
   /** @private {!Object.<string, !Array.<!ff.model.WeatherRange>>} */
-  this.weatherRanges_ = {};
+  this.weatherRangeMap_ = {};
+
+  /** @private {!Array.<!goog.math.Range>} */
+  this.weatherRanges_ = [];
 
   // TODO Remove extraneous instance variables once weather ranges are used.
   /** @private {!Object.<string, !Array.<!ff.model.Weather>>} */
@@ -101,6 +104,12 @@ ff.service.WeatherService.prototype.getImageUrl = function(weather) {
 };
 
 
+/** @return {!Array.<!goog.math.Range>} */
+ff.service.WeatherService.prototype.getWeatherTimeRanges = function() {
+  return this.weatherRanges_;
+};
+
+
 /**
  * @param {!ff.model.Area} area
  * @return {!Array.<!ff.model.WeatherRange>}
@@ -119,7 +128,7 @@ ff.service.WeatherService.prototype.getWeatherRangesForArea = function(area) {
     throw Error('Failed to find this area: ' + area.getName());
   }
 
-  var weatherRanges = this.weatherRanges_[areaEnum];
+  var weatherRanges = this.weatherRangeMap_[areaEnum];
   if (!goog.isDefAndNotNull(weatherRanges)) {
     // No data for this area.
     return [];
@@ -230,6 +239,7 @@ ff.service.WeatherService.prototype.onWeatherLoaded_ = function(json) {
 
   this.reportHour_ = json['eorzeaHour'];
 
+  // Figure out the starting hour of the range in which the report hour occurs.
   var startHour = 0;
   if (this.reportHour_ >= 8) {
     startHour = 8;
@@ -237,9 +247,16 @@ ff.service.WeatherService.prototype.onWeatherLoaded_ = function(json) {
     startHour = 16;
   }
 
+  // Define actual ranges based on the start hour.
+  this.weatherRanges_ = [];
   var reportStartMs = eorzeaDate.getTime() + this.eorzeaTime_.hoursToMs(
       startHour - currentHour);
   var rangeWidth = this.eorzeaTime_.hoursToMs(8);
+  for (var i = 0; i < 6; i++) {
+    this.weatherRanges_.push(new goog.math.Range(
+        reportStartMs + (i * rangeWidth),
+        reportStartMs + ((i + 1) * rangeWidth)));
+  }
 
   var weatherMap = json['weatherMap'];
   goog.object.forEach(
@@ -251,19 +268,16 @@ ff.service.WeatherService.prototype.onWeatherLoaded_ = function(json) {
         }
         var weatherRangeList = [];
         var weatherList = [];
-        var nextStartMs = reportStartMs;
-        goog.array.forEach(rawWeatherList, function(rawWeather) {
+        goog.array.forEach(rawWeatherList, function(rawWeather, i, arr) {
           var weather = /** @type {!ff.model.Weather} */ (
               ff.stringKeyToEnum(rawWeather, ff.model.Weather));
-          var range = new goog.math.Range(
-              nextStartMs, nextStartMs + rangeWidth);
           if (weather) {
             weatherList.push(weather);
-            weatherRangeList.push(new ff.model.WeatherRange(weather, range));
+            weatherRangeList.push(
+                new ff.model.WeatherRange(weather, this.weatherRanges_[i]));
           }
-          nextStartMs += rangeWidth;
-        });
-        this.weatherRanges_[key] = weatherRangeList;
+        }, this);
+        this.weatherRangeMap_[key] = weatherRangeList;
         this.weather_[key] = weatherList;
       },
       this);

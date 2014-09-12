@@ -54,28 +54,6 @@
   width: 1px;
 }
 
-.ff-fish-time-change-label-container {
-  position: relative;
-}
-
-.ff-fish-time-change-label {
-  color: TIME_COLOR;
-  font-size: 11px;
-  line-height: 30px;
-  text-align: center;
-  vertical-align: middle;
-  width: 35px;
-}
-
-.ff-fish-time-change-label.ff-12am {
-  margin-left: -15px;
-}
-
-.ff-fish-time-change-label.ff-8am,
-.ff-fish-time-change-label.ff-4pm {
-  margin-left: -12px;
-}
-
 .ff-fish-time-cursor {
   background: red;
   bottom: 0;

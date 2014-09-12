@@ -8,6 +8,7 @@ goog.require('ff');
 goog.require('ff.fisher.ui.fish.FishTimeTooltip');
 goog.require('ff.fisher.ui.fish.soy');
 goog.require('ff.service.EorzeaTime');
+goog.require('ff.service.WeatherService');
 goog.require('ff.ui');
 goog.require('goog.Timer');
 goog.require('goog.date.DateTime');
@@ -35,6 +36,9 @@ ff.fisher.ui.fish.FishTime = function(fish) {
   /** @private {!ff.service.EorzeaTime} */
   this.eorzeaTime_ = ff.service.EorzeaTime.getInstance();
 
+  /** @private {!ff.service.WeatherService} */
+  this.weatherService_ = ff.service.WeatherService.getInstance();
+
   /** @private {ff.fisher.ui.fish.FishTimeTooltip} */
   this.tooltip_ = null;
 
@@ -52,6 +56,15 @@ ff.fisher.ui.fish.FishTime = function(fish) {
 
   /** @private {Element} */
   this.weatherChange3_ = null;
+
+  /** @private {Element} */
+  this.weatherChange4_ = null;
+
+  /** @private {Element} */
+  this.weatherChange5_ = null;
+
+  /** @private {Element} */
+  this.weatherChange6_ = null;
 
   /** @private {Element} */
   this.cursor_ = null;
@@ -73,7 +86,10 @@ ff.fisher.ui.fish.FishTime.Id_ = {
   RANGE_2: ff.getUniqueId('range-2'),
   WEATHER_CHANGE_1: ff.getUniqueId('weather-change-1'),
   WEATHER_CHANGE_2: ff.getUniqueId('weather-change-2'),
-  WEATHER_CHANGE_3: ff.getUniqueId('weather-change-3')
+  WEATHER_CHANGE_3: ff.getUniqueId('weather-change-3'),
+  WEATHER_CHANGE_4: ff.getUniqueId('weather-change-4'),
+  WEATHER_CHANGE_5: ff.getUniqueId('weather-change-5'),
+  WEATHER_CHANGE_6: ff.getUniqueId('weather-change-6')
 };
 
 
@@ -105,12 +121,20 @@ ff.fisher.ui.fish.FishTime.prototype.createDom = function() {
       this, ff.fisher.ui.fish.FishTime.Id_.RANGE_1);
   this.range2_ = ff.ui.getElementByFragment(
       this, ff.fisher.ui.fish.FishTime.Id_.RANGE_2);
+
   this.weatherChange1_ = ff.ui.getElementByFragment(
       this, ff.fisher.ui.fish.FishTime.Id_.WEATHER_CHANGE_1);
   this.weatherChange2_ = ff.ui.getElementByFragment(
       this, ff.fisher.ui.fish.FishTime.Id_.WEATHER_CHANGE_2);
   this.weatherChange3_ = ff.ui.getElementByFragment(
       this, ff.fisher.ui.fish.FishTime.Id_.WEATHER_CHANGE_3);
+  this.weatherChange4_ = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.fish.FishTime.Id_.WEATHER_CHANGE_4);
+  this.weatherChange5_ = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.fish.FishTime.Id_.WEATHER_CHANGE_5);
+  this.weatherChange6_ = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.fish.FishTime.Id_.WEATHER_CHANGE_6);
+
   this.cursor_ = ff.ui.getElementByFragment(
       this, ff.fisher.ui.fish.FishTime.Id_.CURSOR);
 };
@@ -176,19 +200,13 @@ ff.fisher.ui.fish.FishTime.prototype.update_ = function() {
   this.position_(this.range1_, this.fish_.getPreviousTimeRange(), eorzeaDate);
   this.position_(this.range2_, this.fish_.getNextTimeRange(), eorzeaDate);
 
-  // TODO Render left hand side of weather ranges returned from the weather
-  // service.
-  var currentHour =
-      eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
-  this.setLeft_(
-      this.weatherChange1_,
-      this.eorzeaTime_.getHoursUntilNextHour(currentHour, 0));
-  this.setLeft_(
-      this.weatherChange2_,
-      this.eorzeaTime_.getHoursUntilNextHour(currentHour, 8));
-  this.setLeft_(
-      this.weatherChange3_,
-      this.eorzeaTime_.getHoursUntilNextHour(currentHour, 16));
+  var weatherTimeRanges = this.weatherService_.getWeatherTimeRanges();
+  this.setLeft_(this.weatherChange1_, weatherTimeRanges[0], eorzeaDate);
+  this.setLeft_(this.weatherChange2_, weatherTimeRanges[1], eorzeaDate);
+  this.setLeft_(this.weatherChange3_, weatherTimeRanges[2], eorzeaDate);
+  this.setLeft_(this.weatherChange4_, weatherTimeRanges[3], eorzeaDate);
+  this.setLeft_(this.weatherChange5_, weatherTimeRanges[4], eorzeaDate);
+  this.setLeft_(this.weatherChange6_, weatherTimeRanges[5], eorzeaDate);
 };
 
 
@@ -202,6 +220,22 @@ ff.fisher.ui.fish.FishTime.prototype.update_ = function() {
 ff.fisher.ui.fish.FishTime.prototype.position_ = function(
     el, range, eorzeaDate) {
   el.style.width = this.toPixels_(range.getLength()) + 'px';
+  this.setLeft_(el, range, eorzeaDate);
+};
+
+
+/**
+ * Sets the left side of the element based on the given range.
+ * @param {Element} el
+ * @param {!goog.math.Range} range
+ * @param {!goog.date.UtcDateTime} eorzeaDate
+ * @private
+ */
+ff.fisher.ui.fish.FishTime.prototype.setLeft_ = function(
+    el, range, eorzeaDate) {
+  if (!range) {
+    return;
+  }
   el.style.left = this.toPixels_(range.start - eorzeaDate.getTime()) + 'px';
 };
 
@@ -215,21 +249,6 @@ ff.fisher.ui.fish.FishTime.prototype.position_ = function(
 ff.fisher.ui.fish.FishTime.prototype.toPixels_ = function(ms) {
   var width = this.getElement().offsetWidth - 2; // -2 for borders
   return (ms / ff.service.EorzeaTime.MS_IN_A_DAY) * width;
-};
-
-
-/**
- * Sets the left side of the element relative to the current time assuming the
- * current time is at relative position 0.
- * @param {Element} el
- * @param {number} hoursFromLeft
- * @private
- */
-ff.fisher.ui.fish.FishTime.prototype.setLeft_ = function(el, hoursFromLeft) {
-  var width = this.getElement().offsetWidth - 2; // -2 for borders
-  var offsetPercent = hoursFromLeft / 24.0;
-  var offsetInPixels = width * offsetPercent;
-  el.style.left = offsetInPixels + 'px';
 };
 
 
