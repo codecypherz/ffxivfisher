@@ -22,19 +22,15 @@ goog.require('goog.ui.Component');
 
 
 /**
- * @param {number} startHour
- * @param {number} endHour
+ * @param {!ff.model.Fish} fish
  * @constructor
  * @extends {goog.ui.Component}
  */
-ff.fisher.ui.fish.FishTime = function(startHour, endHour) {
+ff.fisher.ui.fish.FishTime = function(fish) {
   goog.base(this);
 
-  /** @private {number} */
-  this.startHour_ = startHour;
-
-  /** @private {number} */
-  this.endHour_ = endHour;
+  /** @private {!ff.model.Fish} */
+  this.fish_ = fish;
 
   /** @private {!ff.service.EorzeaTime} */
   this.eorzeaTime_ = ff.service.EorzeaTime.getInstance();
@@ -117,13 +113,6 @@ ff.fisher.ui.fish.FishTime.prototype.createDom = function() {
       this, ff.fisher.ui.fish.FishTime.Id_.WEATHER_CHANGE_3);
   this.cursor_ = ff.ui.getElementByFragment(
       this, ff.fisher.ui.fish.FishTime.Id_.CURSOR);
-
-  // Set the widths of the two ranges.
-  var diff = Math.abs((this.endHour_ + 1) - this.startHour_);
-  var range = this.endHour_ < this.startHour_ ? 24 - diff : diff;
-  var width = (range / 24.0) * 300;
-  this.range1_.style.width = width + 'px';
-  this.range2_.style.width = width + 'px';
 };
 
 
@@ -183,14 +172,14 @@ ff.fisher.ui.fish.FishTime.prototype.update_ = function() {
   }
 
   var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
+
+  this.position_(this.range1_, this.fish_.getPreviousTimeRange(), eorzeaDate);
+  this.position_(this.range2_, this.fish_.getNextTimeRange(), eorzeaDate);
+
+  // TODO Render left hand side of weather ranges returned from the weather
+  // service.
   var currentHour =
       eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
-
-  var hoursUntilNextStart = this.eorzeaTime_.getHoursUntilNextHour(
-      currentHour, this.startHour_);
-  this.setLeft_(this.range1_, hoursUntilNextStart);
-  this.setLeft_(this.range2_, hoursUntilNextStart - 24);
-
   this.setLeft_(
       this.weatherChange1_,
       this.eorzeaTime_.getHoursUntilNextHour(currentHour, 0));
@@ -200,6 +189,32 @@ ff.fisher.ui.fish.FishTime.prototype.update_ = function() {
   this.setLeft_(
       this.weatherChange3_,
       this.eorzeaTime_.getHoursUntilNextHour(currentHour, 16));
+};
+
+
+/**
+ * Positions the element based on the given range.
+ * @param {Element} el
+ * @param {!goog.math.Range} range
+ * @param {!goog.date.UtcDateTime} eorzeaDate
+ * @private
+ */
+ff.fisher.ui.fish.FishTime.prototype.position_ = function(
+    el, range, eorzeaDate) {
+  el.style.width = this.toPixels_(range.getLength()) + 'px';
+  el.style.left = this.toPixels_(range.start - eorzeaDate.getTime()) + 'px';
+};
+
+
+/**
+ * Converts milliseconds to pixels.
+ * @param {number} ms
+ * @return {number}
+ * @private
+ */
+ff.fisher.ui.fish.FishTime.prototype.toPixels_ = function(ms) {
+  var width = this.getElement().offsetWidth - 2; // -2 for borders
+  return (ms / ff.service.EorzeaTime.MS_IN_A_DAY) * width;
 };
 
 

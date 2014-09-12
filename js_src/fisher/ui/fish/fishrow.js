@@ -39,8 +39,7 @@ ff.fisher.ui.fish.FishRow = function(fish) {
   this.user_ = ff.model.User.getInstance();
 
   /** @private {!ff.fisher.ui.fish.FishTime} */
-  this.time_ = new ff.fisher.ui.fish.FishTime(
-      fish.getStartHour(), fish.getEndHour());
+  this.time_ = new ff.fisher.ui.fish.FishTime(fish);
   this.addChild(this.time_);
 };
 goog.inherits(ff.fisher.ui.fish.FishRow, goog.ui.Component);
