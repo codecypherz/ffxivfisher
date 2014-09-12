@@ -34,7 +34,7 @@ ff.service.FishWatcher = function() {
   this.fishService_ = ff.service.FishService.getInstance();
 
   /** @private {!ff.service.WeatherService} */
-  this.skywatcherService_ = ff.service.WeatherService.getInstance();
+  this.weatherService_ = ff.service.WeatherService.getInstance();
 
   this.handler_ = new goog.events.EventHandler(this);
   this.registerDisposable(this.handler_);
@@ -94,9 +94,22 @@ ff.service.FishWatcher.prototype.checkFish_ = function() {
         nextRange.end - ff.service.EorzeaTime.MS_IN_A_DAY);
     fish.setTimeRanges(previousRange, nextRange);
 
-    // TODO Switch this to setting catchable ranges instead by intersecting
-    // weather ranges with time ranges.
-    fish.setCatchable(this.isCatchable_(fish, eorzeaDate.getUTCHours()));
+    // Compute the intersections of weather ranges with time ranges.
+    var weatherRanges = this.weatherService_.getWeatherRangesForArea(
+        fish.getLocation().getArea());
+    var intersections = [];
+    goog.array.forEach(weatherRanges, function(weatherRange) {
+      if (!fish.getWeatherSet().contains(weatherRange.getWeather())) {
+        return;
+      }
+      this.addIntersection_(
+          intersections, weatherRange.getRange(), fish.getPreviousTimeRange());
+      this.addIntersection_(
+          intersections, weatherRange.getRange(), fish.getNextTimeRange());
+    }, this);
+
+    fish.setCatchableRanges(intersections);
+
   }, this);
 
   // TODO If the set of fish that is catchable has changed, dispatch an event.
@@ -105,70 +118,18 @@ ff.service.FishWatcher.prototype.checkFish_ = function() {
 
 
 /**
- * Checks to see if the given fish is catchable.
- * @param {!ff.model.Fish} fish The fish being checked.
- * @param {number} currentHour The current Eorzean hour.
- * @return {boolean} True if the given fish is catchable.
+ * Figures out if there is an intersection of the two ranges and adds it to the
+ * list of intersections.  If the ranges only intersect on a single point, it
+ * is *not* considered an intersection.
+ * @param {!Array.<!goog.math.Range>} intersections
+ * @param {!goog.math.Range} range1
+ * @param {!goog.math.Range} range2
  * @private
  */
-ff.service.FishWatcher.prototype.isCatchable_ = function(fish, currentHour) {
-  return this.isTimeValid_(fish, currentHour) && this.isWeatherValid_(fish);
-};
-
-
-/**
- * Checks to see if the weather conditions are correct for the given fish.
- * @param {!ff.model.Fish} fish
- * @return {boolean}
- * @private
- */
-ff.service.FishWatcher.prototype.isWeatherValid_ = function(fish) {
-  var weatherSet = fish.getWeatherSet();
-
-  // Fish can be caught in any weather.
-  if (weatherSet.isEmpty()) {
-    return true;
+ff.service.FishWatcher.prototype.addIntersection_ = function(
+    intersections, range1, range2) {
+  var intersection = goog.math.Range.intersection(range1, range2);
+  if (intersection && intersection.getLength() > 0) {
+    intersections.push(intersection);
   }
-
-  // Current weather must be in the set.
-  var weatherList = this.skywatcherService_.getWeatherForArea(
-      fish.getLocation().getArea());
-  var currentWeather = weatherList[0];
-  if (currentWeather) {
-    return fish.getWeatherSet().contains(currentWeather);
-  }
-
-  // Don't know current weather, so weather isn't valid.
-  return false;
-};
-
-
-/**
- * Checks to see if the current time condition is right for the given fish.
- * @param {!ff.model.Fish} fish
- * @param {number} currentHour
- * @return {boolean}
- * @private
- */
-ff.service.FishWatcher.prototype.isTimeValid_ = function(fish, currentHour) {
-  var wrapAround = fish.getEndHour() < fish.getStartHour();
-  if (wrapAround) {
-    return this.isHourInRange_(currentHour, 0, fish.getEndHour()) ||
-        this.isHourInRange_(currentHour, fish.getStartHour(), 23);
-  } else {
-    return this.isHourInRange_(
-        currentHour, fish.getStartHour(), fish.getEndHour());
-  }
-};
-
-
-/**
- * @param {number} hour
- * @param {number} start
- * @param {number} end
- * @return {boolean}
- * @private
- */
-ff.service.FishWatcher.prototype.isHourInRange_ = function(hour, start, end) {
-  return (start <= hour) && (hour <= end);
 };

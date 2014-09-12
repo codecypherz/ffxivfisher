@@ -58,8 +58,8 @@ ff.model.Fish = function(
   /** @private {!goog.math.Range} */
   this.nextTimeRange_ = new goog.math.Range(0, 0);
 
-  /** @private {boolean} */
-  this.catchable_ = false;
+  /** @private {!Array.<!goog.math.Range>} */
+  this.catchableRanges_ = [];
 };
 goog.inherits(ff.model.Fish, goog.events.EventTarget);
 
@@ -119,19 +119,22 @@ ff.model.Fish.prototype.getLocation = function() {
 };
 
 
-/** @return {boolean} */
-ff.model.Fish.prototype.isCatchable = function() {
-  return this.catchable_;
+/** @return {!Array.<!goog.math.Range>} */
+ff.model.Fish.prototype.getCatchableRanges = function() {
+  return this.catchableRanges_;
 };
 
 
-/** @param {boolean} catchable */
-ff.model.Fish.prototype.setCatchable = function(catchable) {
-  var oldCatchable = this.catchable_;
-  this.catchable_ = catchable;
-  if (oldCatchable != catchable) {
-    this.dispatchEvent(ff.model.Fish.EventType.CATCHABLE_CHANGED);
-  }
+/** @return {boolean} */
+ff.model.Fish.prototype.isCatchable = function() {
+  return goog.array.isEmpty(this.catchableRanges_);
+};
+
+
+/** @param {!Array.<!goog.math.Range>} catchableRanges */
+ff.model.Fish.prototype.setCatchableRanges = function(catchableRanges) {
+  this.catchableRanges_ = catchableRanges;
+  this.dispatchEvent(ff.model.Fish.EventType.CATCHABLE_CHANGED);
 };
 
 
