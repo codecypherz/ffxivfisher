@@ -172,8 +172,6 @@ ff.service.WeatherService.prototype.onWeatherLoaded_ = function(json) {
   if (reportHour >= 16) {
     startHour = 16;
   }
-  console.info('reportHour', reportHour);
-  console.info('startHour', startHour);
 
   // Define actual ranges based on the start hour.
   this.weatherRanges_ = [];

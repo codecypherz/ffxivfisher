@@ -5,6 +5,7 @@
 goog.provide('ff.fisher.ui.fish.FishTime');
 
 goog.require('ff');
+goog.require('ff.fisher.ui.UpdateTimer');
 goog.require('ff.fisher.ui.fish.FishTimeTooltip');
 goog.require('ff.fisher.ui.fish.soy');
 goog.require('ff.service.EorzeaTime');
@@ -39,6 +40,9 @@ ff.fisher.ui.fish.FishTime = function(fish) {
   /** @private {!ff.service.WeatherService} */
   this.weatherService_ = ff.service.WeatherService.getInstance();
 
+  /** @private {!ff.fisher.ui.UpdateTimer} */
+  this.updateTimer_ = ff.fisher.ui.UpdateTimer.getInstance();
+
   /** @private {ff.fisher.ui.fish.FishTimeTooltip} */
   this.tooltip_ = null;
 
@@ -68,10 +72,6 @@ ff.fisher.ui.fish.FishTime = function(fish) {
 
   /** @private {Element} */
   this.cursor_ = null;
-
-  /** @private {!goog.Timer} */
-  this.timer_ = new goog.Timer(ff.fisher.ui.fish.FishTime.UPDATE_INTERVAL_MS_);
-  this.registerDisposable(this.timer_);
 };
 goog.inherits(ff.fisher.ui.fish.FishTime, goog.ui.Component);
 
@@ -91,14 +91,6 @@ ff.fisher.ui.fish.FishTime.Id_ = {
   WEATHER_CHANGE_5: ff.getUniqueId('weather-change-5'),
   WEATHER_CHANGE_6: ff.getUniqueId('weather-change-6')
 };
-
-
-/**
- * @type {number}
- * @const
- * @private
- */
-ff.fisher.ui.fish.FishTime.UPDATE_INTERVAL_MS_ = 3000;
 
 
 /**
@@ -165,23 +157,19 @@ ff.fisher.ui.fish.FishTime.prototype.enterDocument = function() {
 
   // Listen for when to update.
   this.getHandler().listen(
-      this.timer_,
+      this.updateTimer_,
       goog.Timer.TICK,
       this.update_);
 
   // Update regularly and right now.
-  this.timer_.start();
   goog.Timer.callOnce(this.update_, 0, this);
 };
 
 
 /** @override */
 ff.fisher.ui.fish.FishTime.prototype.exitDocument = function() {
-  this.timer_.stop();
-
   goog.dispose(this.tooltip_);
   this.tooltip_ = null;
-
   goog.base(this, 'exitDocument');
 };
 

@@ -5,6 +5,7 @@
 goog.provide('ff.fisher.ui.area.AreaWeather');
 
 goog.require('ff');
+goog.require('ff.fisher.ui.UpdateTimer');
 goog.require('ff.fisher.ui.area.soy');
 goog.require('ff.fisher.ui.weather.WeatherIcon');
 goog.require('ff.service.EorzeaTime');
@@ -41,6 +42,9 @@ ff.fisher.ui.area.AreaWeather = function(area) {
   /** @private {!ff.service.EorzeaTime} */
   this.eorzeaTime_ = ff.service.EorzeaTime.getInstance();
 
+  /** @private {!ff.fisher.ui.UpdateTimer} */
+  this.updateTimer_ = ff.fisher.ui.UpdateTimer.getInstance();
+
   /** @private {Element} */
   this.weather1_ = null;
 
@@ -52,11 +56,6 @@ ff.fisher.ui.area.AreaWeather = function(area) {
 
   /** @private {Element} */
   this.weather4_ = null;
-
-  /** @private {!goog.Timer} */
-  this.timer_ = new goog.Timer(
-      ff.fisher.ui.area.AreaWeather.UPDATE_INTERVAL_MS_);
-  this.registerDisposable(this.timer_);
 };
 goog.inherits(ff.fisher.ui.area.AreaWeather, goog.ui.Component);
 
@@ -71,14 +70,6 @@ ff.fisher.ui.area.AreaWeather.Id_ = {
   WEATHER_3: ff.getUniqueId('weather-3'),
   WEATHER_4: ff.getUniqueId('weather-4')
 };
-
-
-/**
- * @type {number}
- * @const
- * @private
- */
-ff.fisher.ui.area.AreaWeather.UPDATE_INTERVAL_MS_ = 3000;
 
 
 /** @override */
@@ -113,20 +104,12 @@ ff.fisher.ui.area.AreaWeather.prototype.enterDocument = function() {
 
   // Update occasionally, but a little slower than time ticks.
   this.getHandler().listen(
-      this.timer_,
+      this.updateTimer_,
       goog.Timer.TICK,
       this.update_);
 
   // Update regularly and right now.
-  this.timer_.start();
   goog.Timer.callOnce(this.update_, 50, this);
-};
-
-
-/** @override */
-ff.fisher.ui.area.AreaWeather.prototype.exitDocument = function() {
-  this.timer_.stop();
-  goog.base(this, 'exitDocument');
 };
 
 
