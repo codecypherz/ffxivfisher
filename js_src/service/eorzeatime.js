@@ -102,24 +102,6 @@ ff.service.EorzeaTime.prototype.toEarth = function(eorzeaDate) {
 
 
 /**
- * Figures out the number of hours (including minutes) until the target appears
- * relative to the current time.
- * @param {number} current The current hours (including minutes) of the day
- *     (e.g. 4.5 is 4:30am).
- * @param {number} target The target hour.
- * @return {number} The number of hours until the target.  Never negative.
- */
-ff.service.EorzeaTime.prototype.getHoursUntilNextHour = function(
-    current, target) {
-  if (current <= target) {
-    return target - current;
-  } else {
-    return 24 + target - current;
-  }
-};
-
-
-/**
  * @param {number} hours The hours to convert (e.g. 1.45).
  * @return {number} The number of ms in the time given.
  */

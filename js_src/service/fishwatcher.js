@@ -82,7 +82,7 @@ ff.service.FishWatcher.prototype.checkFish_ = function() {
   goog.array.forEach(this.fishService_.getAll(), function(fish) {
 
     // Update time ranges on each fish.
-    var hoursUntilNextStart = this.eorzeaTime_.getHoursUntilNextHour(
+    var hoursUntilNextStart = this.getHoursUntilNextHour_(
         currentHour, fish.getStartHour());
     var nextStartMs = eorzeaDate.getTime() + this.eorzeaTime_.hoursToMs(
         hoursUntilNextStart);
@@ -131,5 +131,24 @@ ff.service.FishWatcher.prototype.addIntersection_ = function(
   var intersection = goog.math.Range.intersection(range1, range2);
   if (intersection && intersection.getLength() > 0) {
     intersections.push(intersection);
+  }
+};
+
+
+/**
+ * Figures out the number of hours (including minutes) until the target appears
+ * relative to the current time.
+ * @param {number} current The current hours (including minutes) of the day
+ *     (e.g. 4.5 is 4:30am).
+ * @param {number} target The target hour.
+ * @return {number} The number of hours until the target.  Never negative.
+ * @private
+ */
+ff.service.FishWatcher.prototype.getHoursUntilNextHour_ = function(
+    current, target) {
+  if (current <= target) {
+    return target - current;
+  } else {
+    return 24 + target - current;
   }
 };
