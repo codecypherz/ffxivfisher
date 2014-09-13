@@ -119,8 +119,18 @@ ff.model.LocationEnum = {
       ff.model.AreaEnum.WESTERN_LA_NOSCEA, 'Reaver Hide'),
 
   // Upper La Noscea
+  'OAKWOOD': new ff.model.Location(
+      ff.model.AreaEnum.UPPER_LA_NOSCEA, 'Oakwood'),
+  'FOOL_FALLS': new ff.model.Location(
+      ff.model.AreaEnum.UPPER_LA_NOSCEA, 'Fool Falls'),
+  'NORTH_BRONZE_LAKE': new ff.model.Location(
+      ff.model.AreaEnum.UPPER_LA_NOSCEA, 'North Bronze Lake'),
+  'BRONZE_LAKE_SHALLOWS': new ff.model.Location(
+      ff.model.AreaEnum.UPPER_LA_NOSCEA, 'Bronze Lake Shallows'),
+
+  // Outer La Noscea
   'THE_LONG_CLIMB': new ff.model.Location(
-      ff.model.AreaEnum.UPPER_LA_NOSCEA, 'The Long Climb'),
+      ff.model.AreaEnum.OUTER_LA_NOSCEA, 'The Long Climb'),
 
   // Mist
   'MIST': new ff.model.Location(
