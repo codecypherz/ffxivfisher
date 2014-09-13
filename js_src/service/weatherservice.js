@@ -44,13 +44,6 @@ ff.service.WeatherService = function() {
   /** @private {!Array.<!goog.math.Range>} */
   this.weatherRanges_ = [];
 
-  // TODO Remove extraneous instance variables once weather ranges are used.
-  /** @private {!Object.<string, !Array.<!ff.model.Weather>>} */
-  this.weather_ = {};
-
-  /** @private {number} */
-  this.reportHour_ = 0;
-
   /** @private {number} */
   this.lastSeenHour_ = 0;
 
@@ -72,6 +65,7 @@ goog.addSingletonGetter(ff.service.WeatherService);
  * @enum {string}
  */
 ff.service.WeatherService.EventType = {
+  WEATHER_INTERVAL_CHANGED: ff.getUniqueId('weather-interval-changed'),
   WEATHER_UPDATED: ff.getUniqueId('weather-updated')
 };
 
@@ -139,75 +133,6 @@ ff.service.WeatherService.prototype.getWeatherRangesForArea = function(area) {
 
 
 /**
- * TODO Delete.
- * @param {!ff.model.Area} area
- * @return {!Array.<!ff.model.Weather>}
- */
-ff.service.WeatherService.prototype.getWeatherForArea = function(area) {
-  // Figure out the area enum for the area model.
-  var areaEnum = goog.object.findKey(
-      ff.model.AreaEnum,
-      function(value, key, object) {
-        return goog.string.caseInsensitiveCompare(
-            value.getName(), area.getName()) == 0;
-      });
-
-  // This shouldn't happen unless a new area gets added to the game.
-  if (!areaEnum) {
-    throw Error('Failed to find this area: ' + area.getName());
-  }
-
-  // Get the current time.
-  var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
-  var currentHour =
-      eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
-
-  // Compute the offset in order to ignore past weather.
-  var nextWeatherChangeHour = this.getNextWeatherChangeHour(currentHour);
-  var offset;
-  if (this.reportHour_ >= (nextWeatherChangeHour - 8)) {
-    offset = 0;
-  } else if (this.reportHour_ >= (nextWeatherChangeHour - 16)) {
-    offset = 1;
-  } else {
-    offset = 2;
-  }
-
-  var weatherSourceList = this.weather_[areaEnum];
-  if (!goog.isDefAndNotNull(weatherSourceList)) {
-    // No data for this area.
-    return [];
-  }
-
-  // Filter the source list based on the offset.
-  var currentWeather = [];
-  for (var i = 0; i < 4; i++) {
-    var weather = weatherSourceList[i + offset];
-    if (weather) {
-      currentWeather.push(weather);
-    }
-  }
-  return currentWeather;
-};
-
-
-/**
- * Figures out the next hour that weather will change based on the current hour.
- * @param {number} currentHour
- * @return {number}
- */
-ff.service.WeatherService.prototype.getNextWeatherChangeHour = function(
-    currentHour) {
-  if (currentHour < 8) {
-    return 8;
-  } else if (currentHour < 16) {
-    return 16;
-  }
-  return 24;
-};
-
-
-/**
  * Gets the current weather from the server.
  * @private
  */
@@ -237,15 +162,18 @@ ff.service.WeatherService.prototype.onWeatherLoaded_ = function(json) {
   var currentHour =
       eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
 
-  this.reportHour_ = json['eorzeaHour'];
+  var reportHour = json['eorzeaHour'];
 
   // Figure out the starting hour of the range in which the report hour occurs.
   var startHour = 0;
-  if (this.reportHour_ >= 8) {
+  if (reportHour >= 8) {
     startHour = 8;
-  } else if (this.reportHour_ >= 16) {
+  }
+  if (reportHour >= 16) {
     startHour = 16;
   }
+  console.info('reportHour', reportHour);
+  console.info('startHour', startHour);
 
   // Define actual ranges based on the start hour.
   this.weatherRanges_ = [];
@@ -258,6 +186,7 @@ ff.service.WeatherService.prototype.onWeatherLoaded_ = function(json) {
         reportStartMs + ((i + 1) * rangeWidth)));
   }
 
+  // Map areas to their weather ranges.
   var weatherMap = json['weatherMap'];
   goog.object.forEach(
       ff.model.AreaEnum,
@@ -267,18 +196,15 @@ ff.service.WeatherService.prototype.onWeatherLoaded_ = function(json) {
           return; // No weather data for this area.
         }
         var weatherRangeList = [];
-        var weatherList = [];
         goog.array.forEach(rawWeatherList, function(rawWeather, i, arr) {
           var weather = /** @type {!ff.model.Weather} */ (
               ff.stringKeyToEnum(rawWeather, ff.model.Weather));
           if (weather) {
-            weatherList.push(weather);
             weatherRangeList.push(
                 new ff.model.WeatherRange(weather, this.weatherRanges_[i]));
-          }
+          } // else no weather for this particular range or unknown weather.
         }, this);
         this.weatherRangeMap_[key] = weatherRangeList;
-        this.weather_[key] = weatherList;
       },
       this);
 
@@ -305,6 +231,7 @@ ff.service.WeatherService.prototype.checkWeatherInterval_ = function() {
   // Check if this is a new weather interval too.
   if (currentHour == 0 || currentHour == 8 || currentHour == 16) {
     goog.log.info(this.logger, 'New weather interval identified.');
-    this.dispatchEvent(ff.service.WeatherService.EventType.WEATHER_UPDATED);
+    this.dispatchEvent(
+        ff.service.WeatherService.EventType.WEATHER_INTERVAL_CHANGED);
   }
 };

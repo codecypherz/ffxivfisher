@@ -247,8 +247,16 @@ ff.fisher.ui.fish.FishTime.prototype.setLeft_ = function(
  * @private
  */
 ff.fisher.ui.fish.FishTime.prototype.toPixels_ = function(ms) {
-  var width = this.getElement().offsetWidth - 2; // -2 for borders
-  return (ms / ff.service.EorzeaTime.MS_IN_A_DAY) * width;
+  return (ms / ff.service.EorzeaTime.MS_IN_A_DAY) * this.getWidth_();
+};
+
+
+/**
+ * @return {number}
+ * @private
+ */
+ff.fisher.ui.fish.FishTime.prototype.getWidth_ = function() {
+  return this.getElement().offsetWidth - 2; // -2 for borders
 };
 
 
@@ -268,10 +276,9 @@ ff.fisher.ui.fish.FishTime.prototype.updateCursorTime_ = function(
   // Figure out where in the element we are.
   var timePos = goog.style.getClientPosition(this.getElement());
   var x = opt_e.clientX - timePos.x;
-  var width = this.getElement().offsetWidth;
 
   // Update the cursor.
-  var percent = goog.math.clamp(x / width, 0, 1);
+  var percent = goog.math.clamp(x / this.getWidth_(), 0, 1);
   this.cursor_.style.left = x + 'px';
 
   // Figure out the Eorzea date corresponding to the percent of the cursor.

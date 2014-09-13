@@ -115,11 +115,11 @@ ff.fisher.ui.area.AreaWeather.prototype.enterDocument = function() {
   this.getHandler().listen(
       this.timer_,
       goog.Timer.TICK,
-      this.updateWeatherBlocks_);
+      this.update_);
 
   // Update regularly and right now.
   this.timer_.start();
-  goog.Timer.callOnce(this.updateWeatherBlocks_, 50, this);
+  goog.Timer.callOnce(this.update_, 50, this);
 };
 
 
@@ -127,53 +127,6 @@ ff.fisher.ui.area.AreaWeather.prototype.enterDocument = function() {
 ff.fisher.ui.area.AreaWeather.prototype.exitDocument = function() {
   this.timer_.stop();
   goog.base(this, 'exitDocument');
-};
-
-
-/**
- * Updates the positions of the weather rectangles based on the current time.
- * @private
- */
-ff.fisher.ui.area.AreaWeather.prototype.updateWeatherBlocks_ = function() {
-  if (!this.isInDocument()) {
-    return;
-  }
-
-  var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
-  var currentHour =
-      eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
-
-  var hoursUntilNextPositiveStart = this.eorzeaTime_.getHoursUntilNextHour(
-      currentHour,
-      this.weatherService_.getNextWeatherChangeHour(currentHour));
-
-  this.setLeft_(
-      this.weather1_,
-      hoursUntilNextPositiveStart - 8);
-  this.setLeft_(
-      this.weather2_,
-      hoursUntilNextPositiveStart);
-  this.setLeft_(
-      this.weather3_,
-      hoursUntilNextPositiveStart + 8);
-  this.setLeft_(
-      this.weather4_,
-      hoursUntilNextPositiveStart + 16);
-};
-
-
-/**
- * Sets the left side of the element relative to the current time assuming the
- * current time is at relative position 0.
- * @param {Element} el
- * @param {number} hoursFromLeft
- * @private
- */
-ff.fisher.ui.area.AreaWeather.prototype.setLeft_ = function(el, hoursFromLeft) {
-  var width = this.getElement().offsetWidth;
-  var offsetPercent = hoursFromLeft / 24.0;
-  var offsetInPixels = width * offsetPercent;
-  el.style.left = offsetInPixels + 'px';
 };
 
 
@@ -186,10 +139,6 @@ ff.fisher.ui.area.AreaWeather.prototype.renderWeather_ = function() {
     return;
   }
 
-  this.updateWeatherBlocks_();
-
-  var weatherList = this.weatherService_.getWeatherForArea(this.area_);
-
   // Clear existing weather icons.
   goog.array.forEach(this.weatherIcons_, function(weatherIcon) {
     this.removeChild(weatherIcon, true);
@@ -197,30 +146,93 @@ ff.fisher.ui.area.AreaWeather.prototype.renderWeather_ = function() {
   }, this);
   this.weatherIcons_ = [];
 
+  // Get the weather for this area.
+  var weatherRanges = this.weatherService_.getWeatherRangesForArea(this.area_);
+
+  // Render weather icons for each of the weather ranges.
   this.renderWeatherIcon_(
-      ff.fisher.ui.area.AreaWeather.Id_.WEATHER_1, weatherList[0]);
+      ff.fisher.ui.area.AreaWeather.Id_.WEATHER_1, weatherRanges[0]);
   this.renderWeatherIcon_(
-      ff.fisher.ui.area.AreaWeather.Id_.WEATHER_2, weatherList[1]);
+      ff.fisher.ui.area.AreaWeather.Id_.WEATHER_2, weatherRanges[1]);
   this.renderWeatherIcon_(
-      ff.fisher.ui.area.AreaWeather.Id_.WEATHER_3, weatherList[2]);
+      ff.fisher.ui.area.AreaWeather.Id_.WEATHER_3, weatherRanges[2]);
   this.renderWeatherIcon_(
-      ff.fisher.ui.area.AreaWeather.Id_.WEATHER_4, weatherList[3]);
+      ff.fisher.ui.area.AreaWeather.Id_.WEATHER_4, weatherRanges[3]);
+
+  // Position the icons correctly and adjust visibility.
+  this.update_();
 };
 
 
 /**
  * @param {!ff.fisher.ui.area.AreaWeather.Id_} id
- * @param {ff.model.Weather} weather
+ * @param {ff.model.WeatherRange} weatherRange
  * @private
  */
 ff.fisher.ui.area.AreaWeather.prototype.renderWeatherIcon_ = function(
-    id, weather) {
-  if (!weather) {
+    id, weatherRange) {
+  if (!weatherRange) {
     return;
   }
-  var weatherIcon = new ff.fisher.ui.weather.WeatherIcon(weather);
+  var weatherIcon = new ff.fisher.ui.weather.WeatherIcon(
+      weatherRange.getWeather());
   var container = ff.ui.getElementByFragment(this, id);
   this.addChild(weatherIcon);
   this.weatherIcons_.push(weatherIcon);
   weatherIcon.render(container);
+};
+
+
+/**
+ * Updates the positions of the weather rectangles based on the current time.
+ * @private
+ */
+ff.fisher.ui.area.AreaWeather.prototype.update_ = function() {
+  if (!this.isInDocument()) {
+    return;
+  }
+
+  var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
+
+  var weatherRanges = this.weatherService_.getWeatherTimeRanges();
+  this.setLeft_(this.weather1_, weatherRanges[0], eorzeaDate);
+  this.setLeft_(this.weather2_, weatherRanges[1], eorzeaDate);
+  this.setLeft_(this.weather3_, weatherRanges[2], eorzeaDate);
+  this.setLeft_(this.weather4_, weatherRanges[3], eorzeaDate);
+};
+
+
+/**
+ * Sets the left side of the element based on the given range.
+ * @param {Element} el
+ * @param {!goog.math.Range} range
+ * @param {!goog.date.UtcDateTime} eorzeaDate
+ * @private
+ */
+ff.fisher.ui.area.AreaWeather.prototype.setLeft_ = function(
+    el, range, eorzeaDate) {
+  if (!range) {
+    return;
+  }
+  el.style.left = this.toPixels_(range.start - eorzeaDate.getTime()) + 'px';
+};
+
+
+/**
+ * Converts milliseconds to pixels.
+ * @param {number} ms
+ * @return {number}
+ * @private
+ */
+ff.fisher.ui.area.AreaWeather.prototype.toPixels_ = function(ms) {
+  return (ms / ff.service.EorzeaTime.MS_IN_A_DAY) * this.getWidth_();
+};
+
+
+/**
+ * @return {number}
+ * @private
+ */
+ff.fisher.ui.area.AreaWeather.prototype.getWidth_ = function() {
+  return this.getElement().offsetWidth;
 };
