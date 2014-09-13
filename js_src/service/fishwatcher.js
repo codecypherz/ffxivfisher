@@ -8,7 +8,6 @@ goog.require('ff');
 goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.FishService');
 goog.require('ff.service.WeatherService');
-goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
@@ -44,15 +43,12 @@ ff.service.FishWatcher = function() {
       this.fishService_,
       ff.service.FishService.EventType.FISH_CHANGED,
       this.checkFish_);
-
-  // Check fish whenever the clock ticks.
   this.handler_.listen(
-      this.eorzeaTime_,
-      goog.Timer.TICK,
+      this.weatherService_,
+      ff.service.WeatherService.EventType.WEATHER_UPDATED,
       this.checkFish_);
 
   // Check fish right now.
-  this.logger.info('Checking fish for the first time.');
   this.checkFish_();
 };
 goog.inherits(ff.service.FishWatcher, goog.events.EventTarget);
@@ -74,6 +70,8 @@ ff.service.FishWatcher.EventType = {
  * @private
  */
 ff.service.FishWatcher.prototype.checkFish_ = function() {
+  goog.log.info(this.logger, 'Checking fish for catchable ranges.');
+
   var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
 
   var currentHour =
@@ -93,6 +91,13 @@ ff.service.FishWatcher.prototype.checkFish_ = function() {
         nextRange.start - ff.service.EorzeaTime.MS_IN_A_DAY,
         nextRange.end - ff.service.EorzeaTime.MS_IN_A_DAY);
     fish.setTimeRanges(previousRange, nextRange);
+
+    // Shortcut optimization: if there are no weather requirements, the
+    // catchable ranges are simply the time ranges.
+    if (fish.getWeatherSet().isEmpty()) {
+      fish.setCatchableRanges([previousRange, nextRange]);
+      return;
+    }
 
     // Compute the intersections of weather ranges with time ranges.
     var weatherRanges = this.weatherService_.getWeatherRangesForArea(

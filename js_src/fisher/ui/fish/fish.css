@@ -42,8 +42,18 @@
   background: #2B73C5;
   /*background: #133D6E;*/
   bottom: 0;
+  opacity: 0.4;
   position: absolute;
   top: 0;
+  z-index: 1;
+}
+
+.ff-fish-catchable-range {
+  background: #2B73C5;
+  bottom: 0;
+  position: absolute;
+  top: 0;
+  z-index: 2;
 }
 
 .ff-fish-time-change {
@@ -52,6 +62,7 @@
   position: absolute;
   top: 0;
   width: 1px;
+  z-index: 3;
 }
 
 .ff-fish-time-cursor {
@@ -60,6 +71,7 @@
   position: absolute;
   top: 0;
   width: 1px;
+  z-index: 4;
 }
 
 /* For the FishTimeToolip */

@@ -8,12 +8,15 @@ goog.require('ff');
 goog.require('ff.fisher.ui.UpdateTimer');
 goog.require('ff.fisher.ui.fish.FishTimeTooltip');
 goog.require('ff.fisher.ui.fish.soy');
+goog.require('ff.model.Fish');
 goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.WeatherService');
 goog.require('ff.ui');
 goog.require('goog.Timer');
+goog.require('goog.array');
 goog.require('goog.date.DateTime');
 goog.require('goog.date.Interval');
+goog.require('goog.dom');
 goog.require('goog.events.EventType');
 goog.require('goog.i18n.DateTimeFormat');
 goog.require('goog.math');
@@ -51,6 +54,9 @@ ff.fisher.ui.fish.FishTime = function(fish) {
 
   /** @private {Element} */
   this.range2_ = null;
+
+  /** @private {!Array.<Element>} */
+  this.catchableRangeElements_ = [];
 
   /** @private {Element} */
   this.weatherChange1_ = null;
@@ -152,6 +158,12 @@ ff.fisher.ui.fish.FishTime.prototype.enterDocument = function() {
         this.updateCursorTime_(true, e);
       });
 
+  // Listen for catchable range changes.
+  this.getHandler().listen(
+      this.fish_,
+      ff.model.Fish.EventType.CATCHABLE_CHANGED,
+      this.renderCatchableRanges_);
+
   // Update the cursor.
   this.updateCursorTime_(false);
 
@@ -161,8 +173,8 @@ ff.fisher.ui.fish.FishTime.prototype.enterDocument = function() {
       goog.Timer.TICK,
       this.update_);
 
-  // Update regularly and right now.
-  goog.Timer.callOnce(this.update_, 0, this);
+  // Update right now.
+  goog.Timer.callOnce(this.renderCatchableRanges_, 0, this);
 };
 
 
@@ -171,6 +183,26 @@ ff.fisher.ui.fish.FishTime.prototype.exitDocument = function() {
   goog.dispose(this.tooltip_);
   this.tooltip_ = null;
   goog.base(this, 'exitDocument');
+};
+
+
+/** @private */
+ff.fisher.ui.fish.FishTime.prototype.renderCatchableRanges_ = function() {
+  // Clear existing elements.
+  goog.array.forEach(this.catchableRangeElements_, goog.dom.removeNode);
+  this.catchableRangeElements_ = [];
+
+  // Render new ones.
+  var catchableRanges = this.fish_.getCatchableRanges();
+  goog.array.forEach(catchableRanges, function(catchableRange) {
+    var catchableRangeElement = goog.soy.renderAsElement(
+        ff.fisher.ui.fish.soy.CATCHABLE_RANGE, { });
+    this.getElement().appendChild(catchableRangeElement);
+    this.catchableRangeElements_.push(catchableRangeElement);
+  }, this);
+
+  // Update to position all ranges correctly.
+  this.update_();
 };
 
 
@@ -185,9 +217,11 @@ ff.fisher.ui.fish.FishTime.prototype.update_ = function() {
 
   var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
 
+  // Update the time ranges for the fish.
   this.position_(this.range1_, this.fish_.getPreviousTimeRange(), eorzeaDate);
   this.position_(this.range2_, this.fish_.getNextTimeRange(), eorzeaDate);
 
+  // Update where weather changes will happen.
   var weatherTimeRanges = this.weatherService_.getWeatherTimeRanges();
   this.setLeft_(this.weatherChange1_, weatherTimeRanges[0], eorzeaDate);
   this.setLeft_(this.weatherChange2_, weatherTimeRanges[1], eorzeaDate);
@@ -195,6 +229,15 @@ ff.fisher.ui.fish.FishTime.prototype.update_ = function() {
   this.setLeft_(this.weatherChange4_, weatherTimeRanges[3], eorzeaDate);
   this.setLeft_(this.weatherChange5_, weatherTimeRanges[4], eorzeaDate);
   this.setLeft_(this.weatherChange6_, weatherTimeRanges[5], eorzeaDate);
+
+  // Update the catchable range overlays.
+  goog.array.forEach(
+      this.fish_.getCatchableRanges(),
+      function(catchableRange, i, arr) {
+        this.position_(
+            this.catchableRangeElements_[i], catchableRange, eorzeaDate);
+      },
+      this);
 };
 
 
@@ -207,6 +250,9 @@ ff.fisher.ui.fish.FishTime.prototype.update_ = function() {
  */
 ff.fisher.ui.fish.FishTime.prototype.position_ = function(
     el, range, eorzeaDate) {
+  if (!el) {
+    return;
+  }
   el.style.width = this.toPixels_(range.getLength()) + 'px';
   this.setLeft_(el, range, eorzeaDate);
 };

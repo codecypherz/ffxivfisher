@@ -127,7 +127,7 @@ ff.model.Fish.prototype.getCatchableRanges = function() {
 
 /** @return {boolean} */
 ff.model.Fish.prototype.isCatchable = function() {
-  return goog.array.isEmpty(this.catchableRanges_);
+  return !goog.array.isEmpty(this.catchableRanges_);
 };
 
 
