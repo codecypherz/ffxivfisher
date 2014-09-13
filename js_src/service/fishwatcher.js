@@ -73,52 +73,97 @@ ff.service.FishWatcher.prototype.checkFish_ = function() {
   goog.log.info(this.logger, 'Checking fish for catchable ranges.');
 
   var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
-
   var currentHour =
       eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
 
   goog.array.forEach(this.fishService_.getAll(), function(fish) {
 
     // Update time ranges on each fish.
-    var hoursUntilNextStart = this.getHoursUntilNextHour_(
-        currentHour, fish.getStartHour());
-    var nextStartMs = eorzeaDate.getTime() + this.eorzeaTime_.hoursToMs(
-        hoursUntilNextStart);
-    var nextRange = new goog.math.Range(
-        nextStartMs,
-        nextStartMs + this.eorzeaTime_.hoursToMs(fish.getRangeLength()));
-    var previousRange = new goog.math.Range(
-        nextRange.start - ff.service.EorzeaTime.MS_IN_A_DAY,
-        nextRange.end - ff.service.EorzeaTime.MS_IN_A_DAY);
-    fish.setTimeRanges(previousRange, nextRange);
+    this.computeAndSetTimeRanges_(fish, eorzeaDate, currentHour);
 
-    // Shortcut optimization: if there are no weather requirements, the
-    // catchable ranges are simply the time ranges.
-    if (fish.getWeatherSet().isEmpty()) {
-      fish.setCatchableRanges([previousRange, nextRange]);
-      return;
-    }
-
-    // Compute the intersections of weather ranges with time ranges.
-    var weatherRanges = this.weatherService_.getWeatherRangesForArea(
-        fish.getLocation().getArea());
-    var intersections = [];
-    goog.array.forEach(weatherRanges, function(weatherRange) {
-      if (!fish.getWeatherSet().contains(weatherRange.getWeather())) {
-        return;
-      }
-      this.addIntersection_(
-          intersections, weatherRange.getRange(), fish.getPreviousTimeRange());
-      this.addIntersection_(
-          intersections, weatherRange.getRange(), fish.getNextTimeRange());
-    }, this);
-
-    fish.setCatchableRanges(intersections);
+    // Compute and sort the catchable ranges.
+    var catchableRanges = this.computeCatchableRanges_(fish);
+    goog.array.sort(catchableRanges, this.byEarliestRange_);
+    fish.setCatchableRanges(catchableRanges);
 
   }, this);
 
-  // TODO If the set of fish that is catchable has changed, dispatch an event.
-  //this.dispatchEvent(ff.service.FishWatcher.EventType.CATCHABLE_SET_CHANGED);
+  this.dispatchEvent(ff.service.FishWatcher.EventType.CATCHABLE_SET_CHANGED);
+};
+
+
+/**
+ * Computes and sets the previous and next time ranges for a fish.
+ * @param {!ff.model.Fish} fish
+ * @param {!goog.date.UtcDateTime} eorzeaDate
+ * @param {number} currentHour
+ * @private
+ */
+ff.service.FishWatcher.prototype.computeAndSetTimeRanges_ = function(
+    fish, eorzeaDate, currentHour) {
+  var hoursUntilNextStart = this.getHoursUntilNextHour_(
+      currentHour, fish.getStartHour());
+  var nextStartMs = eorzeaDate.getTime() + this.eorzeaTime_.hoursToMs(
+      hoursUntilNextStart);
+  var nextRange = new goog.math.Range(
+      nextStartMs,
+      nextStartMs + this.eorzeaTime_.hoursToMs(fish.getRangeLength()));
+  var previousRange = new goog.math.Range(
+      nextRange.start - ff.service.EorzeaTime.MS_IN_A_DAY,
+      nextRange.end - ff.service.EorzeaTime.MS_IN_A_DAY);
+  fish.setTimeRanges(previousRange, nextRange);
+};
+
+
+/**
+ * Figures out the number of hours (including minutes) until the target appears
+ * relative to the current time.
+ * @param {number} current The current hours (including minutes) of the day
+ *     (e.g. 4.5 is 4:30am).
+ * @param {number} target The target hour.
+ * @return {number} The number of hours until the target.  Never negative.
+ * @private
+ */
+ff.service.FishWatcher.prototype.getHoursUntilNextHour_ = function(
+    current, target) {
+  if (current <= target) {
+    return target - current;
+  } else {
+    return 24 + target - current;
+  }
+};
+
+
+/**
+ * Figures out the catchable ranges based on the intersections of weather ranges
+ * with the fish time ranges assuming the weather is in the fish weather set.
+ * If the fish has no weather requirement, the fish's time ranges are returned.
+ * @param {!ff.model.Fish} fish
+ * @return {!Array.<!goog.math.Range>}
+ * @private
+ */
+ff.service.FishWatcher.prototype.computeCatchableRanges_ = function(fish) {
+  // Shortcut optimization: if there are no weather requirements, the
+  // catchable ranges are simply the time ranges.
+  if (fish.getWeatherSet().isEmpty()) {
+    return [fish.getPreviousTimeRange(), fish.getNextTimeRange()];
+  }
+
+  // Compute the intersections of weather ranges with time ranges.
+  var weatherRanges = this.weatherService_.getWeatherRangesForArea(
+      fish.getLocation().getArea());
+  var intersections = [];
+  goog.array.forEach(weatherRanges, function(weatherRange) {
+    if (!fish.getWeatherSet().contains(weatherRange.getWeather())) {
+      return;
+    }
+    this.addIntersection_(
+        intersections, weatherRange.getRange(), fish.getPreviousTimeRange());
+    this.addIntersection_(
+        intersections, weatherRange.getRange(), fish.getNextTimeRange());
+  }, this);
+
+  return intersections;
 };
 
 
@@ -141,19 +186,12 @@ ff.service.FishWatcher.prototype.addIntersection_ = function(
 
 
 /**
- * Figures out the number of hours (including minutes) until the target appears
- * relative to the current time.
- * @param {number} current The current hours (including minutes) of the day
- *     (e.g. 4.5 is 4:30am).
- * @param {number} target The target hour.
- * @return {number} The number of hours until the target.  Never negative.
+ * Compares two ranges in order to sort the earlier ranges first.
+ * @param {!goog.math.Range} r1
+ * @param {!goog.math.Range} r2
+ * @return {number}
  * @private
  */
-ff.service.FishWatcher.prototype.getHoursUntilNextHour_ = function(
-    current, target) {
-  if (current <= target) {
-    return target - current;
-  } else {
-    return 24 + target - current;
-  }
+ff.service.FishWatcher.prototype.byEarliestRange_ = function(r1, r2) {
+  return r1.start - r2.start;
 };
