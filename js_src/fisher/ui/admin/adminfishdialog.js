@@ -260,7 +260,7 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.getHour_ = function(id, e) {
   var string = input.value;
   try {
     var hour = parseInt(string, 10);
-    if (hour >= 0 && hour <= 23) {
+    if (hour >= 0 && hour <= 24) {
       return hour;
     }
   } catch (error) {
