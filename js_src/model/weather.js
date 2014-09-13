@@ -28,7 +28,7 @@ ff.model.Weather = {
   'SNOW': 'Snow',
   'STORM_CLOUDS': 'Storm Clouds',
   'THUNDER': 'Thunder',
-  'THUNDERSTORM': 'Thunderstorm',
+  'THUNDERSTORMS': 'Thunderstorms',
   'TORRENTIAL': 'Torrential',
   'WIND': 'Wind'
 };
