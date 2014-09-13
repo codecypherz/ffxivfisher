@@ -137,7 +137,7 @@ ff.fisher.ui.area.Area.prototype.byNextCatch_ = function(f1, f2) {
   var r1 = this.getFirstVisibleRange_(f1);
   var r2 = this.getFirstVisibleRange_(f2);
   if (r1 && r2) {
-    // Compare first ranges.
+    // Compare the ranges such that the earlier one comes first.
     return r1.start - r2.start;
   } else if (r1 && !r2) {
     // Fish 1 is catchable but fish 2 is not.
