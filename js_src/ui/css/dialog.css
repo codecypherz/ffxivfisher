@@ -11,6 +11,7 @@
   left: 0;
   position: absolute;
   top: 0;
+  z-index: 100;
 }
 
 .modal-dialog {
@@ -19,6 +20,7 @@
   color: #fff;
   outline: none;
   position: absolute;
+  z-index: 101;
   @mixin border_radius(6px);
   @mixin box_shadow(10px 10px 20px rgba(0, 0, 0, .6));
 }
