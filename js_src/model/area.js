@@ -2,6 +2,8 @@
 goog.provide('ff.model.Area');
 
 goog.require('ff.model.Region');
+goog.require('goog.object');
+goog.require('goog.string');
 goog.provide('ff.model.AreaEnum');
 
 
@@ -30,6 +32,25 @@ ff.model.Area.prototype.getRegion = function() {
 /** @return {string} */
 ff.model.Area.prototype.getName = function() {
   return this.name_;
+};
+
+
+/**
+ * Figures out the enum given the model.
+ * @param {!ff.model.Area} area
+ * @return {string}
+ */
+ff.model.Area.getEnum = function(area) {
+  var key = goog.object.findKey(
+      ff.model.AreaEnum,
+      function(value, key, object) {
+        return goog.string.caseInsensitiveCompare(
+            value.getName(), area.getName()) == 0;
+      });
+  if (!key) {
+    throw Error('Unable to find AreaEnum for ' + area.getName());
+  }
+  return key;
 };
 
 

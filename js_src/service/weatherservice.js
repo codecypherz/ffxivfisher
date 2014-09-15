@@ -5,6 +5,7 @@
 goog.provide('ff.service.WeatherService');
 
 goog.require('ff');
+goog.require('ff.model.Area');
 goog.require('ff.model.AreaEnum');
 goog.require('ff.model.Weather');
 goog.require('ff.model.WeatherRange');
@@ -18,7 +19,6 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.log');
 goog.require('goog.math.Range');
 goog.require('goog.object');
-goog.require('goog.string');
 
 
 
@@ -109,18 +109,7 @@ ff.service.WeatherService.prototype.getWeatherTimeRanges = function() {
  * @return {!Array.<!ff.model.WeatherRange>}
  */
 ff.service.WeatherService.prototype.getWeatherRangesForArea = function(area) {
-  // Figure out the area enum for the area model.
-  var areaEnum = goog.object.findKey(
-      ff.model.AreaEnum,
-      function(value, key, object) {
-        return goog.string.caseInsensitiveCompare(
-            value.getName(), area.getName()) == 0;
-      });
-
-  // This shouldn't happen unless a new area gets added to the game.
-  if (!areaEnum) {
-    throw Error('Failed to find this area: ' + area.getName());
-  }
+  var areaEnum = ff.model.Area.getEnum(area);
 
   var weatherRanges = this.weatherRangeMap_[areaEnum];
   if (!goog.isDefAndNotNull(weatherRanges)) {

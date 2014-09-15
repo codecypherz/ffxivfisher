@@ -2,6 +2,8 @@
  * CSS for an area on the fisher page.
  */
 
+@def AREA_COLOR               #DEB887;
+
 .ff-fisher-area {
   margin-top: 16px;
 }
@@ -10,9 +12,23 @@
 }
 
 .ff-fisher-area-name {
-  color: #DEB887;
+  color: AREA_COLOR;
+  cursor: pointer;
+  display: inline-block;
   font-size: 20px;
   margin-bottom: 10px;
+  opacity: .9;
+}
+
+.ff-fisher-area-name:hover {
+  opacity: 1;
+}
+
+.ff-fisher-area-chevron {
+  display: inline-block;
+  font-size: 16px;
+  margin-top: 2px;
+  vertical-align: top;
 }
 
 .ff-fisher-area-weather-source > a {
@@ -37,4 +53,21 @@
 
 .ff-fish-table {
   width: 100%;
+}
+
+.ff-fisher-area-collapsed {
+  margin-bottom: -20px;
+}
+
+/* Hide all children of the area... */
+.ff-fisher-area-collapsed > div {
+  display: none;
+}
+/* ...but still show the name. */
+.ff-fisher-area-collapsed > div.ff-fisher-area-name {
+  display: inline-block;
+}
+.ff-fisher-area-collapsed .ff-fisher-area-chevron {
+  margin-top: 5px;
+  @mixin transform(rotate(180deg));
 }

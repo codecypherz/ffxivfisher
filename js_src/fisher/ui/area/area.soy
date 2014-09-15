@@ -16,8 +16,11 @@
  */
 {template .AREA}
   <div class="{css ff-fisher-area}">
-    <div class="{css ff-fisher-area-name}">
-      {$name}
+    <div id="{$ids.NAME|id}" class="{css ff-fisher-area-name}">
+      <div id="{$ids.CHEVRON|id}" class="{css ff-fisher-area-chevron}">
+        &#9650
+      </div>
+      {sp}{$name}
     </div>
     <div class="{css ff-fisher-area-weather-source}">
       <a href="http://na.ff14angler.com/skywatcher/" target="_blank">

@@ -5,6 +5,7 @@
 goog.provide('ff.fisher.ui.area.Area');
 
 goog.require('ff');
+goog.require('ff.fisher.ui.State');
 goog.require('ff.fisher.ui.area.AreaWeather');
 goog.require('ff.fisher.ui.area.soy');
 goog.require('ff.fisher.ui.fish.FishRow');
@@ -13,6 +14,8 @@ goog.require('ff.service.FishService');
 goog.require('ff.service.FishWatcher');
 goog.require('ff.ui');
 goog.require('goog.array');
+goog.require('goog.dom.classlist');
+goog.require('goog.events.EventType');
 goog.require('goog.log');
 goog.require('goog.math.Range');
 goog.require('goog.soy');
@@ -47,6 +50,9 @@ ff.fisher.ui.area.Area = function(area) {
   /** @private {!ff.service.FishWatcher} */
   this.fishWatcher_ = ff.service.FishWatcher.getInstance();
 
+  /** @private {!ff.fisher.ui.State} */
+  this.uiState_ = ff.fisher.ui.State.getInstance();
+
   /** @private {!ff.fisher.ui.area.AreaWeather} */
   this.weather_ = new ff.fisher.ui.area.AreaWeather(this.area_);
   this.addChild(this.weather_);
@@ -59,8 +65,19 @@ goog.inherits(ff.fisher.ui.area.Area, goog.ui.Component);
  * @private
  */
 ff.fisher.ui.area.Area.Id_ = {
+  CHEVRON: ff.getUniqueId('chevron'),
   FISH_ROWS: ff.getUniqueId('fish-rows'),
+  NAME: ff.getUniqueId('name'),
   WEATHER: ff.getUniqueId('weather')
+};
+
+
+/**
+ * @enum {string}
+ * @private
+ */
+ff.fisher.ui.area.Area.Css_ = {
+  COLLAPSED: goog.getCssName('ff-fisher-area-collapsed')
 };
 
 
@@ -84,10 +101,27 @@ ff.fisher.ui.area.Area.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
 
   this.getHandler().listen(
+      ff.ui.getElementByFragment(this, ff.fisher.ui.area.Area.Id_.NAME),
+      goog.events.EventType.CLICK,
+      this.toggleCollapsed_);
+
+  // TODO Listen to the state class to know when to update expand/collapse.
+
+  this.getHandler().listen(
       this.fishWatcher_,
       ff.service.FishWatcher.EventType.CATCHABLE_SET_CHANGED,
       this.renderFish_);
 
+  this.renderFish_();
+};
+
+
+/**
+ * Toggles the collapsed state of this area.
+ * @private
+ */
+ff.fisher.ui.area.Area.prototype.toggleCollapsed_ = function() {
+  this.uiState_.toggleAreaCollapsed(this.area_);
   this.renderFish_();
 };
 
@@ -104,6 +138,18 @@ ff.fisher.ui.area.Area.prototype.renderFish_ = function() {
     goog.dispose(fishRow);
   }, this);
   this.fishRows_ = [];
+
+  var collapsed = this.uiState_.isAreaCollapsed(this.area_);
+
+  goog.dom.classlist.enable(
+      this.getElement(),
+      ff.fisher.ui.area.Area.Css_.COLLAPSED,
+      collapsed);
+
+  // If collapsed, don't render any fish.
+  if (collapsed) {
+    return;
+  }
 
   var fishRowsElement = ff.ui.getElementByFragment(
       this, ff.fisher.ui.area.Area.Id_.FISH_ROWS);
