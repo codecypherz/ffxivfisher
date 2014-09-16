@@ -8,7 +8,6 @@ goog.require('ff');
 goog.require('ff.fisher.ui.admin.AdminFishDialog');
 goog.require('ff.fisher.ui.fish.FishTime');
 goog.require('ff.fisher.ui.fish.soy');
-goog.require('ff.fisher.ui.weather.WeatherIcon');
 goog.require('ff.model.Fish');
 goog.require('ff.model.User');
 goog.require('ff.ui');
@@ -16,7 +15,6 @@ goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.log');
 goog.require('goog.soy');
-goog.require('goog.structs');
 goog.require('goog.ui.Component');
 
 
@@ -51,8 +49,7 @@ goog.inherits(ff.fisher.ui.fish.FishRow, goog.ui.Component);
  */
 ff.fisher.ui.fish.FishRow.Id_ = {
   NAME: ff.getUniqueId('name'),
-  TIME: ff.getUniqueId('time'),
-  WEATHER: ff.getUniqueId('weather')
+  TIME: ff.getUniqueId('time')
 };
 
 
@@ -72,21 +69,13 @@ ff.fisher.ui.fish.FishRow.prototype.createDom = function() {
       ff.fisher.ui.fish.soy.FISH_ROW, {
         ids: this.makeIds(ff.fisher.ui.fish.FishRow.Id_),
         name: this.fish_.getName(),
-        imageSrc: this.fish_.getImageUrl()
+        imageSrc: this.fish_.getImageUrl(),
+        location: this.fish_.getLocation().getName()
       }));
 
   // Render time.
   this.time_.render(ff.ui.getElementByFragment(
       this, ff.fisher.ui.fish.FishRow.Id_.TIME));
-
-  // Render weather.
-  var weatherElement = ff.ui.getElementByFragment(
-      this, ff.fisher.ui.fish.FishRow.Id_.WEATHER);
-  goog.structs.forEach(this.fish_.getWeatherSet(), function(weather) {
-    var weatherIcon = new ff.fisher.ui.weather.WeatherIcon(weather);
-    this.addChild(weatherIcon);
-    weatherIcon.render(weatherElement);
-  }, this);
 };
 
 

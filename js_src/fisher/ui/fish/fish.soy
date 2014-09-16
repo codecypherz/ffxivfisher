@@ -5,6 +5,7 @@
  * @param ids
  * @param name
  * @param imageSrc
+ * @param location
  */
 {template .FISH_ROW}
   <div class="{css ff-row}{sp}{css ff-fish-row}">
@@ -15,7 +16,8 @@
     </div>
     <div id="{$ids.TIME|id}" class="{css ff-cell}{sp}{css ff-fish-row-time}">
     </div>
-    <div id="{$ids.WEATHER|id}" class="{css ff-cell}{sp}{css ff-fish-row-weather}">
+    <div class="{css ff-cell}{sp}{css ff-fish-row-location}">
+      {$location}
     </div>
   </div>
 {/template}

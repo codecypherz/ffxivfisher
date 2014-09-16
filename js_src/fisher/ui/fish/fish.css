@@ -66,7 +66,7 @@
 }
 
 .ff-fish-time-cursor {
-  background: red;
+  background: TIME_COLOR;
   bottom: 0;
   position: absolute;
   top: 0;
@@ -82,6 +82,6 @@
   margin-top: -1px;
 }
 
-.ff-fish-row-weather {
-  width: 100px;
+.ff-fish-row-location {
+  width: 240px;
 }
