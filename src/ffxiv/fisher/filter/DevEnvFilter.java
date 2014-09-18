@@ -10,10 +10,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.utils.SystemProperty;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import ffxiv.fisher.Annotations.DevelopmentEnvironment;
 import ffxiv.fisher.servlet.HttpResponseCode;
 
 /**
@@ -22,14 +22,17 @@ import ffxiv.fisher.servlet.HttpResponseCode;
 @Singleton
 public class DevEnvFilter implements Filter {
 	
+	private final boolean isDevelopmentEnvironment;
+	
 	@Inject
-	public DevEnvFilter() {
+	public DevEnvFilter(@DevelopmentEnvironment boolean isDevelopmentEnvironment) {
+		this.isDevelopmentEnvironment = isDevelopmentEnvironment;
 	}
 	
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain filterChain)
 			throws IOException, ServletException {
-		if (SystemProperty.Environment.Value.Development == SystemProperty.environment.value()) {
+		if (isDevelopmentEnvironment) {
 			filterChain.doFilter(req, resp);
 			return;
 		}

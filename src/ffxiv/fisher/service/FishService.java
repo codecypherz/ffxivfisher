@@ -89,7 +89,20 @@ public class FishService {
 	 * Stores a new fish.  For admin use only.
 	 */
 	public Fish create(Fish fish) {
-		validate(fish, true);
+		return create(fish, true);
+	}
+	
+	/**
+	 * Stores a new fish.  For admin use only.
+	 */
+	public Fish createWithoutValidation(Fish fish) {
+		return create(fish, false);
+	}
+	
+	private Fish create(Fish fish, boolean withValidation) {
+		if (withValidation) {
+			validate(fish, true);
+		}
 		
 		// Store the fish.
 		ObjectDatastore datastore = datastoreProvider.get();
@@ -99,7 +112,6 @@ public class FishService {
 		
 		return fish;
 	}
-	
 	private void validate(Fish fish, boolean create) throws IllegalArgumentException {
 		if (create) {
 			checkArgument(fish.getKey() == null || fish.getKey().isEmpty(),
@@ -116,5 +128,10 @@ public class FishService {
 				"Start hour must be between 0 and 24 inclusive.");
 		checkArgument(fish.getEndHour() >= 0 && fish.getEndHour() <= 24,
 				"End hour must be between 0 and 24 inclusive.");
+	}
+	
+	public void deleteAll() {
+		ObjectDatastore datastore = datastoreProvider.get();
+		datastore.deleteAll(Fish.class);
 	}
 }

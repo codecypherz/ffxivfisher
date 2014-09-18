@@ -2,11 +2,13 @@ package ffxiv.fisher;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.RequestScoped;
 
+import ffxiv.fisher.Annotations.DevelopmentEnvironment;
 import ffxiv.fisher.Annotations.FrontendVersion;
 import ffxiv.fisher.model.TwigModule;
 import ffxiv.fisher.model.User;
@@ -49,5 +51,10 @@ public class FishServerModule extends AbstractModule {
 					userService.isUserAdmin());
 		}
 		return user;
+	}
+	
+	@Provides @DevelopmentEnvironment
+	public boolean provideDevelopmentEnvironment() {
+		return SystemProperty.Environment.Value.Development == SystemProperty.environment.value();
 	}
 }

@@ -1,15 +1,9 @@
 package ffxiv.fisher.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.collect.ImmutableMap;
@@ -79,11 +73,14 @@ public class SkywatcherService {
 	
 	private static final long MIN_WAIT_TIME_MS = 60 * 1000; // 1 minute.
 	
+	private final UrlFetchService urlFetchService;
 	private WeatherReport weatherReport;
 	private long lastUpdate;
 	
 	@Inject
-	public SkywatcherService() {
+	public SkywatcherService(UrlFetchService urlFetchService) {
+		this.urlFetchService = urlFetchService;
+
 		weatherReport = null;
 		lastUpdate = 0;
 	}
@@ -98,7 +95,7 @@ public class SkywatcherService {
 	}
 	
 	private void updateFromSource() {
-		String rawDataString = getRawData();
+		String rawDataString = urlFetchService.getRawData(SOURCE);
 		if (rawDataString == null) {
 			return;
 		}
@@ -139,42 +136,6 @@ public class SkywatcherService {
 		}
 		
 		weatherReport = new WeatherReport(weatherMap, rawData.hour);
-	}
-	
-	private String getRawData() {
-		log.info("Getting raw data from source.");
-		URL url;
-		try {
-			url = new URL(SOURCE);			
-		} catch (MalformedURLException e) {
-			log.log(Level.SEVERE, "Failed to parse source URL.", e);
-			return null;
-		}
-		
-		BufferedReader in = null;
-		try {
-			in = new BufferedReader(new InputStreamReader(url.openStream()));
-
-	        StringBuilder sb = new StringBuilder();
-	        String inputLine;
-	        while ((inputLine = in.readLine()) != null) {
-	            sb.append(inputLine);
-	        }
-	        return sb.toString();
-	        
-		} catch (IOException e) {
-			log.log(Level.SEVERE, "Failed to read data from source.", e);
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e2) {
-					log.log(Level.SEVERE, "Failed to close input stream.", e2);
-				}
-			}
-		}
-        
-        return null;
 	}
 	
 	@SuppressWarnings("unused")
