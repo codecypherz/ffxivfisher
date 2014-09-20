@@ -8,7 +8,9 @@ goog.require('ff');
 goog.require('ff.fisher.ui.admin.soy');
 goog.require('ff.model.CatchPath');
 goog.require('ff.model.Fish');
+goog.require('ff.model.FishingTackleEnum');
 goog.require('ff.model.LocationEnum');
+goog.require('ff.model.Mooch');
 goog.require('ff.model.Weather');
 goog.require('ff.service.FishService');
 goog.require('ff.ui');
@@ -65,6 +67,7 @@ goog.inherits(ff.fisher.ui.admin.AdminFishDialog, goog.ui.Dialog);
  * @private
  */
 ff.fisher.ui.admin.AdminFishDialog.Id_ = {
+  BEST_CATCH_PATH_INPUT: ff.getUniqueId('best-catch-path-input'),
   CONFIRM_BUTTON: ff.getUniqueId('confirm-button'),
   END_HOUR_INPUT: ff.getUniqueId('end-hour-input'),
   LOCATION_INPUT: ff.getUniqueId('location-input'),
@@ -131,6 +134,23 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.createDom = function() {
     this.setValue_(
         ff.fisher.ui.admin.AdminFishDialog.Id_.LOCATION_INPUT,
         this.fishToEdit_.getLocation().getName());
+
+    // Set best catch path.
+    var bestCatchPathStr = '';
+    first = false;
+    goog.structs.forEach(
+        this.fishToEdit_.getBestCatchPath().getCatchPathParts(),
+        function(catchPathPart) {
+          if (!first) {
+            first = true;
+          } else {
+            bestCatchPathStr += ', ';
+          }
+          bestCatchPathStr += catchPathPart.getName();
+        });
+    this.setValue_(
+        ff.fisher.ui.admin.AdminFishDialog.Id_.BEST_CATCH_PATH_INPUT,
+        bestCatchPathStr);
   }
 };
 
@@ -233,6 +253,29 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
       return;
     }
 
+    // Validate best catch path.
+    var bestCatchPathInput = ff.ui.getElementByFragment(this,
+        ff.fisher.ui.admin.AdminFishDialog.Id_.BEST_CATCH_PATH_INPUT);
+    var bestCatchPathString = bestCatchPathInput.value;
+    var bestCatchPathSplits = bestCatchPathString.split(',');
+    var bestCatchPathParts = [];
+    goog.array.forEach(bestCatchPathSplits, function(bestCatchPathSplit) {
+      bestCatchPathSplit = goog.string.trim(bestCatchPathSplit);
+      if (!goog.string.isEmptySafe(bestCatchPathSplit)) {
+        var fishingTackle = goog.object.findValue(
+            ff.model.FishingTackleEnum,
+            function(value, key, object) {
+              return goog.string.caseInsensitiveCompare(
+                  value.getName(), bestCatchPathSplit) == 0;
+            });
+        if (fishingTackle) {
+          bestCatchPathParts.push(fishingTackle);
+        } else {
+          bestCatchPathParts.push(new ff.model.Mooch(bestCatchPathSplit));
+        }
+      }
+    });
+
     // Create the fish with the given data.
     var fishKey = this.fishToEdit_ ? this.fishToEdit_.getKey() : '';
     var fish = new ff.model.Fish(
@@ -242,8 +285,7 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
         startHour,
         endHour,
         fishLocation,
-        // TODO Finish this.
-        new ff.model.CatchPath([]));
+        new ff.model.CatchPath(bestCatchPathParts));
 
     // Save the fish.
     if (this.fishToEdit_) {

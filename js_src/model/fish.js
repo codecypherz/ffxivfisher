@@ -125,6 +125,12 @@ ff.model.Fish.prototype.getLocation = function() {
 };
 
 
+/** @return {!ff.model.CatchPath} */
+ff.model.Fish.prototype.getBestCatchPath = function() {
+  return this.bestCatchPath_;
+};
+
+
 /** @return {!Array.<!goog.math.Range>} */
 ff.model.Fish.prototype.getCatchableRanges = function() {
   return this.catchableRanges_;

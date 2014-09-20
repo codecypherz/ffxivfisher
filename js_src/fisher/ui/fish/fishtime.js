@@ -188,6 +188,10 @@ ff.fisher.ui.fish.FishTime.prototype.exitDocument = function() {
 
 /** @private */
 ff.fisher.ui.fish.FishTime.prototype.renderCatchableRanges_ = function() {
+  if (!this.isInDocument()) {
+    return;
+  }
+
   // Clear existing elements.
   goog.array.forEach(this.catchableRangeElements_, goog.dom.removeNode);
   this.catchableRangeElements_ = [];

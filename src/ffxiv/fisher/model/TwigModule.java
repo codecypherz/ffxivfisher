@@ -12,6 +12,9 @@ public class TwigModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		ObjectDatastoreFactory.register(Fish.class);
+		ObjectDatastoreFactory.register(StraightCatch.class);
+		ObjectDatastoreFactory.register(Mooch.class);
+		ObjectDatastoreFactory.register(CatchPathPart.class);
 	}
 	
 	@Provides @RequestScoped

@@ -12,7 +12,9 @@
 
 .ff-fisher-header {
   margin-bottom: 15px;
+  position: relative;
 }
+
 .ff-fisher-header.ff-card {
   border-top: none;
   border-top-left-radius: 0;
@@ -38,8 +40,8 @@
 }
 
 .ff-fisher-header-new-fish {
-  display: inline-block;
-  float: right;
   line-height: HEADER_HEIGHT;
-  vertical-align: middle;
+  position: absolute;
+  right: 15px;
+  top: 16px;
 }
