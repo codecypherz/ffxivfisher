@@ -23,12 +23,18 @@
 .ff-fisher-header-clock {
   display: inline-block;
   line-height: HEADER_HEIGHT;
+  margin-top: -10px;
   vertical-align: middle;
 }
 
 .ff-eorzea-clock {
   color: TIME_COLOR;
   font-weight: bold;
+}
+
+.ff-fisher-header-weather-source {
+  font-size: 11px;
+  line-height: 11px;
 }
 
 .ff-fisher-header-new-fish {
