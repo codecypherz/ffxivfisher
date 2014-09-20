@@ -58,10 +58,8 @@ public class AdminFishServlet extends HttpServlet {
 						final JsonObject wrapper = (JsonObject) element;
 						final JsonElement fishingTackle = wrapper.get("fishingTackle");
 				        if (fishingTackle != null) {
-				        	System.out.println("Deserializing as a straight catch");
 				        	return context.deserialize(element, StraightCatch.class);
 				        }
-				        System.out.println("Deserializing as a mooch");
 				        return context.deserialize(element, Mooch.class);
 					}
 				}).create();
@@ -81,7 +79,7 @@ public class AdminFishServlet extends HttpServlet {
 			return;
 		}
 		
-		// Write the fish back out to the client.
-		resp.getWriter().write(gson.toJson(fish));
+		// Write the fish back out to the client using the default serializer.
+		resp.getWriter().write(new Gson().toJson(fish));
 	}
 }
