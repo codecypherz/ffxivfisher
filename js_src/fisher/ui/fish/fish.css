@@ -3,6 +3,7 @@
  */
 
 .ff-fish-row {
+  font-size: 14px;
   opacity: 0.4;
   width: 100%;
 }
@@ -23,7 +24,12 @@
 }
 
 .ff-fish-row-name {
-  width: 170px;
+  max-width: 120px;
+  min-width: 120px;
+  overflow: hidden;
+  padding-right: 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .ff-fish-row-time {
