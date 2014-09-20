@@ -2,6 +2,8 @@
 goog.provide('ff.model.Fish');
 
 goog.require('ff');
+goog.require('ff.model.CatchPath');
+goog.require('ff.model.Image');
 goog.require('ff.model.LocationEnum');
 goog.require('ff.model.Weather');
 goog.require('goog.array');
@@ -24,11 +26,12 @@ goog.require('goog.structs.Set');
  * @param {number} startHour
  * @param {number} endHour
  * @param {!ff.model.Location} fishLocation
+ * @param {!ff.model.CatchPath} bestCatchPath
  * @constructor
  * @extends {goog.events.EventTarget}
  */
 ff.model.Fish = function(
-    key, name, weatherSet, startHour, endHour, fishLocation) {
+    key, name, weatherSet, startHour, endHour, fishLocation, bestCatchPath) {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
@@ -51,6 +54,9 @@ ff.model.Fish = function(
 
   /** @private {!ff.model.Location} */
   this.location_ = fishLocation;
+
+  /** @private {!ff.model.CatchPath} */
+  this.bestCatchPath_ = bestCatchPath;
 
   /** @private {!goog.math.Range} */
   this.previousTimeRange_ = new goog.math.Range(0, 0);
@@ -185,11 +191,7 @@ ff.model.Fish.prototype.setTimeRanges = function(previous, next) {
  * @return {string}
  */
 ff.model.Fish.prototype.getImageUrl = function() {
-  var imageName = this.name_
-      .replace(/\s/g, '_')
-      .replace(/\'/g, '')
-      .toLowerCase();
-  return '/images/fish/' + imageName + '.png';
+  return ff.model.Image.getUrl('fish', this.name_);
 };
 
 
@@ -217,7 +219,8 @@ ff.model.Fish.prototype.toJson = function() {
     'weatherSet': weatherArray,
     'startHour': this.startHour_,
     'endHour': this.endHour_,
-    'location': fishLocationKey
+    'location': fishLocationKey,
+    'bestCatchPath': this.bestCatchPath_.toJson()
   };
 };
 
@@ -250,5 +253,6 @@ ff.model.Fish.fromJson = function(json) {
       weatherSet,
       json['startHour'],
       json['endHour'],
-      ff.model.LocationEnum[fishLocation]);
+      ff.model.LocationEnum[fishLocation],
+      ff.model.CatchPath.fromJson(json['bestCatchPath']));
 };

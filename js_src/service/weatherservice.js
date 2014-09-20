@@ -7,6 +7,7 @@ goog.provide('ff.service.WeatherService');
 goog.require('ff');
 goog.require('ff.model.Area');
 goog.require('ff.model.AreaEnum');
+goog.require('ff.model.Image');
 goog.require('ff.model.Weather');
 goog.require('ff.model.WeatherRange');
 goog.require('ff.service.EorzeaTime');
@@ -94,7 +95,7 @@ ff.service.WeatherService.prototype.startPolling = function() {
  * @return {string}
  */
 ff.service.WeatherService.prototype.getImageUrl = function(weather) {
-  return '/images/weather/' + weather.toLowerCase() + '.png';
+  return ff.model.Image.getUrl('weather', weather);
 };
 
 

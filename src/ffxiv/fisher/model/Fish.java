@@ -1,12 +1,14 @@
 package ffxiv.fisher.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.google.code.twig.annotation.Store;
 
 public class Fish {
-
+	
 	// This is just here so GSON can include this when sent to the client.
 	@Store(false) private String key;
 	
@@ -15,6 +17,7 @@ public class Fish {
 	private int startHour; // inclusive
 	private int endHour; // exclusive
 	private Location location;
+	private List<CatchPathPart> bestCatchPath;
 	
 	public Fish() {
 		this(
@@ -23,8 +26,8 @@ public class Fish {
 			new HashSet<Weather>(),
 			-1,  // start hour
 			-1,  // end hour
-			null // location
-			);
+			null, // location
+			new ArrayList<CatchPathPart>());
 	}
 	
 	public Fish(
@@ -33,13 +36,15 @@ public class Fish {
 			Set<Weather> weatherSet,
 			int startHour,
 			int endHour,
-			Location location) {
+			Location location,
+			List<CatchPathPart> bestCatchPath) {
 		this.key = key;
 		this.name = name;
 		this.weatherSet = weatherSet;
 		this.startHour = startHour;
 		this.endHour = endHour;
 		this.location = location;
+		this.bestCatchPath = bestCatchPath;
 	}
 	
 	public String getKey() {
@@ -64,6 +69,9 @@ public class Fish {
 	public Location getLocation() {
 		return location;
 	}
+	public List<CatchPathPart> getBestCatchPath() {
+		return bestCatchPath;
+	}
 
 	public void setFromFish(Fish other) {
 		name = other.name;
@@ -71,5 +79,6 @@ public class Fish {
 		startHour = other.startHour;
 		endHour = other.endHour;
 		location = other.location;
+		bestCatchPath = other.bestCatchPath;
 	}
 }

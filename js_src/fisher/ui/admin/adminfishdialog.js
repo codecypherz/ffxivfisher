@@ -6,6 +6,7 @@ goog.provide('ff.fisher.ui.admin.AdminFishDialog');
 
 goog.require('ff');
 goog.require('ff.fisher.ui.admin.soy');
+goog.require('ff.model.CatchPath');
 goog.require('ff.model.Fish');
 goog.require('ff.model.LocationEnum');
 goog.require('ff.model.Weather');
@@ -235,7 +236,14 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
     // Create the fish with the given data.
     var fishKey = this.fishToEdit_ ? this.fishToEdit_.getKey() : '';
     var fish = new ff.model.Fish(
-        fishKey, name, weatherSet, startHour, endHour, fishLocation);
+        fishKey,
+        name,
+        weatherSet,
+        startHour,
+        endHour,
+        fishLocation,
+        // TODO Finish this.
+        new ff.model.CatchPath([]));
 
     // Save the fish.
     if (this.fishToEdit_) {
