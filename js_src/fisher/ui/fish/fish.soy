@@ -5,7 +5,6 @@
  * @param ids
  * @param name
  * @param imageSrc
- * @param location
  */
 {template .FISH_ROW}
   <div class="{css ff-row}{sp}{css ff-fish-row}">
@@ -16,8 +15,8 @@
     </div>
     <div id="{$ids.TIME|id}" class="{css ff-cell}{sp}{css ff-fish-row-time}">
     </div>
-    <div class="{css ff-cell}{sp}{css ff-fish-row-location}">
-      {$location}
+    <div id="{$ids.BEST_CATCH_PATH|id}" class="{css ff-cell}{sp}
+        {css ff-fish-row-best-catch-path}">
     </div>
   </div>
 {/template}
@@ -49,5 +48,28 @@
  */
 {template .CATCHABLE_RANGE}
   <div class="{css ff-fish-catchable-range}">
+  </div>
+{/template}
+
+
+/**
+ * HTML for a catch path.
+ * @param catchPathParts
+ */
+{template .CATCH_PATH}
+  <div class="{css ff-fish-catch-path}">
+    {foreach $catchPathPart in $catchPathParts}
+      {if not isFirst($catchPathPart)}
+        <div class="{css ff-fish-catch-path-part-divider}">
+          &#8594
+        </div>
+      {/if}
+      <div class="{css ff-fish-catch-path-part}">
+        <img src="{$catchPathPart.imageUrl}"
+            title="{$catchPathPart.name}"
+            class="{css ff-fish-catch-path-part-image}" />
+      </div>
+      
+    {/foreach}
   </div>
 {/template}
