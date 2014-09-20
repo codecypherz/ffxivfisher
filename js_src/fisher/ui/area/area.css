@@ -4,6 +4,10 @@
 
 @def AREA_COLOR               #DEB887;
 
+.ff-fisher-areas {
+  margin-bottom: 40px;
+}
+
 .ff-fisher-area {
   margin-top: 16px;
 }
