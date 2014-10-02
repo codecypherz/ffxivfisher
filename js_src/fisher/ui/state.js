@@ -4,8 +4,10 @@
 
 goog.provide('ff.fisher.ui.State');
 
+goog.require('ff');
 goog.require('ff.model.Area');
 goog.require('ff.model.AreaEnum');
+goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
 goog.require('goog.log');
 goog.require('goog.object');
@@ -32,15 +34,19 @@ ff.fisher.ui.State = function() {
 
   // TODO Read the state from a cookie.
   // No area is collapsed by default.
-  goog.object.forEach(
-      ff.model.AreaEnum,
-      function(area, key, obj) {
-        this.areaCollapseMap_[key] = false;
-      },
-      this);
+  this.setAll_(false);
 };
 goog.inherits(ff.fisher.ui.State, goog.events.EventTarget);
 goog.addSingletonGetter(ff.fisher.ui.State);
+
+
+/**
+ * The events dispatched from this object.
+ * @enum {string}
+ */
+ff.fisher.ui.State.EventType = {
+  COLLAPSE_CHANGED: ff.getUniqueId('collapse-changed')
+};
 
 
 /**
@@ -49,8 +55,24 @@ goog.addSingletonGetter(ff.fisher.ui.State);
  * @return {boolean}
  */
 ff.fisher.ui.State.prototype.isAreaCollapsed = function(area) {
-  var areaEnum = ff.model.Area.getEnum(area);
-  return this.areaCollapseMap_[areaEnum];
+  var key = ff.model.Area.getEnum(area);
+  return this.areaCollapseMap_[key];
+};
+
+
+/**
+ * Collapses all of the areas.
+ */
+ff.fisher.ui.State.prototype.collapseAll = function() {
+  this.setAll_(false);
+};
+
+
+/**
+ * Expands all of the areas.
+ */
+ff.fisher.ui.State.prototype.expandAll = function() {
+  this.setAll_(true);
 };
 
 
@@ -59,8 +81,57 @@ ff.fisher.ui.State.prototype.isAreaCollapsed = function(area) {
  * @param {!ff.model.Area} area
  */
 ff.fisher.ui.State.prototype.toggleAreaCollapsed = function(area) {
-  var areaEnum = ff.model.Area.getEnum(area);
+  var key = ff.model.Area.getEnum(area);
+  this.set_(area, !this.areaCollapseMap_[key]);
+};
+
+
+/**
+ * Sets all areas to be either expanded or collapsed.
+ * @param {boolean} expanded
+ * @private
+ */
+ff.fisher.ui.State.prototype.setAll_ = function(expanded) {
+  goog.object.forEach(
+      ff.model.AreaEnum,
+      function(area, key, obj) {
+        this.set_(area, expanded);
+      },
+      this);
+};
+
+
+/**
+ * Sets the given area to have the given expanded value.  An event is dispatched
+ * if the value changes.
+ * @param {!ff.model.Area} area
+ * @param {boolean} expanded
+ * @private
+ */
+ff.fisher.ui.State.prototype.set_ = function(area, expanded) {
+  var key = ff.model.Area.getEnum(area);
+  var oldValue = this.areaCollapseMap_[key];
+  if (oldValue == expanded) {
+    return; // no change
+  }
 
   // TODO Save state to a cookie.
-  this.areaCollapseMap_[areaEnum] = !this.areaCollapseMap_[areaEnum];
+  this.areaCollapseMap_[key] = expanded;
+  this.dispatchEvent(new ff.fisher.ui.State.CollapseChanged(area));
 };
+
+
+
+/**
+ * The event that gets dispatched when an area's collapsed state changes.
+ * @param {!ff.model.Area} area
+ * @constructor
+ * @extends {goog.events.Event}
+ */
+ff.fisher.ui.State.CollapseChanged = function(area) {
+  goog.base(this, ff.fisher.ui.State.EventType.COLLAPSE_CHANGED);
+
+  /** @type {!ff.model.Area} */
+  this.area = area;
+};
+goog.inherits(ff.fisher.ui.State.CollapseChanged, goog.events.Event);

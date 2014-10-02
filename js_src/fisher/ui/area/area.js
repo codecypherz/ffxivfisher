@@ -65,7 +65,6 @@ goog.inherits(ff.fisher.ui.area.Area, goog.ui.Component);
  * @private
  */
 ff.fisher.ui.area.Area.Id_ = {
-  CHEVRON: ff.getUniqueId('chevron'),
   FISH_ROWS: ff.getUniqueId('fish-rows'),
   NAME: ff.getUniqueId('name'),
   WEATHER: ff.getUniqueId('weather')
