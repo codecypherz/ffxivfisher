@@ -8,6 +8,10 @@
   margin-bottom: 40px;
 }
 
+.ff-fisher-areas-container {
+  margin-bottom: 10px;
+}
+
 .ff-fisher-area {
   margin-top: 16px;
 }
@@ -15,6 +19,7 @@
   margin-top: 0;
 }
 
+.ff-fisher-areas-toggle,
 .ff-fisher-area-name {
   color: AREA_COLOR;
   cursor: pointer;
@@ -24,8 +29,17 @@
   opacity: .9;
 }
 
+.ff-fisher-areas-toggle:hover,
 .ff-fisher-area-name:hover {
   opacity: 1;
+}
+
+.ff-fisher-areas-toggle {
+  margin-bottom: 15px;
+}
+
+.ff-fisher-areas-toggle-text {
+  display: inline-block;
 }
 
 .ff-fisher-area-chevron {
@@ -53,19 +67,20 @@
   width: 100%;
 }
 
-.ff-fisher-area-collapsed {
+.ff-fisher-area.ff-collapsed {
   margin-bottom: -20px;
 }
 
 /* Hide all children of the area... */
-.ff-fisher-area-collapsed > div {
+.ff-fisher-area.ff-collapsed > div {
   display: none;
 }
 /* ...but still show the name. */
-.ff-fisher-area-collapsed > div.ff-fisher-area-name {
+.ff-fisher-area.ff-collapsed > div.ff-fisher-area-name {
   display: inline-block;
 }
-.ff-fisher-area-collapsed .ff-fisher-area-chevron {
+
+.ff-collapsed .ff-fisher-area-chevron {
   margin-top: 5px;
   @mixin transform(rotate(180deg));
 }

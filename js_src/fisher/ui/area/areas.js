@@ -10,7 +10,10 @@ goog.require('ff.fisher.ui.area.Area');
 goog.require('ff.fisher.ui.area.soy');
 goog.require('ff.model.AreaEnum');
 goog.require('ff.ui');
+goog.require('ff.ui.Css');
 goog.require('goog.array');
+goog.require('goog.dom');
+goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.log');
 goog.require('goog.object');
@@ -42,6 +45,9 @@ ff.fisher.ui.area.Areas = function() {
 
   /** @private {!ff.fisher.ui.State} */
   this.uiState_ = ff.fisher.ui.State.getInstance();
+
+  /** @private {boolean} */
+  this.collapsed_ = false;
 };
 goog.inherits(ff.fisher.ui.area.Areas, goog.ui.Component);
 
@@ -79,6 +85,8 @@ ff.fisher.ui.area.Areas.prototype.enterDocument = function() {
       ff.ui.getElementByFragment(this, ff.fisher.ui.area.Areas.Id_.TOGGLE),
       goog.events.EventType.CLICK,
       this.toggleAll_);
+
+  this.update_();
 };
 
 
@@ -87,10 +95,31 @@ ff.fisher.ui.area.Areas.prototype.enterDocument = function() {
  * @private
  */
 ff.fisher.ui.area.Areas.prototype.toggleAll_ = function() {
-  if (this.expanded_) {
-    this.uiState_.collapseAll();
-  } else {
+  if (this.collapsed_) {
     this.uiState_.expandAll();
+  } else {
+    this.uiState_.collapseAll();
   }
-  this.expanded_ = !this.expanded_;
+  this.collapsed_ = !this.collapsed_;
+  this.update_();
+};
+
+
+/**
+ * Updates the collapse/expand piece to reflect current state.
+ * @private
+ */
+ff.fisher.ui.area.Areas.prototype.update_ = function() {
+  // Update the text.
+  var text = this.collapsed_ ? 'Expand All' : 'Collapse All';
+  goog.dom.setTextContent(
+      ff.ui.getElementByFragment(
+          this, ff.fisher.ui.area.Areas.Id_.TOGGLE_TEXT),
+      text);
+
+  // Update the class to flip the chevron - see the CSS selector.
+  goog.dom.classlist.enable(
+      ff.ui.getElementByFragment(this, ff.fisher.ui.area.Areas.Id_.TOGGLE),
+      ff.ui.Css.COLLAPSED,
+      this.collapsed_);
 };

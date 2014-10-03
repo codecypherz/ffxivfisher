@@ -64,7 +64,7 @@ ff.fisher.ui.State.prototype.isAreaCollapsed = function(area) {
  * Collapses all of the areas.
  */
 ff.fisher.ui.State.prototype.collapseAll = function() {
-  this.setAll_(false);
+  this.setAll_(true);
 };
 
 
@@ -72,7 +72,7 @@ ff.fisher.ui.State.prototype.collapseAll = function() {
  * Expands all of the areas.
  */
 ff.fisher.ui.State.prototype.expandAll = function() {
-  this.setAll_(true);
+  this.setAll_(false);
 };
 
 
@@ -88,35 +88,35 @@ ff.fisher.ui.State.prototype.toggleAreaCollapsed = function(area) {
 
 /**
  * Sets all areas to be either expanded or collapsed.
- * @param {boolean} expanded
+ * @param {boolean} collapsed
  * @private
  */
-ff.fisher.ui.State.prototype.setAll_ = function(expanded) {
+ff.fisher.ui.State.prototype.setAll_ = function(collapsed) {
   goog.object.forEach(
       ff.model.AreaEnum,
       function(area, key, obj) {
-        this.set_(area, expanded);
+        this.set_(area, collapsed);
       },
       this);
 };
 
 
 /**
- * Sets the given area to have the given expanded value.  An event is dispatched
- * if the value changes.
+ * Sets the given area to have the given collapsed value.
+ * An event is dispatched if the value changes.
  * @param {!ff.model.Area} area
- * @param {boolean} expanded
+ * @param {boolean} collapsed
  * @private
  */
-ff.fisher.ui.State.prototype.set_ = function(area, expanded) {
+ff.fisher.ui.State.prototype.set_ = function(area, collapsed) {
   var key = ff.model.Area.getEnum(area);
   var oldValue = this.areaCollapseMap_[key];
-  if (oldValue == expanded) {
+  if (oldValue == collapsed) {
     return; // no change
   }
 
   // TODO Save state to a cookie.
-  this.areaCollapseMap_[key] = expanded;
+  this.areaCollapseMap_[key] = collapsed;
   this.dispatchEvent(new ff.fisher.ui.State.CollapseChanged(area));
 };
 

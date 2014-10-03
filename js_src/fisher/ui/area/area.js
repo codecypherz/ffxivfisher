@@ -13,6 +13,7 @@ goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.FishService');
 goog.require('ff.service.FishWatcher');
 goog.require('ff.ui');
+goog.require('ff.ui.Css');
 goog.require('goog.array');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
@@ -71,15 +72,6 @@ ff.fisher.ui.area.Area.Id_ = {
 };
 
 
-/**
- * @enum {string}
- * @private
- */
-ff.fisher.ui.area.Area.Css_ = {
-  COLLAPSED: goog.getCssName('ff-fisher-area-collapsed')
-};
-
-
 /** @override */
 ff.fisher.ui.area.Area.prototype.createDom = function() {
   this.setElementInternal(goog.soy.renderAsElement(
@@ -102,25 +94,24 @@ ff.fisher.ui.area.Area.prototype.enterDocument = function() {
   this.getHandler().listen(
       ff.ui.getElementByFragment(this, ff.fisher.ui.area.Area.Id_.NAME),
       goog.events.EventType.CLICK,
-      this.toggleCollapsed_);
+      function() {
+        this.uiState_.toggleAreaCollapsed(this.area_);
+      });
 
-  // TODO Listen to the state class to know when to update expand/collapse.
+  this.getHandler().listen(
+      this.uiState_,
+      ff.fisher.ui.State.EventType.COLLAPSE_CHANGED,
+      function(e) {
+        if (e.area == this.area_) {
+          this.renderFish_();
+        }
+      });
 
   this.getHandler().listen(
       this.fishWatcher_,
       ff.service.FishWatcher.EventType.CATCHABLE_SET_CHANGED,
       this.renderFish_);
 
-  this.renderFish_();
-};
-
-
-/**
- * Toggles the collapsed state of this area.
- * @private
- */
-ff.fisher.ui.area.Area.prototype.toggleCollapsed_ = function() {
-  this.uiState_.toggleAreaCollapsed(this.area_);
   this.renderFish_();
 };
 
@@ -140,10 +131,7 @@ ff.fisher.ui.area.Area.prototype.renderFish_ = function() {
 
   var collapsed = this.uiState_.isAreaCollapsed(this.area_);
 
-  goog.dom.classlist.enable(
-      this.getElement(),
-      ff.fisher.ui.area.Area.Css_.COLLAPSED,
-      collapsed);
+  goog.dom.classlist.enable(this.getElement(), ff.ui.Css.COLLAPSED, collapsed);
 
   // If collapsed, don't render any fish.
   if (collapsed) {

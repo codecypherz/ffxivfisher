@@ -11,6 +11,7 @@ goog.provide('ff.ui.Css');
 ff.ui.Css = {
   CARD: goog.getCssName('ff-card'),
   CELL: goog.getCssName('ff-cell'),
+  COLLAPSED: goog.getCssName('ff-collapsed'),
   ROW: goog.getCssName('ff-row'),
   TABLE: goog.getCssName('ff-table')
 };
