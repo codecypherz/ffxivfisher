@@ -11,9 +11,7 @@ goog.require('goog.log');
 
 
 /**
- * A common timer that fires when the UI should update itself.  It's loosely
- * based pixels per Eorzean minute on a 300 pixel width rectangle representing
- * a single day.
+ * A common timer that fires when the UI should update itself.
  * @constructor
  * @extends {goog.events.EventTarget}
  */
@@ -40,4 +38,4 @@ goog.addSingletonGetter(ff.fisher.ui.UpdateTimer);
  * @const
  * @private
  */
-ff.fisher.ui.UpdateTimer.UPDATE_INTERVAL_MS_ = 3000;
+ff.fisher.ui.UpdateTimer.UPDATE_INTERVAL_MS_ = 1000;

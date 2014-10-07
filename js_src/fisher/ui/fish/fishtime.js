@@ -314,15 +314,25 @@ ff.fisher.ui.fish.FishTime.prototype.updateCursorTime_ = function(
   // Figure out where in the element we are.
   var timePos = goog.style.getClientPosition(this.getElement());
   var x = opt_e.clientX - timePos.x;
-
-  // Update the cursor.
   var percent = goog.math.clamp(x / this.getWidth_(), 0, 1);
-  this.cursor_.style.left = x + 'px';
 
-  // Figure out the Eorzea date corresponding to the percent of the cursor.
-  var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
+  // Determine the closest hour.
+  var currentDate = this.eorzeaTime_.getCurrentEorzeaDate();
+  var eorzeaDate = currentDate.clone();
   var deltaEorzeaHours = percent * 24.0;
   eorzeaDate.add(new goog.date.Interval(0, 0, 0, deltaEorzeaHours));
+  var hour = eorzeaDate.getHours();
+  if (eorzeaDate.getMinutes() >= 30) {
+    hour = (hour + 1) % 24;
+  }
+  eorzeaDate.setHours(hour);
+  eorzeaDate.setMinutes(0);
+
+  // Update the cursor.
+  var deltaMs = eorzeaDate.getTime() - currentDate.getTime();
+  this.cursor_.style.left = this.toPixels_(deltaMs) + 'px';
+
+  // Update the tooltip.
   var eorzeaString = ff.fisher.ui.fish.FishTime.FORMAT_.format(eorzeaDate);
 
   // Figure out the Earth date based on the Eorzea date.
