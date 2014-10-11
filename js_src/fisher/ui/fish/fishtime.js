@@ -342,20 +342,28 @@ ff.fisher.ui.fish.FishTime.prototype.updateCursorTime_ = function(
   var earthString = ff.fisher.ui.fish.FishTime.FORMAT_.format(earthDate);
   var earthMinutesToTarget = Math.round(
       (earthDate.getTime() - goog.now()) / (60 * 1000));
+  var earthSecondsToTarget = Math.round(
+      (earthDate.getTime() - goog.now()) / 1000);
 
-  var minutesText = '';
-  if (earthMinutesToTarget == 0) {
-    minutesText = 'right now';
+  var timeUntilText = '';
+  if (earthSecondsToTarget < 60) {
+    if (earthSecondsToTarget <= 0) {
+      timeUntilText = 'right now';
+    } else if (earthSecondsToTarget == 1) {
+      timeUntilText = 'in ' + earthSecondsToTarget + ' second';
+    } else {
+      timeUntilText = 'in ' + earthSecondsToTarget + ' seconds';
+    }
   } else if (earthMinutesToTarget == 1) {
-    minutesText = 'in ' + earthMinutesToTarget + ' minute';
+    timeUntilText = 'in ' + earthMinutesToTarget + ' minute';
   } else {
-    minutesText = 'in ' + earthMinutesToTarget + ' minutes';
+    timeUntilText = 'in ' + earthMinutesToTarget + ' minutes';
   }
 
   this.tooltip_.setHtml(
       eorzeaString + ' (Eorzea)<br>' +
       earthString + ' (Earth)<br>' +
-      minutesText);
+      timeUntilText);
   var tooltipLeft = this.toPixels_(deltaMs) - 60;
   this.tooltip_.getElement().style.marginLeft = tooltipLeft + 'px';
 };
