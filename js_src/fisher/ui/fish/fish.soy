@@ -4,16 +4,22 @@
  * HTML for the component that renders a fish as a row.
  * @param ids
  * @param name
+ * @param location
  * @param imageSrc
  */
 {template .FISH_ROW}
   <div class="{css ff-row}{sp}{css ff-fish-row}">
     <img src="{$imageSrc}" class="{css ff-cell}{sp}{css ff-fish-row-icon}">
     </img>
-    <div id="{$ids.NAME|id}" class="{css ff-cell}{sp}{css ff-fish-row-name}">
+    <div id="{$ids.NAME|id}" title="{$name}" class="{css ff-cell}{sp}
+        {css ff-fish-row-name}">
       {$name}
     </div>
     <div id="{$ids.TIME|id}" class="{css ff-cell}{sp}{css ff-fish-row-time}">
+    </div>
+    <div id="{$ids.LOCATION|id}" title="{$location}" class="{css ff-cell}{sp}
+        {css ff-fish-row-location}">
+      {$location}
     </div>
     <div id="{$ids.BEST_CATCH_PATH|id}" class="{css ff-cell}{sp}
         {css ff-fish-row-best-catch-path}">

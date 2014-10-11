@@ -76,6 +76,7 @@ ff.fisher.ui.fish.FishRow.prototype.createDom = function() {
       ff.fisher.ui.fish.soy.FISH_ROW, {
         ids: this.makeIds(ff.fisher.ui.fish.FishRow.Id_),
         name: this.fish_.getName(),
+        location: this.fish_.getLocation().getName(),
         imageSrc: this.fish_.getImageUrl()
       }));
 

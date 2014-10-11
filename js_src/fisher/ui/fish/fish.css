@@ -34,8 +34,8 @@
 }
 
 .ff-fish-row-time {
-  max-width: 350px;
-  min-width: 350px;
+  max-width: 300px;
+  min-width: 300px;
 }
 
 .ff-fish-time {
@@ -94,8 +94,18 @@
   @mixin border_radius(5px);
 }
 
+.ff-fish-row-location {
+  max-width: 150px;
+  min-width: 150px;
+  overflow: hidden;
+  padding-right: 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .ff-fish-row-best-catch-path {
-  width: 180px;
+  max-width: 160px;
+  min-width: 160px;
 }
 
 .ff-fish-catch-path {
@@ -106,8 +116,8 @@
 }
 
 .ff-fish-catch-path-part-image {
-  height: 30px;
-  width: 30px;
+  height: 25px;
+  width: 25px;
 }
 
 .ff-fish-catch-path-part-divider {
