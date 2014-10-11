@@ -39,7 +39,7 @@ ff.fisher.ui.fish.FishTimeTooltip.prototype.getPositioningStrategy = function(
  */
 ff.fisher.ui.fish.FishTimeTooltip.Position = function(element) {
   goog.positioning.AnchoredPosition.call(this, element,
-      goog.positioning.Corner.TOP_RIGHT);
+      goog.positioning.Corner.BOTTOM_LEFT);
 };
 goog.inherits(ff.fisher.ui.fish.FishTimeTooltip.Position,
               goog.positioning.AnchoredPosition);

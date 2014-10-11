@@ -150,6 +150,7 @@ ff.fisher.ui.fish.FishTime.prototype.enterDocument = function() {
       goog.events.EventType.MOUSEOUT,
       function(e) {
         this.updateCursorTime_(false, e);
+        this.tooltip_.setVisible(false);
       });
   this.getHandler().listen(
       this.getElement(),
@@ -339,8 +340,22 @@ ff.fisher.ui.fish.FishTime.prototype.updateCursorTime_ = function(
   var earthUtcDate = this.eorzeaTime_.toEarth(eorzeaDate);
   var earthDate = goog.date.DateTime.fromTimestamp(earthUtcDate.getTime());
   var earthString = ff.fisher.ui.fish.FishTime.FORMAT_.format(earthDate);
+  var earthMinutesToTarget = Math.round(
+      (earthDate.getTime() - goog.now()) / (60 * 1000));
+
+  var minutesText = '';
+  if (earthMinutesToTarget == 0) {
+    minutesText = 'right now';
+  } else if (earthMinutesToTarget == 1) {
+    minutesText = 'in ' + earthMinutesToTarget + ' minute';
+  } else {
+    minutesText = 'in ' + earthMinutesToTarget + ' minutes';
+  }
 
   this.tooltip_.setHtml(
       eorzeaString + ' (Eorzea)<br>' +
-      earthString + ' (Earth)');
+      earthString + ' (Earth)<br>' +
+      minutesText);
+  var tooltipLeft = this.toPixels_(deltaMs) - 60;
+  this.tooltip_.getElement().style.marginLeft = tooltipLeft + 'px';
 };

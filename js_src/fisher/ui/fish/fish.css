@@ -84,10 +84,14 @@
 
 /* For the FishTimeToolip */
 .goog-tooltip {
+  background-color: #333;
+  border: 1px solid #555;
   color: TIME_COLOR;
   font-size: 12px;
-  margin-left: 5px;
-  margin-top: -1px;
+  padding: 10px;
+  text-align: center;
+  z-index: 5;
+  @mixin border_radius(5px);
 }
 
 .ff-fish-row-best-catch-path {
