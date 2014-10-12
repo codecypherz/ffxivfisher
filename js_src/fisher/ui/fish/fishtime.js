@@ -324,7 +324,14 @@ ff.fisher.ui.fish.FishTime.prototype.updateCursorTime_ = function(
   eorzeaDate.add(new goog.date.Interval(0, 0, 0, deltaEorzeaHours));
   var hour = eorzeaDate.getHours();
   if (eorzeaDate.getMinutes() >= 30) {
-    hour = (hour + 1) % 24;
+    if (hour == 23) {
+      // Round up to the next day.
+      hour = 0;
+      eorzeaDate.add(new goog.date.Interval(0, 0, 1, 0));
+    } else {
+      // Round up to the next hour.
+      hour = (hour + 1) % 24;
+    }
   }
   eorzeaDate.setHours(hour);
   eorzeaDate.setMinutes(0);
