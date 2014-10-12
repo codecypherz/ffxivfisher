@@ -50,6 +50,21 @@
 
 
 /**
+ * HTML for a fishing time interval tooltip.
+ * @param eorzeaTimeId
+ * @param earthTimeId
+ * @param remainingTimeId
+ */
+{template .FISH_TIME_TOOLTIP}
+  <div class="{css ff-fish-time-tooltip}">
+    <span id="{$eorzeaTimeId}"></span>{sp}(Eorzea)<br>
+    <span id="{$earthTimeId}"></span>{sp}(Earth)<br>
+    <span id="{$remainingTimeId}"></span>
+  </div>
+{/template}
+
+
+/**
  * HTML for a catchable range.
  */
 {template .CATCHABLE_RANGE}

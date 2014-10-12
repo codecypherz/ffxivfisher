@@ -46,9 +46,6 @@ ff.fisher.ui.fish.FishTime = function(fish) {
   /** @private {!ff.fisher.ui.UpdateTimer} */
   this.updateTimer_ = ff.fisher.ui.UpdateTimer.getInstance();
 
-  /** @private {ff.fisher.ui.fish.FishTimeTooltip} */
-  this.tooltip_ = null;
-
   /** @private {Element} */
   this.range1_ = null;
 
@@ -78,6 +75,9 @@ ff.fisher.ui.fish.FishTime = function(fish) {
 
   /** @private {Element} */
   this.cursor_ = null;
+
+  /** @private {!ff.fisher.ui.fish.FishTimeTooltip} */
+  this.tooltip_ = ff.fisher.ui.fish.FishTimeTooltip.getInstance();
 };
 goog.inherits(ff.fisher.ui.fish.FishTime, goog.ui.Component);
 
@@ -88,8 +88,11 @@ goog.inherits(ff.fisher.ui.fish.FishTime, goog.ui.Component);
  */
 ff.fisher.ui.fish.FishTime.Id_ = {
   CURSOR: ff.getUniqueId('cursor'),
+  EARTH_TIME: ff.getUniqueId('earth-time'),
+  EORZEA_TIME: ff.getUniqueId('eorzea-time'),
   RANGE_1: ff.getUniqueId('range-1'),
   RANGE_2: ff.getUniqueId('range-2'),
+  REMAINING_TIME: ff.getUniqueId('remaining-time'),
   WEATHER_CHANGE_1: ff.getUniqueId('weather-change-1'),
   WEATHER_CHANGE_2: ff.getUniqueId('weather-change-2'),
   WEATHER_CHANGE_3: ff.getUniqueId('weather-change-3'),
@@ -142,15 +145,12 @@ ff.fisher.ui.fish.FishTime.prototype.createDom = function() {
 ff.fisher.ui.fish.FishTime.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
 
-  this.tooltip_ = new ff.fisher.ui.fish.FishTimeTooltip(this.getElement());
-
   // Listen for cursor changes.
   this.getHandler().listen(
       this.getElement(),
       goog.events.EventType.MOUSEOUT,
       function(e) {
         this.updateCursorTime_(false, e);
-        this.tooltip_.setVisible(false);
       });
   this.getHandler().listen(
       this.getElement(),
@@ -176,14 +176,6 @@ ff.fisher.ui.fish.FishTime.prototype.enterDocument = function() {
 
   // Update right now.
   goog.Timer.callOnce(this.renderCatchableRanges_, 0, this);
-};
-
-
-/** @override */
-ff.fisher.ui.fish.FishTime.prototype.exitDocument = function() {
-  goog.dispose(this.tooltip_);
-  this.tooltip_ = null;
-  goog.base(this, 'exitDocument');
 };
 
 
@@ -307,8 +299,9 @@ ff.fisher.ui.fish.FishTime.prototype.getWidth_ = function() {
 ff.fisher.ui.fish.FishTime.prototype.updateCursorTime_ = function(
     visible, opt_e) {
   goog.style.setElementShown(this.cursor_, visible);
+  goog.style.setElementShown(this.tooltip_.getElement(), visible);
 
-  if (!visible || !goog.isDefAndNotNull(opt_e)) {
+  if (!visible || !goog.isDefAndNotNull(opt_e) || !this.isInDocument()) {
     return;
   }
 
@@ -336,11 +329,18 @@ ff.fisher.ui.fish.FishTime.prototype.updateCursorTime_ = function(
   eorzeaDate.setHours(hour);
   eorzeaDate.setMinutes(0);
 
-  // Update the cursor.
+  // Update positions.
   var deltaMs = eorzeaDate.getTime() - currentDate.getTime();
-  this.cursor_.style.left = this.toPixels_(deltaMs) + 'px';
+  var deltaPixels = this.toPixels_(deltaMs);
+  this.cursor_.style.left = deltaPixels + 'px';
 
-  // Update the tooltip.
+  var scrollPos = goog.dom.getDocumentScroll();
+  this.tooltip_.getElement().style.top =
+      (timePos.y + scrollPos.y) + 'px';
+  this.tooltip_.getElement().style.left =
+      (timePos.x + scrollPos.x) + deltaPixels + 'px';
+
+  // Update the tooltip text.
   var eorzeaString = ff.fisher.ui.fish.FishTime.FORMAT_.format(eorzeaDate);
 
   // Figure out the Earth date based on the Eorzea date.
@@ -367,10 +367,5 @@ ff.fisher.ui.fish.FishTime.prototype.updateCursorTime_ = function(
     timeUntilText = 'in ' + earthMinutesToTarget + ' minutes';
   }
 
-  this.tooltip_.setHtml(
-      eorzeaString + ' (Eorzea)<br>' +
-      earthString + ' (Earth)<br>' +
-      timeUntilText);
-  var tooltipLeft = this.toPixels_(deltaMs) - 60;
-  this.tooltip_.getElement().style.marginLeft = tooltipLeft + 'px';
+  this.tooltip_.setText(eorzeaString, earthString, timeUntilText);
 };
