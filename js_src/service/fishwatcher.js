@@ -45,7 +45,9 @@ ff.service.FishWatcher = function() {
       this.checkFish_);
   this.handler_.listen(
       this.weatherService_,
-      ff.service.WeatherService.EventType.WEATHER_UPDATED,
+      [ff.service.WeatherService.EventType.WEATHER_UPDATED,
+       // Compute when the interval changes, otherwise midnight is a problem.
+       ff.service.WeatherService.EventType.WEATHER_INTERVAL_CHANGED],
       this.checkFish_);
 
   // Check fish right now.
