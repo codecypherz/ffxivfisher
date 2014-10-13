@@ -329,17 +329,6 @@ ff.fisher.ui.fish.FishTime.prototype.updateCursorTime_ = function(
   eorzeaDate.setHours(hour);
   eorzeaDate.setMinutes(0);
 
-  // Update positions.
-  var deltaMs = eorzeaDate.getTime() - currentDate.getTime();
-  var deltaPixels = this.toPixels_(deltaMs);
-  this.cursor_.style.left = deltaPixels + 'px';
-
-  var scrollPos = goog.dom.getDocumentScroll();
-  this.tooltip_.getElement().style.top =
-      (timePos.y + scrollPos.y) + 'px';
-  this.tooltip_.getElement().style.left =
-      (timePos.x + scrollPos.x) + deltaPixels + 'px';
-
   // Update the tooltip text.
   var eorzeaString = ff.fisher.ui.fish.FishTime.FORMAT_.format(eorzeaDate);
 
@@ -368,4 +357,16 @@ ff.fisher.ui.fish.FishTime.prototype.updateCursorTime_ = function(
   }
 
   this.tooltip_.setText(eorzeaString, earthString, timeUntilText);
+
+  // Update positions.
+  var deltaMs = eorzeaDate.getTime() - currentDate.getTime();
+  var deltaPixels = this.toPixels_(deltaMs);
+  this.cursor_.style.left = deltaPixels + 'px';
+
+  var scrollPos = goog.dom.getDocumentScroll();
+  var tooltipSize = goog.style.getSize(this.tooltip_.getElement());
+  this.tooltip_.getElement().style.top =
+      (timePos.y + scrollPos.y) + 'px';
+  this.tooltip_.getElement().style.left =
+      (timePos.x - (tooltipSize.width / 2) + scrollPos.x) + deltaPixels + 'px';
 };
