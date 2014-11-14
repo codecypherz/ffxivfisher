@@ -124,7 +124,13 @@ public class SkywatcherService {
 			
 			// Parse and set weather.
 			Weather weather = TO_WEATHER.get(dataPoint.weather);
-			weatherList.set(dataPoint.time, weather);
+
+			// TODO Fix this hack to include previous round weather which is
+			// signified with a time of -1.
+			if (dataPoint.time >= 0) {
+				weatherList.set(dataPoint.time, weather);
+			}
+
 			weatherMap.put(area, weatherList);
 			
 			// Special case the areas that share weather.
