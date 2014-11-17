@@ -45,9 +45,6 @@ ff.fisher.ui.area.Areas = function() {
 
   /** @private {!ff.fisher.ui.State} */
   this.uiState_ = ff.fisher.ui.State.getInstance();
-
-  /** @private {boolean} */
-  this.collapsed_ = false;
 };
 goog.inherits(ff.fisher.ui.area.Areas, goog.ui.Component);
 
@@ -95,12 +92,11 @@ ff.fisher.ui.area.Areas.prototype.enterDocument = function() {
  * @private
  */
 ff.fisher.ui.area.Areas.prototype.toggleAll_ = function() {
-  if (this.collapsed_) {
+  if (this.uiState_.isAllCollapsed()) {
     this.uiState_.expandAll();
   } else {
     this.uiState_.collapseAll();
   }
-  this.collapsed_ = !this.collapsed_;
   this.update_();
 };
 
@@ -111,7 +107,7 @@ ff.fisher.ui.area.Areas.prototype.toggleAll_ = function() {
  */
 ff.fisher.ui.area.Areas.prototype.update_ = function() {
   // Update the text.
-  var text = this.collapsed_ ? 'Expand All' : 'Collapse All';
+  var text = this.uiState_.isAllCollapsed() ? 'Expand All' : 'Collapse All';
   goog.dom.setTextContent(
       ff.ui.getElementByFragment(
           this, ff.fisher.ui.area.Areas.Id_.TOGGLE_TEXT),
@@ -121,5 +117,5 @@ ff.fisher.ui.area.Areas.prototype.update_ = function() {
   goog.dom.classlist.enable(
       ff.ui.getElementByFragment(this, ff.fisher.ui.area.Areas.Id_.TOGGLE),
       ff.ui.Css.COLLAPSED,
-      this.collapsed_);
+      this.uiState_.isAllCollapsed());
 };

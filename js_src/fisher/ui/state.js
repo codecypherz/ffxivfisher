@@ -88,6 +88,22 @@ ff.fisher.ui.State.prototype.expandAll = function() {
 
 
 /**
+ * Checks to see if all areas are collapsed.
+ * @return {boolean}
+ */
+ff.fisher.ui.State.prototype.isAllCollapsed = function() {
+  var allCollapsed = true;
+  goog.object.forEach(
+      ff.model.AreaEnum,
+      function(area, key, obj) {
+        allCollapsed &= this.isAreaCollapsed_(key);
+      },
+      this);
+  return allCollapsed;
+};
+
+
+/**
  * Collapses or expands the given area.
  * @param {!ff.model.Area} area
  */
