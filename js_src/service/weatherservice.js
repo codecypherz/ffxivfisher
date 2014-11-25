@@ -221,5 +221,6 @@ ff.service.WeatherService.prototype.checkWeatherInterval_ = function() {
     goog.log.info(this.logger, 'New weather interval identified.');
     this.dispatchEvent(
         ff.service.WeatherService.EventType.WEATHER_INTERVAL_CHANGED);
+    this.getCurrentWeather_();
   }
 };
