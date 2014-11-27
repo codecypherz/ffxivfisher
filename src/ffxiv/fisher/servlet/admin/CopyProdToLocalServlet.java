@@ -14,9 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import ffxiv.fisher.Annotations.DevelopmentEnvironment;
+import ffxiv.fisher.Annotations.FishDeserializer;
 import ffxiv.fisher.model.Fish;
 import ffxiv.fisher.service.FishService;
 import ffxiv.fisher.service.UrlFetchService;
@@ -35,15 +37,18 @@ public class CopyProdToLocalServlet extends HttpServlet {
 	
 	private final UrlFetchService urlFetchService;
 	private final FishService fishService;
+	private final Provider<Gson> fishDeserializerProvider;
 	private final boolean isDevelopmentEnvironment;
 	
 	@Inject
 	public CopyProdToLocalServlet(
 			UrlFetchService urlFetchService,
 			FishService fishService,
+			@FishDeserializer Provider<Gson> fishDeserializerProvider,
 			@DevelopmentEnvironment boolean isDevelopmentEnvironment) {
 		this.urlFetchService = urlFetchService;
 		this.fishService = fishService;
+		this.fishDeserializerProvider = fishDeserializerProvider;
 		this.isDevelopmentEnvironment = isDevelopmentEnvironment;
 	}
 	
@@ -60,9 +65,8 @@ public class CopyProdToLocalServlet extends HttpServlet {
 		
 		// Fetch the prod data.
 		String fishesJson = urlFetchService.getRawData(SOURCE);
-		Gson gson = new Gson();
 		Type listType = new TypeToken<ArrayList<Fish>>() { }.getType();
-		List<Fish> fishes = gson.fromJson(fishesJson, listType);
+		List<Fish> fishes = fishDeserializerProvider.get().fromJson(fishesJson, listType);
 		
 		// Delete all local data.
 		fishService.deleteAll();

@@ -10,6 +10,7 @@ import com.google.inject.servlet.RequestScoped;
 
 import ffxiv.fisher.Annotations.DevelopmentEnvironment;
 import ffxiv.fisher.Annotations.FrontendVersion;
+import ffxiv.fisher.model.ModelModule;
 import ffxiv.fisher.model.TwigModule;
 import ffxiv.fisher.model.User;
 import ffxiv.fisher.servlet.FishServletModule;
@@ -21,6 +22,7 @@ public class FishServerModule extends AbstractModule {
 	protected void configure() {
 		install(new FishServletModule());
 		install(new TwigModule());
+		install(new ModelModule());
 		install(new HttpParameterModule());
 	}
 	
