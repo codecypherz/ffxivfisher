@@ -17,11 +17,33 @@
   vertical-align: middle;
 }
 
+.ff-fish-row-color-chooser-container {
+  height: 30px;
+  margin-right: 10px;
+  max-width: 30px;
+  min-width: 30px;
+}
+
+.ff-fish-row > .ff-cell.ff-fish-row-color-chooser-container {
+  vertical-align: top;
+}
+
+.ff-fish-color-chooser {
+  background-color: #fff;
+  border: 1px solid black;
+  cursor: pointer;
+  height: 20px;
+  padding: 4px;
+  width: 20px;
+  @mixin border_radius(5px);
+}
+
 .ff-fish-row-icon {
   height: 30px;
   margin-left: 10px;
-  min-width: 30px;
+  margin-right: 10px;
   max-width: 30px;
+  min-width: 30px;
 }
 
 .ff-fish-row-name {
@@ -106,8 +128,8 @@
 }
 
 .ff-fish-row-best-catch-path {
-  max-width: 160px;
-  min-width: 160px;
+  max-width: 155px;
+  min-width: 155px;
 }
 
 .ff-fish-catch-path {
@@ -127,5 +149,6 @@
   font-size: 16px;
   line-height: 30px;
   margin: 0 2px;
+  margin-top: -3px;
   vertical-align: top;
 }

@@ -7,6 +7,7 @@ goog.provide('ff.fisher.ui.fish.FishRow');
 goog.require('ff');
 goog.require('ff.fisher.ui.admin.AdminFishDialog');
 goog.require('ff.fisher.ui.fish.CatchPath');
+goog.require('ff.fisher.ui.fish.ColorChooser');
 goog.require('ff.fisher.ui.fish.FishTime');
 goog.require('ff.fisher.ui.fish.soy');
 goog.require('ff.model.Fish');
@@ -37,6 +38,10 @@ ff.fisher.ui.fish.FishRow = function(fish) {
   /** @private {!ff.model.User} */
   this.user_ = ff.model.User.getInstance();
 
+  /** @private {!ff.fisher.ui.fish.ColorChooser} */
+  this.colorChooser_ = new ff.fisher.ui.fish.ColorChooser(fish);
+  this.addChild(this.colorChooser_);
+
   /** @private {!ff.fisher.ui.fish.FishTime} */
   this.time_ = new ff.fisher.ui.fish.FishTime(fish);
   this.addChild(this.time_);
@@ -55,6 +60,7 @@ goog.inherits(ff.fisher.ui.fish.FishRow, goog.ui.Component);
  */
 ff.fisher.ui.fish.FishRow.Id_ = {
   BEST_CATCH_PATH: ff.getUniqueId('best-catch-path'),
+  COLOR_CHOOSER: ff.getUniqueId('color-chooser'),
   NAME: ff.getUniqueId('name'),
   TIME: ff.getUniqueId('time')
 };
@@ -79,6 +85,10 @@ ff.fisher.ui.fish.FishRow.prototype.createDom = function() {
         location: this.fish_.getLocation().getName(),
         imageSrc: this.fish_.getImageUrl()
       }));
+
+  // Render color chooser.
+  this.colorChooser_.render(ff.ui.getElementByFragment(
+      this, ff.fisher.ui.fish.FishRow.Id_.COLOR_CHOOSER));
 
   // Render time.
   this.time_.render(ff.ui.getElementByFragment(

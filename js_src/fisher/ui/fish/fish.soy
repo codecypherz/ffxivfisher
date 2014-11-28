@@ -9,6 +9,9 @@
  */
 {template .FISH_ROW}
   <div class="{css ff-row}{sp}{css ff-fish-row}">
+    <div id="{$ids.COLOR_CHOOSER|id}" class="{css ff-cell}{sp}
+        {css ff-fish-row-color-chooser-container}">
+    </div>
     <img src="{$imageSrc}" class="{css ff-cell}{sp}{css ff-fish-row-icon}">
     </img>
     <div id="{$ids.NAME|id}" title="{$name}" class="{css ff-cell}{sp}
@@ -25,6 +28,15 @@
         {css ff-fish-row-best-catch-path}">
     </div>
   </div>
+{/template}
+
+
+/**
+ * HTML for a giving a fish a color.
+ */
+{template .COLOR_CHOOSER}
+  <img src="/images/icons/paint-icon.png" class="{css ff-fish-color-chooser}">
+  </img>
 {/template}
 
 
