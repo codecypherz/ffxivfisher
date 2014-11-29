@@ -110,17 +110,23 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.createDom = function() {
 
     // Set previous weather.
     var previousWeatherStr = '';
-    var previousWeather = this.fishToEdit_.getPreviousWeatherRequired();
-    if (goog.isDefAndNotNull(previousWeather)) {
-      previousWeatherStr = ff.model.Weather[previousWeather];
-    }
+    var first = false;
+    goog.structs.forEach(this.fishToEdit_.getPreviousWeatherSet(),
+        function(weather) {
+          if (!first) {
+            first = true;
+          } else {
+            previousWeatherStr += ', ';
+          }
+          previousWeatherStr += ff.model.Weather[weather];
+        });
     this.setValue_(
         ff.fisher.ui.admin.AdminFishDialog.Id_.PREVIOUS_WEATHER_INPUT,
         previousWeatherStr);
 
     // Set weather.
     var weatherStr = '';
-    var first = false;
+    first = false;
     goog.structs.forEach(this.fishToEdit_.getWeatherSet(), function(weather) {
       if (!first) {
         first = true;
@@ -225,19 +231,24 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
     }
 
     // Validate the previous weather.
-    var previousWeatherValid = true;
     var previousWeatherInput = ff.ui.getElementByFragment(this,
         ff.fisher.ui.admin.AdminFishDialog.Id_.PREVIOUS_WEATHER_INPUT);
-    var previousWeatherString = goog.string.trim(previousWeatherInput.value);
-    var previousWeather = /** @type {?ff.model.Weather} */ (null);
-    if (!goog.string.isEmptySafe(previousWeatherString)) {
-      previousWeather = /** @type {?ff.model.Weather} */ (ff.stringValueToEnum(
-          previousWeatherString, ff.model.Weather));
-      if (!goog.isDefAndNotNull(previousWeather)) {
-        previousWeatherValid = false;
+    var previousWeatherString = previousWeatherInput.value;
+    var previousWeatherSplits = previousWeatherString.split(',');
+    var previousWeatherSet = new goog.structs.Set();
+    var previousWeatherInvalid = false;
+    goog.array.forEach(previousWeatherSplits, function(weatherSplit) {
+      weatherSplit = goog.string.trim(weatherSplit);
+      if (!goog.string.isEmptySafe(weatherSplit)) {
+        var weather = ff.stringValueToEnum(weatherSplit, ff.model.Weather);
+        if (weather) {
+          previousWeatherSet.add(weather);
+        } else {
+          previousWeatherInvalid = true;
+        }
       }
-    }
-    if (!previousWeatherValid) {
+    });
+    if (previousWeatherInvalid) {
       previousWeatherInput.select();
       e.preventDefault();
       return;
@@ -311,7 +322,7 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
     var fish = new ff.model.Fish(
         fishKey,
         name,
-        previousWeather,
+        previousWeatherSet,
         weatherSet,
         startHour,
         endHour,

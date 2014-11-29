@@ -162,15 +162,13 @@ ff.service.FishWatcher.prototype.computeCatchableRanges_ = function(fish) {
     }
 
     // First, see if the fish has a previous weather requirement.
-    var previousWeatherRequired = fish.getPreviousWeatherRequired();
-    if (goog.isDefAndNotNull(previousWeatherRequired)) {
-      var previousWeather = weatherRanges[i - 1].getWeather();
-      if (previousWeather != previousWeatherRequired) {
-        return;
-      }
+    var previousWeatherSet = fish.getPreviousWeatherSet();
+    if (!previousWeatherSet.isEmpty() &&
+        !previousWeatherSet.contains(weatherRanges[i - 1].getWeather())) {
+      return;
     }
 
-    // The fish satisfies, the previous weather requirement, so now check if the
+    // The fish satisfies the previous weather requirement, so now check if the
     // current weather is in the set of catchable weather.
     if (!fish.getWeatherSet().contains(weatherRange.getWeather())) {
       return;
