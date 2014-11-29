@@ -84,7 +84,7 @@ ff.model.AreaEnum = {
   'OLD_GRIDANIA': new ff.model.Area(
       ff.model.Region.THE_BLACK_SHROUD, 'Old Gridania'),
   'CENTRAL_SHROUD': new ff.model.Area(
-      ff.model.Region.THE_BLACK_SHROUD, 'Centra Shroud'),
+      ff.model.Region.THE_BLACK_SHROUD, 'Central Shroud'),
   'EAST_SHROUD': new ff.model.Area(
       ff.model.Region.THE_BLACK_SHROUD, 'East Shroud'),
   'SOUTH_SHROUD': new ff.model.Area(
