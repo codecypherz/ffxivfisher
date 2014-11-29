@@ -72,6 +72,8 @@ ff.fisher.ui.admin.AdminFishDialog.Id_ = {
   END_HOUR_INPUT: ff.getUniqueId('end-hour-input'),
   LOCATION_INPUT: ff.getUniqueId('location-input'),
   NAME_INPUT: ff.getUniqueId('name-input'),
+  PREDATOR_INPUT: ff.getUniqueId('predator-input'),
+  PREDATOR_COUNT_INPUT: ff.getUniqueId('predator-count-input'),
   PREVIOUS_WEATHER_INPUT: ff.getUniqueId('previous-weather-input'),
   START_HOUR_INPUT: ff.getUniqueId('start-hour-input'),
   WEATHER_INPUT: ff.getUniqueId('weather-input')
@@ -168,6 +170,18 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.createDom = function() {
     this.setValue_(
         ff.fisher.ui.admin.AdminFishDialog.Id_.BEST_CATCH_PATH_INPUT,
         bestCatchPathStr);
+
+    // Set the predator.
+    this.setValue_(
+        ff.fisher.ui.admin.AdminFishDialog.Id_.PREDATOR_INPUT,
+        this.fishToEdit_.getPredator());
+    var predatorCountString = '';
+    if (this.fishToEdit_.getPredatorCount() > 0) {
+      predatorCount = this.fishToEdit_.getPredatorCount() + '';
+    }
+    this.setValue_(
+        ff.fisher.ui.admin.AdminFishDialog.Id_.PREDATOR_COUNT_INPUT,
+        predatorCountString);
   }
 };
 
@@ -317,6 +331,32 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
       }
     });
 
+    // Validate the predator.
+    var predatorInput = ff.ui.getElementByFragment(this,
+        ff.fisher.ui.admin.AdminFishDialog.Id_.PREDATOR_INPUT);
+    var predator = predatorInput.value;
+    var predatorCountInput = ff.ui.getElementByFragment(this,
+        ff.fisher.ui.admin.AdminFishDialog.Id_.PREDATOR_COUNT_INPUT);
+    var predatorCountString = predatorCountInput.value;
+    var predatorCount = 0;
+    if (!goog.string.isEmptySafe(predator) &&
+        !goog.string.isEmptySafe(predatorCountString)) {
+      // Both have values have something set, so parse.
+      predatorCount = this.parseInt_(predatorCountString);
+      if (predatorCount < 0) {
+        // Failed to parse.
+        predatorCountInput.select();
+        e.preventDefault();
+        return;
+      } // Else, valid predator fields.
+    } else if (!goog.string.isEmptySafe(predator) ||
+        !goog.string.isEmptySafe(predatorCountString)) {
+      // Only one of them is set, so automatically invalid.
+      predatorInput.select();
+      e.preventDefault();
+      return;
+    } // Else, nothing set: valid predator fields.
+
     // Create the fish with the given data.
     var fishKey = this.fishToEdit_ ? this.fishToEdit_.getKey() : '';
     var fish = new ff.model.Fish(
@@ -327,7 +367,9 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
         startHour,
         endHour,
         fishLocation,
-        new ff.model.CatchPath(bestCatchPathParts));
+        new ff.model.CatchPath(bestCatchPathParts),
+        predator,
+        predatorCount);
 
     // Save the fish.
     if (this.fishToEdit_) {
@@ -350,16 +392,29 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
 ff.fisher.ui.admin.AdminFishDialog.prototype.getHour_ = function(id, e) {
   var input = ff.ui.getElementByFragment(this, id);
   var string = input.value;
-  try {
-    var hour = parseInt(string, 10);
-    if (hour >= 0 && hour <= 24) {
-      return hour;
-    }
-  } catch (error) {
+
+  var hour = this.parseInt_(string);
+  if (hour >= 0 && hour <= 24) {
+    return hour;
   }
 
   // Invalid so cancel.
   input.select();
   e.preventDefault();
   return -1;
+};
+
+
+/**
+ * Gets the number value from the given string.
+ * @param {string} string The text to parse.
+ * @return {number} The parsed number or -1 if parse failed.
+ * @private
+ */
+ff.fisher.ui.admin.AdminFishDialog.prototype.parseInt_ = function(string) {
+  try {
+    return parseInt(string, 10);
+  } catch (error) {
+    return -1;
+  }
 };

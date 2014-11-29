@@ -29,6 +29,8 @@ goog.require('goog.structs.Set');
  * @param {number} endHour
  * @param {!ff.model.Location} fishLocation
  * @param {!ff.model.CatchPath} bestCatchPath
+ * @param {string} predator
+ * @param {number} predatorCount
  * @constructor
  * @extends {goog.events.EventTarget}
  */
@@ -40,7 +42,9 @@ ff.model.Fish = function(
     startHour,
     endHour,
     fishLocation,
-    bestCatchPath) {
+    bestCatchPath,
+    predator,
+    predatorCount) {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
@@ -81,6 +85,12 @@ ff.model.Fish = function(
 
   /** @private {!Array.<!goog.math.Range>} */
   this.catchableRanges_ = [];
+
+  /** @private {string} */
+  this.predator_ = predator;
+
+  /** @private {number} */
+  this.predatorCount_ = predatorCount;
 };
 goog.inherits(ff.model.Fish, goog.events.EventTarget);
 
@@ -257,6 +267,22 @@ ff.model.Fish.prototype.getUserColor = function() {
 
 
 /**
+ * @return {string}
+ */
+ff.model.Fish.prototype.getPredator = function() {
+  return this.predator_;
+};
+
+
+/**
+ * @return {number}
+ */
+ff.model.Fish.prototype.getPredatorCount = function() {
+  return this.predatorCount_;
+};
+
+
+/**
  * @return {string} The key used to set/get color cookies.
  * @private
  */
@@ -272,22 +298,28 @@ ff.model.Fish.prototype.getUserColorKey_ = function() {
 ff.model.Fish.prototype.toJson = function() {
   var transposedWeather = goog.object.transpose(ff.model.Weather);
 
+  // Previous weather set.
   var previousWeatherArray = [];
   goog.structs.forEach(this.previousWeatherSet_, function(weather) {
     previousWeatherArray.push(transposedWeather[weather]);
   });
 
+  // Current weather set.
   var weatherArray = [];
   goog.structs.forEach(this.weatherSet_, function(weather) {
     weatherArray.push(transposedWeather[weather]);
   });
 
+  // Location.
   var fishLocationKey = goog.object.findKey(
       ff.model.LocationEnum,
       function(value, key, object) {
         return goog.string.caseInsensitiveCompare(
             value.getName(), this.location_.getName()) == 0;
       }, this);
+
+  // Predator.
+  var predator = this.predator_ || null;
 
   return {
     'key': this.key_,
@@ -297,7 +329,9 @@ ff.model.Fish.prototype.toJson = function() {
     'startHour': this.startHour_,
     'endHour': this.endHour_,
     'location': fishLocationKey,
-    'bestCatchPath': this.bestCatchPath_.toJson()
+    'bestCatchPath': this.bestCatchPath_.toJson(),
+    'predator': this.predator_,
+    'predatorCount': this.predatorCount_
   };
 };
 
@@ -337,6 +371,9 @@ ff.model.Fish.fromJson = function(json) {
     throw Error('Unknown location: ' + json['location']);
   }
 
+  // Parse the predator.
+  var predator = json['predator'] || '';
+
   // Construct the valid fish.
   return new ff.model.Fish(
       json['key'],
@@ -346,5 +383,7 @@ ff.model.Fish.fromJson = function(json) {
       json['startHour'],
       json['endHour'],
       ff.model.LocationEnum[fishLocation],
-      ff.model.CatchPath.fromJson(json['bestCatchPath']));
+      ff.model.CatchPath.fromJson(json['bestCatchPath']),
+      predator,
+      json['predatorCount']);
 };
