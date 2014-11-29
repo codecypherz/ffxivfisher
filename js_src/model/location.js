@@ -97,6 +97,10 @@ ff.model.LocationEnum = {
       ff.model.AreaEnum.EASTERN_LA_NOSCEA, 'The Juggernaut'),
   'RED_MANTIS_FALLS': new ff.model.Location(
       ff.model.AreaEnum.EASTERN_LA_NOSCEA, 'Red Mantis Falls'),
+  'RHOTANO_SEA_FORECASTLE': new ff.model.Location(
+      ff.model.AreaEnum.EASTERN_LA_NOSCEA, 'Rhotano Sea (Forecastle)'),
+  'RHOTANO_SEA_STERNCASTLE': new ff.model.Location(
+      ff.model.AreaEnum.EASTERN_LA_NOSCEA, 'Rhotano Sea (Sterncastle)'),
 
   // Western La Noscea
   'SWIFTPERCH': new ff.model.Location(
