@@ -116,8 +116,8 @@ public class SkywatcherService {
 			// Setup the weather array if need be.
 			List<Weather> weatherList = weatherMap.get(area);
 			if (weatherList == null) {
-				weatherList = new ArrayList<Weather>(4);
-				for (int i = 0; i < 4; i++) {
+				weatherList = new ArrayList<Weather>(5);
+				for (int i = 0; i < 5; i++) {
 					weatherList.add(null);
 				}
 			}
@@ -125,11 +125,8 @@ public class SkywatcherService {
 			// Parse and set weather.
 			Weather weather = TO_WEATHER.get(dataPoint.weather);
 
-			// TODO Fix this hack to include previous round weather which is
-			// signified with a time of -1.
-			if (dataPoint.time >= 0) {
-				weatherList.set(dataPoint.time, weather);
-			}
+			// The incoming data is indexed starting at -1.
+			weatherList.set(dataPoint.time + 1, weather);
 
 			weatherMap.put(area, weatherList);
 			

@@ -155,10 +155,28 @@ ff.service.FishWatcher.prototype.computeCatchableRanges_ = function(fish) {
   var weatherRanges = this.weatherService_.getWeatherRangesForArea(
       fish.getLocation().getArea());
   var intersections = [];
-  goog.array.forEach(weatherRanges, function(weatherRange) {
+  goog.array.forEach(weatherRanges, function(weatherRange, i, arr) {
+    // No need to look at the first weather range since it's in the past.
+    if (i == 0) {
+      return;
+    }
+
+    // First, see if the fish has a previous weather requirement.
+    var previousWeatherRequired = fish.getPreviousWeatherRequired();
+    if (goog.isDefAndNotNull(previousWeatherRequired)) {
+      var previousWeather = weatherRanges[i - 1].getWeather();
+      if (previousWeather != previousWeatherRequired) {
+        return;
+      }
+    }
+
+    // The fish satisfies, the previous weather requirement, so now check if the
+    // current weather is in the set of catchable weather.
     if (!fish.getWeatherSet().contains(weatherRange.getWeather())) {
       return;
     }
+
+    // All requirements satisfied, so compute exact catchable intersections.
     this.addIntersection_(
         intersections, weatherRange.getRange(), fish.getPreviousTimeRange());
     this.addIntersection_(

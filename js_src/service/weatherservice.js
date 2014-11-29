@@ -163,12 +163,14 @@ ff.service.WeatherService.prototype.onWeatherLoaded_ = function(json) {
     startHour = 16;
   }
 
-  // Define actual ranges based on the start hour.
+  // Define actual ranges based on the earliest reported weather range.
+  // This will be the range before the start hour for the previous weather data
+  // coming in.
   this.weatherRanges_ = [];
-  var reportStartMs = eorzeaDate.getTime() + this.eorzeaTime_.hoursToMs(
-      startHour - currentHour);
   var rangeWidth = this.eorzeaTime_.hoursToMs(8);
-  for (var i = 0; i < 6; i++) {
+  var reportStartMs = eorzeaDate.getTime() + this.eorzeaTime_.hoursToMs(
+      startHour - currentHour) - rangeWidth;
+  for (var i = 0; i < 7; i++) {
     this.weatherRanges_.push(new goog.math.Range(
         reportStartMs + (i * rangeWidth),
         reportStartMs + ((i + 1) * rangeWidth)));

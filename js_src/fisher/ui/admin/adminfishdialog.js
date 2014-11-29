@@ -72,6 +72,7 @@ ff.fisher.ui.admin.AdminFishDialog.Id_ = {
   END_HOUR_INPUT: ff.getUniqueId('end-hour-input'),
   LOCATION_INPUT: ff.getUniqueId('location-input'),
   NAME_INPUT: ff.getUniqueId('name-input'),
+  PREVIOUS_WEATHER_INPUT: ff.getUniqueId('previous-weather-input'),
   START_HOUR_INPUT: ff.getUniqueId('start-hour-input'),
   WEATHER_INPUT: ff.getUniqueId('weather-input')
 };
@@ -106,6 +107,16 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.createDom = function() {
     this.setValue_(
         ff.fisher.ui.admin.AdminFishDialog.Id_.NAME_INPUT,
         this.fishToEdit_.getName());
+
+    // Set previous weather.
+    var previousWeatherStr = '';
+    var previousWeather = this.fishToEdit_.getPreviousWeatherRequired();
+    if (goog.isDefAndNotNull(previousWeather)) {
+      previousWeatherStr = ff.model.Weather[previousWeather];
+    }
+    this.setValue_(
+        ff.fisher.ui.admin.AdminFishDialog.Id_.PREVIOUS_WEATHER_INPUT,
+        previousWeatherStr);
 
     // Set weather.
     var weatherStr = '';
@@ -213,6 +224,25 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
       return;
     }
 
+    // Validate the previous weather.
+    var previousWeatherValid = true;
+    var previousWeatherInput = ff.ui.getElementByFragment(this,
+        ff.fisher.ui.admin.AdminFishDialog.Id_.PREVIOUS_WEATHER_INPUT);
+    var previousWeatherString = goog.string.trim(previousWeatherInput.value);
+    var previousWeather = /** @type {?ff.model.Weather} */ (null);
+    if (!goog.string.isEmptySafe(previousWeatherString)) {
+      previousWeather = /** @type {?ff.model.Weather} */ (ff.stringValueToEnum(
+          previousWeatherString, ff.model.Weather));
+      if (!goog.isDefAndNotNull(previousWeather)) {
+        previousWeatherValid = false;
+      }
+    }
+    if (!previousWeatherValid) {
+      previousWeatherInput.select();
+      e.preventDefault();
+      return;
+    }
+
     // Validate the weather.
     var weatherInput = ff.ui.getElementByFragment(this,
         ff.fisher.ui.admin.AdminFishDialog.Id_.WEATHER_INPUT);
@@ -281,6 +311,7 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
     var fish = new ff.model.Fish(
         fishKey,
         name,
+        previousWeather,
         weatherSet,
         startHour,
         endHour,

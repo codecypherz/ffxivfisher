@@ -13,6 +13,7 @@ public class Fish {
 	@Store(false) private String key;
 	
 	private String name;
+	private Weather previousWeatherRequired;
 	private Set<Weather> weatherSet;
 	private int startHour; // inclusive
 	private int endHour; // exclusive
@@ -23,6 +24,7 @@ public class Fish {
 		this(
 			"",  // key
 			"Not Set", // name
+			null, // previous weather required
 			new HashSet<Weather>(),
 			-1,  // start hour
 			-1,  // end hour
@@ -33,6 +35,7 @@ public class Fish {
 	public Fish(
 			String key,
 			String name,
+			Weather previousWeatherRequired,
 			Set<Weather> weatherSet,
 			int startHour,
 			int endHour,
@@ -40,6 +43,7 @@ public class Fish {
 			List<CatchPathPart> bestCatchPath) {
 		this.key = key;
 		this.name = name;
+		this.previousWeatherRequired = previousWeatherRequired;
 		this.weatherSet = weatherSet;
 		this.startHour = startHour;
 		this.endHour = endHour;
@@ -56,6 +60,9 @@ public class Fish {
 	
 	public String getName() {
 		return name;
+	}
+	public Weather getPreviousWeatherRequired() {
+		return previousWeatherRequired;
 	}
 	public Set<Weather> getWeatherSet() {
 		return weatherSet;
@@ -75,6 +82,7 @@ public class Fish {
 
 	public void setFromFish(Fish other) {
 		name = other.name;
+		previousWeatherRequired = other.previousWeatherRequired;
 		weatherSet = other.weatherSet;
 		startHour = other.startHour;
 		endHour = other.endHour;

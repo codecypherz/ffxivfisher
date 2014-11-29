@@ -23,6 +23,7 @@ goog.require('goog.structs.Set');
  * The model for a fish.
  * @param {string} key
  * @param {string} name
+ * @param {?ff.model.Weather} previousWeatherRequired
  * @param {!goog.structs.Set} weatherSet
  * @param {number} startHour
  * @param {number} endHour
@@ -32,7 +33,14 @@ goog.require('goog.structs.Set');
  * @extends {goog.events.EventTarget}
  */
 ff.model.Fish = function(
-    key, name, weatherSet, startHour, endHour, fishLocation, bestCatchPath) {
+    key,
+    name,
+    previousWeatherRequired,
+    weatherSet,
+    startHour,
+    endHour,
+    fishLocation,
+    bestCatchPath) {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
@@ -46,6 +54,9 @@ ff.model.Fish = function(
 
   /** @private {string} */
   this.name_ = name;
+
+  /** @private {?ff.model.Weather} */
+  this.previousWeatherRequired_ = previousWeatherRequired;
 
   /** @private {!goog.structs.Set} */
   this.weatherSet_ = weatherSet;
@@ -104,6 +115,12 @@ ff.model.Fish.prototype.getKey = function() {
 /** @return {string} */
 ff.model.Fish.prototype.getName = function() {
   return this.name_;
+};
+
+
+/** @return {?ff.model.Weather} */
+ff.model.Fish.prototype.getPreviousWeatherRequired = function() {
+  return this.previousWeatherRequired_;
 };
 
 
@@ -254,6 +271,12 @@ ff.model.Fish.prototype.getUserColorKey_ = function() {
  */
 ff.model.Fish.prototype.toJson = function() {
   var transposedWeather = goog.object.transpose(ff.model.Weather);
+
+  var previousWeatherRequired = null;
+  if (goog.isDefAndNotNull(this.previousWeatherRequired_)) {
+    previousWeatherRequired = transposedWeather[this.previousWeatherRequired_];
+  }
+
   var weatherArray = [];
   goog.structs.forEach(this.weatherSet_, function(weather) {
     weatherArray.push(transposedWeather[weather]);
@@ -269,6 +292,7 @@ ff.model.Fish.prototype.toJson = function() {
   return {
     'key': this.key_,
     'name': this.name_,
+    'previousWeatherRequired': previousWeatherRequired,
     'weatherSet': weatherArray,
     'startHour': this.startHour_,
     'endHour': this.endHour_,
@@ -284,6 +308,20 @@ ff.model.Fish.prototype.toJson = function() {
  */
 ff.model.Fish.fromJson = function(json) {
 
+  // Figure out the previous weather required field.
+  var previousWeatherRequired = null;
+  var previousWeatherRequiredString = json['previousWeatherRequired'];
+  if (goog.isDefAndNotNull(previousWeatherRequiredString)) {
+    var weather = /** @type {?ff.model.Weather} */ (ff.stringKeyToEnum(
+        previousWeatherRequiredString, ff.model.Weather));
+    if (goog.isDefAndNotNull(weather)) {
+      previousWeatherRequired = weather;
+    } else {
+      throw Error('Unknown weather: ' + previousWeatherRequiredString);
+    }
+  }
+
+  // Figure out the weather set field.
   var weatherSet = new goog.structs.Set();
   goog.array.forEach(json['weatherSet'], function(weatherString) {
     var weather = ff.stringKeyToEnum(weatherString, ff.model.Weather);
@@ -294,15 +332,18 @@ ff.model.Fish.fromJson = function(json) {
     }
   });
 
+  // Parse the location.
   var fishLocation = ff.stringKeyToEnum(
       json['location'], ff.model.LocationEnum);
   if (!fishLocation) {
     throw Error('Unknown location: ' + json['location']);
   }
 
+  // Construct the valid fish.
   return new ff.model.Fish(
       json['key'],
       json['name'],
+      previousWeatherRequired,
       weatherSet,
       json['startHour'],
       json['endHour'],
