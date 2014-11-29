@@ -119,7 +119,8 @@ ff.fisher.ui.State.prototype.toggleAreaCollapsed = function(area) {
  * @private
  */
 ff.fisher.ui.State.prototype.initializeFromCookie_ = function() {
-  var cookieState = this.cookieService_.get(ff.fisher.ui.State.COLLAPSE_STATE_);
+  var cookieState = this.cookieService_.get(
+      ff.fisher.ui.State.COLLAPSE_STATE_, '');
   var cookieMap = {};
   if (cookieState) {
     this.logger.info('Setting collapse state map from cookie.');

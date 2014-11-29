@@ -71,8 +71,23 @@ ff.fisher.ui.fish.FishRow.Id_ = {
  * @private
  */
 ff.fisher.ui.fish.FishRow.Css_ = {
-  CATCHABLE: goog.getCssName('ff-fish-catchable')
+  CATCHABLE: goog.getCssName('ff-fish-catchable'),
+  COLOR_ONE: goog.getCssName('ff-fish-row-color-one'),
+  COLOR_TWO: goog.getCssName('ff-fish-row-color-two'),
+  COLOR_THREE: goog.getCssName('ff-fish-row-color-three')
 };
+
+
+/**
+ * @type {!Array.<string>}
+ * @const
+ * @private
+ */
+ff.fisher.ui.fish.FishRow.ALL_COLOR_CLASSES_ = [
+  ff.fisher.ui.fish.FishRow.Css_.COLOR_ONE,
+  ff.fisher.ui.fish.FishRow.Css_.COLOR_TWO,
+  ff.fisher.ui.fish.FishRow.Css_.COLOR_THREE
+];
 
 
 /** @override */
@@ -120,7 +135,13 @@ ff.fisher.ui.fish.FishRow.prototype.enterDocument = function() {
       ff.model.Fish.EventType.CATCHABLE_CHANGED,
       this.updateCatchable_);
 
+  this.getHandler().listen(
+      this.fish_,
+      ff.model.Fish.EventType.COLOR_CHANGED,
+      this.updateColor_);
+
   this.updateCatchable_();
+  this.updateColor_();
 };
 
 
@@ -137,4 +158,35 @@ ff.fisher.ui.fish.FishRow.prototype.updateCatchable_ = function() {
       this.getElement(),
       ff.fisher.ui.fish.FishRow.Css_.CATCHABLE,
       this.fish_.isCatchable());
+};
+
+
+/**
+ * Updates the color of the fish based on the color chosen by the user.
+ * @private
+ */
+ff.fisher.ui.fish.FishRow.prototype.updateColor_ = function() {
+  if (!this.isInDocument()) {
+    return;
+  }
+
+  var colorClass = null;
+  var color = this.fish_.getUserColor();
+  if (color == ff.model.Fish.Color.ONE) {
+    colorClass = ff.fisher.ui.fish.FishRow.Css_.COLOR_ONE;
+  } else if (color == ff.model.Fish.Color.TWO) {
+    colorClass = ff.fisher.ui.fish.FishRow.Css_.COLOR_TWO;
+  } else if (color == ff.model.Fish.Color.THREE) {
+    colorClass = ff.fisher.ui.fish.FishRow.Css_.COLOR_THREE;
+  }
+
+  goog.dom.classlist.removeAll(
+      this.getElement(),
+      ff.fisher.ui.fish.FishRow.ALL_COLOR_CLASSES_);
+
+  if (goog.isDefAndNotNull(colorClass)) {
+    goog.dom.classlist.add(
+        this.getElement(),
+        colorClass);
+  }
 };

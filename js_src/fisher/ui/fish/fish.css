@@ -2,6 +2,10 @@
  * CSS for a single fish.
  */
 
+@def FISH_COLOR_ONE      #d77625;
+@def FISH_COLOR_TWO      #035002;
+@def FISH_COLOR_THREE    #741114;
+
 .ff-fish-row {
   font-size: 14px;
   opacity: 0.4;
@@ -28,20 +32,74 @@
   vertical-align: top;
 }
 
-.ff-fish-color-chooser {
+.ff-fish-color-chooser-color-container {
   background-color: #fff;
-  border: 1px solid black;
+  display: inline-block;
+  height: 24px;
+}
+
+.ff-fish-color-chooser {
+  height: 26px;
+  margin-left: 5px;
+  margin-top: 6px;
+  position: relative;
+  width: 26px;
+}
+
+.ff-fish-color-chooser-color {
+  border: 1px solid transparent;
   cursor: pointer;
-  height: 20px;
-  padding: 4px;
-  width: 20px;
-  @mixin border_radius(5px);
+  height: 10px;
+  position: absolute;
+  width: 10px;
+  @mixin border_radius(6px);
+}
+
+.ff-fish-color-chooser-color:hover {
+  border: 1px solid #fff;
+}
+
+.ff-fish-color-clear {
+  background-color: #333;
+  left: 0;
+  top: 0;
+}
+
+.ff-fish-color-one {
+  background-color: FISH_COLOR_ONE;
+  right: 0;
+  top: 0;
+}
+
+.ff-fish-color-two {
+  background-color: FISH_COLOR_TWO;
+  bottom: 0;
+  left: 0;
+}
+
+.ff-fish-color-three {
+  background-color: FISH_COLOR_THREE;
+  bottom: 0;
+  right: 0;
+}
+
+.ff-fish-row-color-one {
+  background-color: FISH_COLOR_ONE;
+}
+
+.ff-fish-row-color-two {
+  background-color: FISH_COLOR_TWO;
+}
+
+.ff-fish-row-color-three {
+  background-color: FISH_COLOR_THREE;
 }
 
 .ff-fish-row-icon {
   height: 30px;
   margin-left: 10px;
   margin-right: 10px;
+  margin-top: 4px;
   max-width: 30px;
   min-width: 30px;
 }
@@ -61,6 +119,7 @@
 }
 
 .ff-fish-time {
+  background: #333;
   border: 1px solid #fff;
   height: 30px;
   overflow: hidden;
@@ -70,7 +129,6 @@
 
 .ff-fish-time-range {
   background: #2B73C5;
-  /*background: #133D6E;*/
   bottom: 0;
   opacity: 0.35;
   position: absolute;
@@ -133,6 +191,8 @@
 }
 
 .ff-fish-catch-path {
+  margin-right: 2px;
+  margin-top: 4px;
 }
 
 .ff-fish-catch-path-part {

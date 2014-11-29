@@ -27,10 +27,11 @@ goog.addSingletonGetter(ff.service.CookieService);
 /**
  * Gets the cookie identified by the name.
  * @param {string} cookieName
+ * @param {string} defaultValue If not found this is returned instead.
  * @return {string}
  */
-ff.service.CookieService.prototype.get = function(cookieName) {
-  return this.cookies_.get(cookieName) || '';
+ff.service.CookieService.prototype.get = function(cookieName, defaultValue) {
+  return this.cookies_.get(cookieName, defaultValue) || defaultValue;
 };
 
 

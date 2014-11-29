@@ -6,6 +6,7 @@ goog.require('ff.model.CatchPath');
 goog.require('ff.model.Image');
 goog.require('ff.model.LocationEnum');
 goog.require('ff.model.Weather');
+goog.require('ff.service.CookieService');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events.EventTarget');
@@ -36,6 +37,9 @@ ff.model.Fish = function(
 
   /** @protected {goog.log.Logger} */
   this.logger = goog.log.getLogger('ff.model.Fish');
+
+  /** @private {!ff.service.CookieService} */
+  this.cookieService_ = ff.service.CookieService.getInstance();
 
   /** @private {string} */
   this.key_ = key;
@@ -75,7 +79,19 @@ goog.inherits(ff.model.Fish, goog.events.EventTarget);
  * @enum {string}
  */
 ff.model.Fish.EventType = {
-  CATCHABLE_CHANGED: ff.getUniqueId('catchable-changed')
+  CATCHABLE_CHANGED: ff.getUniqueId('catchable-changed'),
+  COLOR_CHANGED: ff.getUniqueId('color-changed')
+};
+
+
+/**
+ * @enum {string}
+ */
+ff.model.Fish.Color = {
+  ONE: 'ONE',
+  TWO: 'TWO',
+  THREE: 'THREE',
+  CLEAR: 'CLEAR'
 };
 
 
@@ -198,6 +214,37 @@ ff.model.Fish.prototype.setTimeRanges = function(previous, next) {
  */
 ff.model.Fish.prototype.getImageUrl = function() {
   return ff.model.Image.getUrl('fish', this.name_);
+};
+
+
+/**
+ * Sets the color the user chose for the fish.
+ * @param {!ff.model.Fish.Color} color The new color chosen by the user.
+ */
+ff.model.Fish.prototype.setUserColor = function(color) {
+  this.cookieService_.set(this.getUserColorKey_(), color);
+  this.dispatchEvent(ff.model.Fish.EventType.COLOR_CHANGED);
+};
+
+
+/**
+ * Gets the color the user chose for the fish.
+ * @return {!ff.model.Fish.Color}
+ */
+ff.model.Fish.prototype.getUserColor = function() {
+  var colorFromCookie = this.cookieService_.get(
+      this.getUserColorKey_(), ff.model.Fish.Color.CLEAR);
+  return /** @type {!ff.model.Fish.Color} */ (
+      ff.stringValueToEnum(colorFromCookie, ff.model.Fish.Color));
+};
+
+
+/**
+ * @return {string} The key used to set/get color cookies.
+ * @private
+ */
+ff.model.Fish.prototype.getUserColorKey_ = function() {
+  return this.key_ + '_user_color';
 };
 
 

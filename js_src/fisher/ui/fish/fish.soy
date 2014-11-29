@@ -33,10 +33,23 @@
 
 /**
  * HTML for a giving a fish a color.
+ * @param ids
  */
 {template .COLOR_CHOOSER}
-  <img src="/images/icons/paint-icon.png" class="{css ff-fish-color-chooser}">
-  </img>
+  <div class="{css ff-fish-color-chooser}">
+    <div id="{$ids.ONE|id}" class="{css ff-fish-color-chooser-color}{sp}
+        {css ff-fish-color-one}">
+	</div>
+	<div id="{$ids.TWO|id}" class="{css ff-fish-color-chooser-color}{sp}
+	    {css ff-fish-color-two}">
+	</div>
+	<div id="{$ids.THREE|id}" class="{css ff-fish-color-chooser-color}{sp}
+	    {css ff-fish-color-three}">
+	</div>
+	<div id="{$ids.CLEAR|id}" class="{css ff-fish-color-chooser-color}{sp}
+	    {css ff-fish-color-clear}">
+	</div>
+  </div>
 {/template}
 
 
