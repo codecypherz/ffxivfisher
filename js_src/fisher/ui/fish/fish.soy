@@ -8,24 +8,31 @@
  * @param imageSrc
  */
 {template .FISH_ROW}
-  <div class="{css ff-row}{sp}{css ff-fish-row}">
-    <div id="{$ids.COLOR_CHOOSER|id}" class="{css ff-cell}{sp}
-        {css ff-fish-row-color-chooser-container}">
+  <div class="{css ff-fish-row}">
+    <div class="{css ff-fish-row-cells}">
+      <div id="{$ids.COLOR_CHOOSER|id}"
+          class="{css ff-fish-cell}{sp}{css ff-fish-row-color-chooser-container}">
+      </div>
+      <img src="{$imageSrc}"
+          class="{css ff-fish-cell}{sp}{css ff-fish-row-icon}">
+      </img>
+      <div id="{$ids.NAME|id}"
+          title="{$name}"
+          class="{css ff-fish-cell}{sp}{css ff-fish-row-name}">
+        {$name}
+      </div>
+      <div id="{$ids.TIME|id}"
+          class="{css ff-fish-cell}{sp}{css ff-fish-row-time}">
+      </div>
+      <div title="{$location}"
+          class="{css ff-fish-cell}{sp}{css ff-fish-row-location}">
+        {$location}
+      </div>
+      <div id="{$ids.BEST_CATCH_PATH|id}"
+          class="{css ff-fish-cell}{sp}{css ff-fish-row-best-catch-path}">
+      </div>
     </div>
-    <img src="{$imageSrc}" class="{css ff-cell}{sp}{css ff-fish-row-icon}">
-    </img>
-    <div id="{$ids.NAME|id}" title="{$name}" class="{css ff-cell}{sp}
-        {css ff-fish-row-name}">
-      {$name}
-    </div>
-    <div id="{$ids.TIME|id}" class="{css ff-cell}{sp}{css ff-fish-row-time}">
-    </div>
-    <div id="{$ids.LOCATION|id}" title="{$location}" class="{css ff-cell}{sp}
-        {css ff-fish-row-location}">
-      {$location}
-    </div>
-    <div id="{$ids.BEST_CATCH_PATH|id}" class="{css ff-cell}{sp}
-        {css ff-fish-row-best-catch-path}">
+    <div id="{$ids.DETAIL|id}" class="{css ff-fish-row-detail-container}">
     </div>
   </div>
 {/template}
@@ -116,5 +123,45 @@
             class="{css ff-fish-catch-path-part-image}" />
       </div>
     {/foreach}
+  </div>
+{/template}
+
+
+/**
+ * HTML for fish detail.
+ * @param ids
+ */
+{template .FISH_DETAIL}
+  <div class="{css ff-fish-detail}">
+
+    <div class="{css ff-fish-detail-column-one}">
+      <div class="{css ff-fish-detail-item}">
+        <div class="{css ff-fish-detail-title}">
+          Previous Weather:
+        </div>
+        <div id="{$ids.PREVIOUS_WEATHER|id}"
+            class="{css ff-fish-detail-weather}">
+        </div>
+      </div>
+      <div class="{css ff-fish-detail-item}">
+        <div class="{css ff-fish-detail-title}">
+          Current Weather:
+        </div>
+        <div id="{$ids.CURRENT_WEATHER|id}"
+            class="{css ff-fish-detail-weather}">
+        </div>
+      </div>
+    </div>
+
+    <div class="{css ff-fish-detail-column-two}">
+      <div class="{css ff-fish-detail-item}">
+        <div class="{css ff-fish-detail-title}">
+          Predator Info:
+        </div>
+        <div id="{$ids.PREDATOR_INFO|id}" class="{css ff-fish-detail-predator}">
+        </div>
+      </div>
+    </div>
+
   </div>
 {/template}

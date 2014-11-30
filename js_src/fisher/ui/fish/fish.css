@@ -16,20 +16,23 @@
   opacity: 1;
 }
 
-.ff-fish-row > .ff-cell {
-  margin-bottom: 5px;
+.ff-fish-row {
+  cursor: pointer;
+}
+
+.ff-fish-row-cells {
+  padding: 3px 0;
+}
+
+.ff-fish-cell {
+  display: inline-block;
+  margin-right: 10px;
   vertical-align: middle;
 }
 
 .ff-fish-row-color-chooser-container {
   height: 30px;
-  margin-right: 10px;
-  max-width: 30px;
-  min-width: 30px;
-}
-
-.ff-fish-row > .ff-cell.ff-fish-row-color-chooser-container {
-  vertical-align: top;
+  width: 30px;
 }
 
 .ff-fish-color-chooser-color-container {
@@ -41,7 +44,7 @@
 .ff-fish-color-chooser {
   height: 26px;
   margin-left: 5px;
-  margin-top: 6px;
+  margin-top: 2px;
   position: relative;
   width: 26px;
 }
@@ -83,39 +86,33 @@
   right: 0;
 }
 
-.ff-fish-row-color-one {
+.ff-fish-row-color-one > .ff-fish-row-cells {
   background-color: FISH_COLOR_ONE;
 }
 
-.ff-fish-row-color-two {
+.ff-fish-row-color-two > .ff-fish-row-cells {
   background-color: FISH_COLOR_TWO;
 }
 
-.ff-fish-row-color-three {
+.ff-fish-row-color-three > .ff-fish-row-cells {
   background-color: FISH_COLOR_THREE;
 }
 
 .ff-fish-row-icon {
   height: 30px;
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-top: 4px;
-  max-width: 30px;
-  min-width: 30px;
+  width: 30px;
 }
 
 .ff-fish-row-name {
-  max-width: 150px;
-  min-width: 150px;
   overflow: hidden;
   padding-right: 5px;
   text-overflow: ellipsis;
   white-space: nowrap;
+  width: 140px;
 }
 
 .ff-fish-row-time {
-  max-width: 300px;
-  min-width: 300px;
+  width: 300px;
 }
 
 .ff-fish-time {
@@ -177,17 +174,18 @@
 }
 
 .ff-fish-row-location {
-  max-width: 150px;
-  min-width: 150px;
   overflow: hidden;
   padding-right: 5px;
   text-overflow: ellipsis;
   white-space: nowrap;
+  width: 145px;
 }
 
 .ff-fish-row-best-catch-path {
-  max-width: 155px;
-  min-width: 155px;
+  width: 160px;
+}
+.ff-fish-cell.ff-fish-row-best-catch-path {
+  margin-right: 0;
 }
 
 .ff-fish-catch-path {
@@ -211,4 +209,66 @@
   margin: 0 2px;
   margin-top: -3px;
   vertical-align: top;
+}
+
+.ff-fish-row-detail-container {
+  background-color: #222;
+  height: 0;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  @mixin transition(all .2s ease);
+}
+
+.ff-fish-row-detail-shown .ff-fish-row-cells {
+  border-bottom: 1px solid #555;
+}
+
+.ff-fish-row-detail-shown > .ff-fish-row-detail-container {
+  height: 80px;
+  margin-bottom: 15px;
+}
+
+.ff-fish-detail-column-one {
+  left: 20px;
+  position: absolute;
+  top: 5px;
+}
+
+.ff-fish-detail-column-one .ff-fish-detail-title {
+  width: 125px;
+}
+
+.ff-fish-detail-column-two {
+  left: 50%;
+  position: absolute;
+  top: 5px;
+}
+
+.ff-fish-detail-item {
+  height: 30px;
+  margin-bottom: 5px;
+}
+
+.ff-fish-detail-title {
+  color: #FAEBD7;
+  display: inline-block;
+  line-height: 30px;
+  margin-right: 10px;
+  text-align: right;
+  vertical-align: middle;
+}
+
+.ff-fish-detail-weather {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.ff-fish-detail-weather > img {
+  margin-left: -4px;
+}
+
+.ff-fish-detail-predator {
+  display: inline-block;
+  vertical-align: middle;
 }

@@ -32,10 +32,15 @@ ff.fisher.ui.State = function() {
 
   /**
    * Keeps track of an area's collapsed state.
-   * @type {!Object.<string, boolean>}
-   * @private
+   * @private {!Object.<string, boolean>}
    */
   this.areaCollapseMap_ = {};
+
+  /**
+   * Keeps track of collapsed state for fish.
+   * @private {!Object.<string, boolean>}
+   */
+  this.fishCollapseMap_ = {};
 
   this.initializeFromCookie_();
 };
@@ -110,6 +115,27 @@ ff.fisher.ui.State.prototype.isAllCollapsed = function() {
 ff.fisher.ui.State.prototype.toggleAreaCollapsed = function(area) {
   var key = ff.model.Area.getEnum(area);
   this.set_(area, !this.isAreaCollapsed_(key));
+};
+
+
+/**
+ * Checks to see if the fish is collapsed or not.
+ * @param {!ff.model.Fish} fish
+ * @return {boolean}
+ */
+ff.fisher.ui.State.prototype.isFishCollapsed = function(fish) {
+  var collapsed = this.fishCollapseMap_[fish.getKey()];
+  return goog.isDef(collapsed) ? collapsed : true;
+};
+
+
+/**
+ * Toggles the collapsed state for the fish.
+ * @param {!ff.model.Fish} fish
+ */
+ff.fisher.ui.State.prototype.toggleFishCollapsed = function(fish) {
+  var collapsed = this.isFishCollapsed(fish);
+  this.fishCollapseMap_[fish.getKey()] = !collapsed;
 };
 
 

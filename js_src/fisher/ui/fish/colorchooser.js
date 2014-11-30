@@ -91,5 +91,7 @@ ff.fisher.ui.fish.ColorChooser.prototype.enterDocument = function() {
         } else if (e.target == this.clearElement_) {
           this.fish_.setUserColor(ff.model.Fish.Color.CLEAR);
         }
+        e.preventDefault();
+        e.stopPropagation();
       });
 };

@@ -177,7 +177,7 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.createDom = function() {
         this.fishToEdit_.getPredator());
     var predatorCountString = '';
     if (this.fishToEdit_.getPredatorCount() > 0) {
-      predatorCount = this.fishToEdit_.getPredatorCount() + '';
+      predatorCountString = this.fishToEdit_.getPredatorCount() + '';
     }
     this.setValue_(
         ff.fisher.ui.admin.AdminFishDialog.Id_.PREDATOR_COUNT_INPUT,
