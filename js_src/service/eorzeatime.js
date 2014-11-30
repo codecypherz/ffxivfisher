@@ -4,8 +4,10 @@
 
 goog.provide('ff.service.EorzeaTime');
 
+goog.require('ff');
 goog.require('goog.Timer');
 goog.require('goog.date.UtcDateTime');
+goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.log');
 
@@ -25,12 +27,27 @@ ff.service.EorzeaTime = function() {
   this.timer_ = new goog.Timer(1000);
   this.registerDisposable(this.timer_);
 
+  /** @private {number} */
+  this.lastSeenHour_ = 0;
+
+  var handler = new goog.events.EventHandler(this);
+  this.registerDisposable(handler);
+  handler.listen(this.timer_, goog.Timer.TICK, this.checkHour_);
+
   this.timer_.setParentEventTarget(this);
   this.timer_.start();
   this.timer_.dispatchTick();
 };
 goog.inherits(ff.service.EorzeaTime, goog.events.EventTarget);
 goog.addSingletonGetter(ff.service.EorzeaTime);
+
+
+/**
+ * @enum {string}
+ */
+ff.service.EorzeaTime.EventType = {
+  HOUR_CHANGED: ff.getUniqueId('hour-changed')
+};
 
 
 /**
@@ -107,4 +124,24 @@ ff.service.EorzeaTime.prototype.toEarth = function(eorzeaDate) {
  */
 ff.service.EorzeaTime.prototype.hoursToMs = function(hours) {
   return Math.floor(hours * ff.service.EorzeaTime.MS_IN_AN_HOUR);
+};
+
+
+/**
+ * Checks to see if a new hour is entered.
+ * @private
+ */
+ff.service.EorzeaTime.prototype.checkHour_ = function() {
+  var eorzeaDate = this.getCurrentEorzeaDate();
+  var currentHour = eorzeaDate.getUTCHours();
+  if (currentHour == this.lastSeenHour_) {
+    // Nothing changed, so don't do any more.
+    return;
+  }
+
+  // The hour changed, so save it.
+  this.lastSeenHour_ = currentHour;
+
+  goog.log.info(this.logger, 'The hour is now: ' + currentHour);
+  this.dispatchEvent(ff.service.EorzeaTime.EventType.HOUR_CHANGED);
 };

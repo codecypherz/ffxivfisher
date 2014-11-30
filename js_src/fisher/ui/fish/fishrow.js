@@ -14,6 +14,7 @@ goog.require('ff.fisher.ui.fish.FishTime');
 goog.require('ff.fisher.ui.fish.soy');
 goog.require('ff.model.Fish');
 goog.require('ff.model.User');
+goog.require('ff.service.EorzeaTime');
 goog.require('ff.ui');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
@@ -42,6 +43,9 @@ ff.fisher.ui.fish.FishRow = function(fish) {
 
   /** @private {!ff.fisher.ui.State} */
   this.uiState_ = ff.fisher.ui.State.getInstance();
+
+  /** @private {!ff.service.EorzeaTime} */
+  this.eorzeaTime_ = ff.service.EorzeaTime.getInstance();
 
   /** @private {!ff.fisher.ui.fish.ColorChooser} */
   this.colorChooser_ = new ff.fisher.ui.fish.ColorChooser(fish);
@@ -146,10 +150,13 @@ ff.fisher.ui.fish.FishRow.prototype.enterDocument = function() {
         }
       });
 
-  // TODO Update catchable on the hour.
   this.getHandler().listen(
       this.fish_,
       ff.model.Fish.EventType.CATCHABLE_CHANGED,
+      this.updateCatchable_);
+  this.getHandler().listen(
+      this.eorzeaTime_,
+      ff.service.EorzeaTime.EventType.HOUR_CHANGED,
       this.updateCatchable_);
 
   this.getHandler().listen(

@@ -7,6 +7,7 @@ goog.require('ff.model.Image');
 goog.require('ff.model.LocationEnum');
 goog.require('ff.model.Weather');
 goog.require('ff.service.CookieService');
+goog.require('ff.service.EorzeaTime');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events.EventTarget');
