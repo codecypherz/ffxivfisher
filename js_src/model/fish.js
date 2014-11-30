@@ -53,6 +53,9 @@ ff.model.Fish = function(
   /** @private {!ff.service.CookieService} */
   this.cookieService_ = ff.service.CookieService.getInstance();
 
+  /** @private {!ff.service.EorzeaTime} */
+  this.eorzeaTime_ = ff.service.EorzeaTime.getInstance();
+
   /** @private {string} */
   this.key_ = key;
 
@@ -182,7 +185,26 @@ ff.model.Fish.prototype.getCatchableRanges = function() {
 
 /** @return {boolean} */
 ff.model.Fish.prototype.isCatchable = function() {
-  return !goog.array.isEmpty(this.catchableRanges_);
+  // Must at least have a catchable range.
+  if (goog.array.isEmpty(this.catchableRanges_)) {
+    return false;
+  }
+
+  // Figure out the current interval.
+  var eorzeaDate = this.eorzeaTime_.getCurrentEorzeaDate();
+  var now = eorzeaDate.getTime();
+  var next24Hours = new goog.math.Range(
+      now, now + ff.service.EorzeaTime.MS_IN_A_DAY);
+
+  // A fish is catchable if any catchable range intersects the current 24 hour
+  // period.
+  var catchable = false;
+  goog.array.forEach(this.catchableRanges_, function(range) {
+    if (goog.math.Range.hasIntersection(next24Hours, range)) {
+      catchable = true;
+    }
+  });
+  return catchable;
 };
 
 

@@ -146,6 +146,7 @@ ff.fisher.ui.fish.FishRow.prototype.enterDocument = function() {
         }
       });
 
+  // TODO Update catchable on the hour.
   this.getHandler().listen(
       this.fish_,
       ff.model.Fish.EventType.CATCHABLE_CHANGED,
