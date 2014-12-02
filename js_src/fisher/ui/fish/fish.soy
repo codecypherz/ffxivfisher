@@ -6,6 +6,9 @@
  * @param name
  * @param location
  * @param imageSrc
+ * @param predatorCount
+ * @param predatorName
+ * @param predatorImageSrc
  */
 {template .FISH_ROW}
   <div class="{css ff-fish-row}">
@@ -28,8 +31,23 @@
           class="{css ff-fish-cell}{sp}{css ff-fish-row-location}">
         {$location}
       </div>
+
+      // Not all fish have predator information.
+      {if $predatorCount > 0}
+      <div class="{css ff-fish-cell}{sp}{css ff-fish-row-predator-info}"
+          title="Predator: {$predatorCount} {$predatorName}">
+        <img src="{$predatorImageSrc}" class="{css ff-fish-row-predator-image}">
+        </img>
+        <div class="{css ff-fish-row-predator-count}">
+          {$predatorCount}
+        </div>
+      </div>
+      {/if}
+
+      // Shrink the width of best catch path if predator info is present.
       <div id="{$ids.BEST_CATCH_PATH|id}"
-          class="{css ff-fish-cell}{sp}{css ff-fish-row-best-catch-path}">
+          class="{css ff-fish-cell}{sp}{css ff-fish-row-best-catch-path}
+          {if $predatorCount > 0}{sp}{css ff-fish-row-predator-present}{/if}">
       </div>
     </div>
   </div>

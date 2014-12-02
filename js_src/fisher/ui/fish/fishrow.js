@@ -102,7 +102,10 @@ ff.fisher.ui.fish.FishRow.prototype.createDom = function() {
         ids: this.makeIds(ff.fisher.ui.fish.FishRow.Id_),
         name: this.fish_.getName(),
         location: this.fish_.getLocation().getName(),
-        imageSrc: this.fish_.getImageUrl()
+        imageSrc: this.fish_.getImageUrl(),
+        predatorCount: this.fish_.getPredatorCount(),
+        predatorName: this.fish_.getPredator(),
+        predatorImageSrc: this.fish_.getPredatorImageUrl()
       }));
 
   // Render color chooser.

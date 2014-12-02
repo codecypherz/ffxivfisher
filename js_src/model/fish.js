@@ -289,19 +289,21 @@ ff.model.Fish.prototype.getUserColor = function() {
 };
 
 
-/**
- * @return {string}
- */
+/** @return {string} */
 ff.model.Fish.prototype.getPredator = function() {
   return this.predator_;
 };
 
 
-/**
- * @return {number}
- */
+/** @return {number} */
 ff.model.Fish.prototype.getPredatorCount = function() {
   return this.predatorCount_;
+};
+
+
+/** @return {string} */
+ff.model.Fish.prototype.getPredatorImageUrl = function() {
+  return ff.model.Image.getUrl('fish', this.predator_);
 };
 
 
