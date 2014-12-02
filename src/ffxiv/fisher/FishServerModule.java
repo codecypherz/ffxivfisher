@@ -1,5 +1,11 @@
 package ffxiv.fisher;
 
+import java.util.logging.Level;
+
+import com.google.appengine.api.memcache.AsyncMemcacheService;
+import com.google.appengine.api.memcache.ErrorHandlers;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.utils.SystemProperty;
@@ -39,6 +45,23 @@ public class FishServerModule extends AbstractModule {
 	@Provides @Singleton
 	public UserService provideUserService() {
 		return UserServiceFactory.getUserService();
+	}
+
+	@Provides @Singleton
+	public AsyncMemcacheService provideAsyncMemcacheService() {
+		AsyncMemcacheService asyncMemcacheService =
+				MemcacheServiceFactory.getAsyncMemcacheService();
+		asyncMemcacheService.setErrorHandler(
+				ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+		return asyncMemcacheService;
+	}
+	
+	@Provides @Singleton
+	public MemcacheService provideMemcacheService() {
+		MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
+		memcacheService.setErrorHandler(
+				ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+		return memcacheService;
 	}
 	
 	@Provides @RequestScoped
