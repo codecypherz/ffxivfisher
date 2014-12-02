@@ -17,7 +17,6 @@
 }
 
 .ff-fish-row {
-  cursor: pointer;
 }
 
 .ff-fish-row-cells {
@@ -209,66 +208,4 @@
   margin: 0 2px;
   margin-top: -3px;
   vertical-align: top;
-}
-
-.ff-fish-row-detail-container {
-  background-color: #222;
-  height: 0;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-  @mixin transition(all .2s ease);
-}
-
-.ff-fish-row-detail-shown .ff-fish-row-cells {
-  border-bottom: 1px solid #555;
-}
-
-.ff-fish-row-detail-shown > .ff-fish-row-detail-container {
-  height: 80px;
-  margin-bottom: 15px;
-}
-
-.ff-fish-detail-column-one {
-  left: 20px;
-  position: absolute;
-  top: 5px;
-}
-
-.ff-fish-detail-column-one .ff-fish-detail-title {
-  width: 125px;
-}
-
-.ff-fish-detail-column-two {
-  left: 50%;
-  position: absolute;
-  top: 5px;
-}
-
-.ff-fish-detail-item {
-  height: 30px;
-  margin-bottom: 5px;
-}
-
-.ff-fish-detail-title {
-  color: #FAEBD7;
-  display: inline-block;
-  line-height: 30px;
-  margin-right: 10px;
-  text-align: right;
-  vertical-align: middle;
-}
-
-.ff-fish-detail-weather {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.ff-fish-detail-weather > img {
-  margin-left: -4px;
-}
-
-.ff-fish-detail-predator {
-  display: inline-block;
-  vertical-align: middle;
 }
