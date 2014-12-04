@@ -155,6 +155,7 @@ ff.service.FishWatcher.prototype.computeCatchableRanges_ = function(fish) {
   var weatherRanges = this.weatherService_.getWeatherRangesForArea(
       fish.getLocation().getArea());
   var intersections = [];
+
   goog.array.forEach(weatherRanges, function(weatherRange, i, arr) {
     // No need to look at the first weather range since it's in the past.
     if (i == 0) {

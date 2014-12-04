@@ -56,6 +56,9 @@ ff.fisher.ui.area.AreaWeather = function(area) {
 
   /** @private {Element} */
   this.weather4_ = null;
+
+  /** @private {Element} */
+  this.weather5_ = null;
 };
 goog.inherits(ff.fisher.ui.area.AreaWeather, goog.ui.Component);
 
@@ -68,7 +71,8 @@ ff.fisher.ui.area.AreaWeather.Id_ = {
   WEATHER_1: ff.getUniqueId('weather-1'),
   WEATHER_2: ff.getUniqueId('weather-2'),
   WEATHER_3: ff.getUniqueId('weather-3'),
-  WEATHER_4: ff.getUniqueId('weather-4')
+  WEATHER_4: ff.getUniqueId('weather-4'),
+  WEATHER_5: ff.getUniqueId('weather-5')
 };
 
 
@@ -87,6 +91,8 @@ ff.fisher.ui.area.AreaWeather.prototype.createDom = function() {
       this, ff.fisher.ui.area.AreaWeather.Id_.WEATHER_3);
   this.weather4_ = ff.ui.getElementByFragment(
       this, ff.fisher.ui.area.AreaWeather.Id_.WEATHER_4);
+  this.weather5_ = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.area.AreaWeather.Id_.WEATHER_5);
 
   this.renderWeather_();
 };
@@ -141,6 +147,8 @@ ff.fisher.ui.area.AreaWeather.prototype.renderWeather_ = function() {
       ff.fisher.ui.area.AreaWeather.Id_.WEATHER_3, weatherRanges[2]);
   this.renderWeatherIcon_(
       ff.fisher.ui.area.AreaWeather.Id_.WEATHER_4, weatherRanges[3]);
+  this.renderWeatherIcon_(
+      ff.fisher.ui.area.AreaWeather.Id_.WEATHER_5, weatherRanges[4]);
 
   // Position the icons correctly and adjust visibility.
   this.update_();
@@ -182,6 +190,7 @@ ff.fisher.ui.area.AreaWeather.prototype.update_ = function() {
   this.setLeft_(this.weather2_, weatherRanges[1], eorzeaDate);
   this.setLeft_(this.weather3_, weatherRanges[2], eorzeaDate);
   this.setLeft_(this.weather4_, weatherRanges[3], eorzeaDate);
+  this.setLeft_(this.weather5_, weatherRanges[4], eorzeaDate);
 };
 
 
