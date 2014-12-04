@@ -100,6 +100,18 @@ ff.service.FishService.prototype.getForArea = function(area) {
 
 
 /**
+ * Find a fish by its name.  Null is returned if a fish doesn't exist.
+ * @param {string} name
+ * @return {ff.model.Fish}
+ */
+ff.service.FishService.prototype.findFishByName = function(name) {
+  return goog.array.find(this.fish_, function(fish) {
+    return fish.getName() == name;
+  });
+};
+
+
+/**
  * Stores a new fish.  The server will authenticate and validate this.
  * @param {!ff.model.Fish} fish
  * @return {!goog.async.Deferred.<!ff.model.Fish>}

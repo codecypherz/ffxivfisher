@@ -5,6 +5,7 @@
 goog.provide('ff.service.FishWatcher');
 
 goog.require('ff');
+goog.require('ff.model.Mooch');
 goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.FishService');
 goog.require('ff.service.WeatherService');
@@ -13,6 +14,8 @@ goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.log');
 goog.require('goog.math.Range');
+goog.require('goog.structs');
+goog.require('goog.structs.Set');
 
 
 
@@ -78,6 +81,8 @@ ff.service.FishWatcher.prototype.checkFish_ = function() {
   var currentHour =
       eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
 
+  // Make a first pass among all fish to figure out the basic catchable ranges
+  // based only on time and weather.
   goog.array.forEach(this.fishService_.getAll(), function(fish) {
 
     // Update time ranges on each fish.
@@ -85,7 +90,23 @@ ff.service.FishWatcher.prototype.checkFish_ = function() {
 
     // Compute and sort the catchable ranges.
     var catchableRanges = this.computeCatchableRanges_(fish);
+    fish.setCatchableRanges(catchableRanges);
+
+  }, this);
+
+  // Make a second pass to further restrict fish ranges by the intersection of
+  // catchable ranges of dependent fish.  Dependent fish include fish on the
+  // mooch path or predators.
+  goog.array.forEach(this.fishService_.getAll(), function(fish) {
+
+    // Depends on getCatchableRanges() being precomputed.
+    // This will be a no-op if the fish does not depend on other fish.
+    var catchableRanges = this.restrictFromDependencies_(fish);
+
+    // Sort the final result.
     goog.array.sort(catchableRanges, this.byEarliestRange_);
+
+    // Save the new values.
     fish.setCatchableRanges(catchableRanges);
 
   }, this);
@@ -187,6 +208,116 @@ ff.service.FishWatcher.prototype.computeCatchableRanges_ = function(fish) {
 
 
 /**
+ * Restricts the fish's catchable ranges based on the other fish required to
+ * catch this fish.
+ * @param {!ff.model.Fish} fish
+ * @return {!Array.<!goog.math.Range>}
+ * @private
+ */
+ff.service.FishWatcher.prototype.restrictFromDependencies_ = function(fish) {
+  var catchableRanges = fish.getCatchableRanges();
+
+  // Figure out all the fish dependencies.
+  var dependencies = this.getDependentFish_(fish);
+
+  // Only do work if the fish has dependencies.
+  if (!goog.array.isEmpty(dependencies)) {
+    if (dependencies.length > 1) {
+      // TODO Make this work by correctly computing range overlap on an
+      // arbitrary number of fish.  For each sub range discovered on a catchable
+      // range, there must exist an intersection of that range for every other
+      // dependency.
+      goog.log.warning(this.logger,
+          fish.getName() + ' might not compute catcable ranges correctly' +
+          ' because it has more than 1 dependency.');
+    }
+    // Alter the precomputed catchable ranges to be only the intersections with
+    // the catchable ranges of the dependent fish.
+
+    // Ordinarily expensive (at least in terms of Big O), but the number of
+    // ranges and dependencies is very small.
+    var restrictedRanges = [];
+    goog.array.forEach(catchableRanges, function(catchableRange) {
+      var subRanges = this.restrictRange_(catchableRange, dependencies);
+      restrictedRanges = goog.array.concat(restrictedRanges, subRanges);
+    }, this);
+
+    // Return only the newly computed restricted ranges.
+    return restrictedRanges;
+  }
+
+  // No dependencies, so don't change the catchable ranges.
+  return catchableRanges;
+};
+
+
+/**
+ * Restricts the given range based on the given dependencies to a set of sub
+ * ranges that represent all overlaps of the given range and dependent ranges.
+ * @param {!goog.math.Range} range
+ * @param {!Array.<!ff.model.Fish>} dependencies
+ * @return {!Array.<!goog.math.Range>}
+ * @private
+ */
+ff.service.FishWatcher.prototype.restrictRange_ =
+    function(range, dependencies) {
+
+  var subRanges = [];
+
+  // Check all dependencies.
+  goog.array.forEach(dependencies, function(dependency) {
+
+    // For every intersection found, add as a sub range.
+    goog.array.forEach(dependency.getCatchableRanges(),
+        function(dependentRange) {
+          var subRange = goog.math.Range.intersection(range, dependentRange);
+          if (this.isValidRange_(subRange)) {
+            subRanges.push(subRange);
+          }
+        }, this);
+
+  }, this);
+
+  return subRanges;
+};
+
+
+/**
+ * Figures out who the fish that the given fish depends on.
+ * @param {!ff.model.Fish} fish
+ * @return {!Array.<!ff.model.Fish>}
+ * @private
+ */
+ff.service.FishWatcher.prototype.getDependentFish_ = function(fish) {
+  var names = new goog.structs.Set();
+
+  // Add all fish found on the mooch path.
+  goog.array.forEach(fish.getBestCatchPath().getCatchPathParts(),
+      function(catchPathPart) {
+        if (catchPathPart instanceof ff.model.Mooch) {
+          names.add(catchPathPart.getName());
+        }
+      });
+
+  // Add the predator if there is one.
+  names.add(fish.getPredator());
+
+  // Convert names to real fish objects.
+  var dependencies = [];
+  goog.structs.forEach(names, function(name) {
+    // Not all mooch fish and predators are in the database because not all are
+    // relevant or have time/weather restrictions.
+    var dependency = this.fishService_.findFishByName(name);
+    if (dependency) {
+      dependencies.push(dependency);
+    }
+  }, this);
+
+  return dependencies;
+};
+
+
+/**
  * Figures out if there is an intersection of the two ranges and adds it to the
  * list of intersections.  If the ranges only intersect on a single point, it
  * is *not* considered an intersection.
@@ -198,9 +329,20 @@ ff.service.FishWatcher.prototype.computeCatchableRanges_ = function(fish) {
 ff.service.FishWatcher.prototype.addIntersection_ = function(
     intersections, range1, range2) {
   var intersection = goog.math.Range.intersection(range1, range2);
-  if (intersection && intersection.getLength() > 0) {
+  if (this.isValidRange_(intersection)) {
     intersections.push(intersection);
   }
+};
+
+
+/**
+ * Checks to see if the given range is actually valid.
+ * @param {goog.math.Range} range
+ * @return {boolean}
+ * @private
+ */
+ff.service.FishWatcher.prototype.isValidRange_ = function(range) {
+  return goog.isDefAndNotNull(range) && (range.getLength() > 0);
 };
 
 
