@@ -2,7 +2,6 @@ package ffxiv.fisher.service;
 
 import java.util.logging.Logger;
 
-import com.google.appengine.api.memcache.MemcacheService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -19,7 +18,7 @@ public class SkywatcherService {
 	
 	private final UrlFetchService urlFetchService;
 	private final WeatherParser parser;
-	private final MemcacheService memcacheService;
+	private final FishService fishService;
 	
 	private WeatherReport weatherReport;
 	private long lastUpdate;
@@ -28,10 +27,10 @@ public class SkywatcherService {
 	public SkywatcherService(
 			UrlFetchService urlFetchService,
 			WeatherParser parser,
-			MemcacheService memcacheService) {
+			FishService fishService) {
 		this.urlFetchService = urlFetchService;
 		this.parser = parser;
-		this.memcacheService = memcacheService;
+		this.fishService = fishService;
 		
 		weatherReport = null;
 		lastUpdate = 0;
@@ -58,24 +57,10 @@ public class SkywatcherService {
 			// Hack to keep memcache fresh without costing too much.  This call
 			// will be at the rate of weather refresh so this only works if
 			// weather refresh time is less than memcache eviction time.
-			refreshFishMemcache();
+			fishService.keepMemcacheAlive();
 		}
 		
 		// Return the current weather report.
 		return weatherReport;
-	}
-	
-	/**
-	 * Refreshes the fish memcache by simply requesting the value.  This assumes
-	 * items in memcache have a TTL and that this refreshes it.
-	 */
-	private void refreshFishMemcache() {
-		log.info("Refreshing fish memcache");
-		Object allFish = memcacheService.get(FishService.FISHES_KEY);
-		if (allFish != null) {
-			log.info("Memcache is still fresh");
-		} else {
-			log.info("Memcache is no longer fresh");
-		}
 	}
 }

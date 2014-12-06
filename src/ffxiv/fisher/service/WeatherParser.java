@@ -8,11 +8,13 @@ import java.util.logging.Logger;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
+import com.google.inject.Singleton;
 
 import ffxiv.fisher.model.Area;
 import ffxiv.fisher.model.Weather;
 import ffxiv.fisher.model.WeatherReport;
 
+@Singleton
 public class WeatherParser {
 	
 	private static final Logger log = Logger.getLogger(WeatherParser.class.getName());

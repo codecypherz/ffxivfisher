@@ -8,13 +8,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import ffxiv.fisher.Annotations.FishDeserializer;
 import ffxiv.fisher.model.Fish;
+import ffxiv.fisher.model.FishSerializer;
 import ffxiv.fisher.service.FishService;
 import ffxiv.fisher.servlet.HttpResponseCode;
 
@@ -29,14 +27,14 @@ public class AdminFishServlet extends HttpServlet {
 	private static final long serialVersionUID = 337121127107680287L;
 	
 	private final FishService fishService;
-	private final Provider<Gson> fishDeserializerProvider;
+	private final FishSerializer fishSerializer;
 	
 	@Inject
 	public AdminFishServlet(
 			FishService fishesService,
-			@FishDeserializer Provider<Gson> fishDeserializerProvider) {
+			FishSerializer fishSerializer) {
 		this.fishService = fishesService;
-		this.fishDeserializerProvider = fishDeserializerProvider;
+		this.fishSerializer = fishSerializer;
 	}
 	
 	@Override
@@ -44,7 +42,7 @@ public class AdminFishServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		// Parse the fish.
-		Fish fish = fishDeserializerProvider.get().fromJson(req.getReader(), Fish.class);
+		Fish fish = fishSerializer.deserialize(req.getReader());
 		
 		try {
 			if (fish.getKey() != null && !fish.getKey().isEmpty()) {
@@ -59,6 +57,6 @@ public class AdminFishServlet extends HttpServlet {
 		}
 		
 		// Write the fish back out to the client using the default serializer.
-		resp.getWriter().write(new Gson().toJson(fish));
+		resp.getWriter().write(fishSerializer.serialize(fish));
 	}
 }
