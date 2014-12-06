@@ -22,7 +22,12 @@ import ffxiv.fisher.model.Fish;
  */
 @Singleton
 public class FishService {
-
+	
+	/**
+	 * Memcache key for the JSON version of the fish.
+	 */
+	public static final String FISHES_KEY = "fishes";
+	
 	private final Provider<ObjectDatastore> datastoreProvider;
 	
 	@Inject
