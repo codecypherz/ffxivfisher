@@ -1,0 +1,16 @@
+/**
+ * CSS for the view control component.
+ */
+
+.ff-fish-view-control {
+  margin-bottom: 15px;
+}
+
+.ff-fish-view-title {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.ff-fish-view-radio-button-label {
+  margin-right: 5px;
+}

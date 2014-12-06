@@ -9,7 +9,6 @@ goog.require('ff.fisher.ui.State');
 goog.require('ff.fisher.ui.area.AreaWeather');
 goog.require('ff.fisher.ui.area.soy');
 goog.require('ff.fisher.ui.fish.FishRow');
-goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.FishService');
 goog.require('ff.service.FishWatcher');
 goog.require('ff.ui');
@@ -18,7 +17,6 @@ goog.require('goog.array');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.log');
-goog.require('goog.math.Range');
 goog.require('goog.soy');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
@@ -41,9 +39,6 @@ ff.fisher.ui.area.Area = function(area) {
 
   /** @private {!Array.<!ff.fisher.ui.fish.FishRow>} */
   this.fishRows_ = [];
-
-  /** @private {!ff.service.EorzeaTime} */
-  this.eorzeaTime_ = ff.service.EorzeaTime.getInstance();
 
   /** @private {!ff.service.FishService} */
   this.fishService_ = ff.service.FishService.getInstance();
@@ -111,8 +106,6 @@ ff.fisher.ui.area.Area.prototype.enterDocument = function() {
       this.fishWatcher_,
       ff.service.FishWatcher.EventType.CATCHABLE_SET_CHANGED,
       this.renderFish_);
-
-  this.renderFish_();
 };
 
 
@@ -143,7 +136,7 @@ ff.fisher.ui.area.Area.prototype.renderFish_ = function() {
 
   // Sort the fish.
   var fishes = this.fishService_.getForArea(this.area_);
-  goog.array.stableSort(fishes, goog.bind(this.byNextCatch_, this));
+  this.fishService_.sortByNextCatch(fishes);
 
   // Render the fish.
   goog.array.forEach(fishes, function(fish) {
@@ -155,48 +148,4 @@ ff.fisher.ui.area.Area.prototype.renderFish_ = function() {
 
   // Hide the component if there are no fish.
   goog.style.setElementShown(this.getElement(), fishes.length > 0);
-};
-
-
-/**
- * Compares the two fish for the purpose of sorting such that the fish that can
- * be caught next is at the beginning.
- * @param {!ff.model.Fish} f1
- * @param {!ff.model.Fish} f2
- * @return {number}
- * @private
- */
-ff.fisher.ui.area.Area.prototype.byNextCatch_ = function(f1, f2) {
-  var r1 = this.getFirstVisibleRange_(f1);
-  var r2 = this.getFirstVisibleRange_(f2);
-  if (r1 && r2) {
-    // Compare the ranges such that the earlier one comes first.
-    return r1.start - r2.start;
-  } else if (r1 && !r2) {
-    // Fish 1 is catchable but fish 2 is not.
-    return -1;
-  } else if (!r1 && r2) {
-    // Fish 2 is catchable but fish 1 is not.
-    return 1;
-  }
-  // Neither fish is catchable.
-  return 0;
-};
-
-
-/**
- * Finds the first range which either overlaps now or starts in the future.
- * @param {!ff.model.Fish} fish
- * @return {goog.math.Range}
- * @private
- */
-ff.fisher.ui.area.Area.prototype.getFirstVisibleRange_ = function(fish) {
-  if (!fish.isCatchable()) {
-    return null;
-  }
-  var currentTime = this.eorzeaTime_.getCurrentEorzeaDate().getTime();
-  return goog.array.find(fish.getCatchableRanges(), function(range) {
-    return goog.math.Range.containsPoint(range, currentTime) ||
-        range.start > currentTime;
-  });
 };

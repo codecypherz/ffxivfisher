@@ -11,8 +11,10 @@ java -jar ..\closure\soy\SoyToJsSrcCompiler.jar ^
   --outputPathFormat ..\js_generated\{INPUT_DIRECTORY}{INPUT_FILE_NAME_NO_EXT}_soy.js ^
   fisher\ui\ui.soy ^
   fisher\ui\admin\admin.soy ^
+  fisher\ui\all\all.soy ^
   fisher\ui\area\area.soy ^
   fisher\ui\fish\fish.soy ^
+  fisher\ui\view\view.soy ^
   fisher\ui\weather\weather.soy
 
 echo Finished building the soy templates.

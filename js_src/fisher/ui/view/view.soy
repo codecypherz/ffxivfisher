@@ -1,0 +1,28 @@
+{namespace ff.fisher.ui.view.soy}
+
+/**
+ * HTML for the component let's users control their view.
+ * @param ids
+ * @param views
+ */
+{template .VIEW_CONTROL}
+  <div class="{css ff-fish-view-control}{sp}{css ff-card}">
+    <div class="{css ff-fish-view-title}">
+      View:
+    </div>
+
+    <input id="{$ids.ALL_RADIO_BUTTON}" type="radio" name="view_type"
+        class="{css ff-fish-view-radio-button}" value="{$views.ALL}" />
+    <label for="{$ids.ALL_RADIO_BUTTON}"
+        class="{css ff-fish-view-radio-button-label}">
+      Next catchable
+    </label>
+
+    <input id="{$ids.BY_AREA_RADIO_BUTTON|id}" type="radio" name="view_type"
+        class="{css ff-fish-view-radio-button}" value="{$views.BY_FISH}" />
+    <label for="{$ids.BY_AREA_RADIO_BUTTON}"
+        class="{css ff-fish-view-radio-button-label}">
+      By area
+    </label>
+  </div>
+{/template}

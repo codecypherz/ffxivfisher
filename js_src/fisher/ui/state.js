@@ -31,6 +31,12 @@ ff.fisher.ui.State = function() {
   this.cookieService_ = ff.service.CookieService.getInstance();
 
   /**
+   * Keeps track of which view the user has selected.
+   * @private {!ff.fisher.ui.State.View}
+   */
+  this.view_ = ff.fisher.ui.State.View.ALL;
+
+  /**
    * Keeps track of an area's collapsed state.
    * @private {!Object.<string, boolean>}
    */
@@ -47,7 +53,18 @@ goog.addSingletonGetter(ff.fisher.ui.State);
  * @enum {string}
  */
 ff.fisher.ui.State.EventType = {
-  COLLAPSE_CHANGED: ff.getUniqueId('collapse-changed')
+  COLLAPSE_CHANGED: ff.getUniqueId('collapse-changed'),
+  VIEW_CHANGED: ff.getUniqueId('view-changed')
+};
+
+
+/**
+ * The types of views of fish.
+ * @enum {string}
+ */
+ff.fisher.ui.State.View = {
+  ALL: ff.getUniqueId('all'),
+  BY_AREA: ff.getUniqueId('by-area')
 };
 
 
@@ -57,6 +74,33 @@ ff.fisher.ui.State.EventType = {
  * @type {string}
  */
 ff.fisher.ui.State.COLLAPSE_STATE_ = 'ff_collapse_state';
+
+
+/**
+ * @const
+ * @private
+ * @type {string}
+ */
+ff.fisher.ui.State.VIEW_STATE_ = 'ff_view_state';
+
+
+/** @return {!ff.fisher.ui.State.View} */
+ff.fisher.ui.State.prototype.getView = function() {
+  return this.view_;
+};
+
+
+/**
+ * Sets the new view and dispatches an event if the view actually changed.
+ * @param {!ff.fisher.ui.State.View} view
+ */
+ff.fisher.ui.State.prototype.setView = function(view) {
+  if (this.view_ != view) {
+    this.view_ = view;
+    this.cookieService_.set(ff.fisher.ui.State.VIEW_STATE_, view);
+    this.dispatchEvent(new ff.fisher.ui.State.ViewChanged(view));
+  }
+};
 
 
 /**
@@ -113,11 +157,37 @@ ff.fisher.ui.State.prototype.toggleAreaCollapsed = function(area) {
 
 
 /**
+ * Initializes all UI state from the cookie if the information is present.
+ * @private
+ */
+ff.fisher.ui.State.prototype.initializeFromCookie_ = function() {
+  this.initializeViewState_();
+  this.initializeCollapseState_();
+};
+
+
+/**
+ * Initializes the view based on the last view the user had set.
+ * @private
+ */
+ff.fisher.ui.State.prototype.initializeViewState_ = function() {
+  var viewState = this.cookieService_.get(ff.fisher.ui.State.VIEW_STATE_, '');
+  if (viewState) {
+    var view = /** @type {ff.fisher.ui.State.View} */ (
+        ff.stringValueToEnum(viewState, ff.fisher.ui.State.View));
+    if (view) {
+      this.view_ = view;
+    } // Else, invalid view.  Maybe the user had a view that no longer exists.
+  } // Else, the user has never chosen a view, don't alter the default.
+};
+
+
+/**
  * Initializes the area collapse map from the cookie if there is one otherwise
  * sets up the default.
  * @private
  */
-ff.fisher.ui.State.prototype.initializeFromCookie_ = function() {
+ff.fisher.ui.State.prototype.initializeCollapseState_ = function() {
   var cookieState = this.cookieService_.get(
       ff.fisher.ui.State.COLLAPSE_STATE_, '');
   var cookieMap = {};
@@ -189,6 +259,22 @@ ff.fisher.ui.State.prototype.set_ = function(area, collapsed) {
 
   this.dispatchEvent(new ff.fisher.ui.State.CollapseChanged(area));
 };
+
+
+
+/**
+ * The event that gets dispatched when a view change happens.
+ * @param {!ff.fisher.ui.State.View} view
+ * @constructor
+ * @extends {goog.events.Event}
+ */
+ff.fisher.ui.State.ViewChanged = function(view) {
+  goog.base(this, ff.fisher.ui.State.EventType.VIEW_CHANGED);
+
+  /** @type {!ff.fisher.ui.State.View} */
+  this.view = view;
+};
+goog.inherits(ff.fisher.ui.State.ViewChanged, goog.events.Event);
 
 
 
