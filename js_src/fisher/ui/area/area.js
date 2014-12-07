@@ -6,7 +6,6 @@ goog.provide('ff.fisher.ui.area.Area');
 
 goog.require('ff');
 goog.require('ff.fisher.ui.State');
-goog.require('ff.fisher.ui.area.AreaWeather');
 goog.require('ff.fisher.ui.area.soy');
 goog.require('ff.fisher.ui.fish.FishRow');
 goog.require('ff.service.FishService');
@@ -48,10 +47,6 @@ ff.fisher.ui.area.Area = function(area) {
 
   /** @private {!ff.fisher.ui.State} */
   this.uiState_ = ff.fisher.ui.State.getInstance();
-
-  /** @private {!ff.fisher.ui.area.AreaWeather} */
-  this.weather_ = new ff.fisher.ui.area.AreaWeather(this.area_);
-  this.addChild(this.weather_);
 };
 goog.inherits(ff.fisher.ui.area.Area, goog.ui.Component);
 
@@ -62,8 +57,7 @@ goog.inherits(ff.fisher.ui.area.Area, goog.ui.Component);
  */
 ff.fisher.ui.area.Area.Id_ = {
   FISH_ROWS: ff.getUniqueId('fish-rows'),
-  NAME: ff.getUniqueId('name'),
-  WEATHER: ff.getUniqueId('weather')
+  NAME: ff.getUniqueId('name')
 };
 
 
@@ -74,9 +68,6 @@ ff.fisher.ui.area.Area.prototype.createDom = function() {
         ids: this.makeIds(ff.fisher.ui.area.Area.Id_),
         name: this.area_.getName()
       }));
-
-  this.weather_.render(ff.ui.getElementByFragment(
-      this, ff.fisher.ui.area.Area.Id_.WEATHER));
 
   this.renderFish_();
 };

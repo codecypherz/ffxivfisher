@@ -46,20 +46,6 @@
   vertical-align: top;
 }
 
-.ff-area-weather-container {
-  height: 37px;
-  margin-left: 235px;
-  position: relative;
-  width: 302px;
-}
-
-.ff-area-weather {
-  display: inline-block;
-  position: absolute;
-  text-align: center;
-  width: 100px;
-}
-
 .ff-fish-table {
   width: 100%;
 }
