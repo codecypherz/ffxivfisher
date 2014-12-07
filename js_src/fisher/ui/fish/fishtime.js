@@ -20,6 +20,7 @@ goog.require('goog.dom');
 goog.require('goog.events.EventType');
 goog.require('goog.i18n.DateTimeFormat');
 goog.require('goog.math');
+goog.require('goog.math.Range');
 goog.require('goog.soy');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
@@ -315,6 +316,7 @@ ff.fisher.ui.fish.FishTime.prototype.updateCursorTime_ = function(
   var eorzeaDate = currentDate.clone();
   var deltaEorzeaHours = percent * 24.0;
   eorzeaDate.add(new goog.date.Interval(0, 0, 0, deltaEorzeaHours));
+  var timeForWeather = eorzeaDate.getTime();
   var hour = eorzeaDate.getHours();
   if (eorzeaDate.getMinutes() >= 30) {
     if (hour == 23) {
@@ -357,6 +359,17 @@ ff.fisher.ui.fish.FishTime.prototype.updateCursorTime_ = function(
   }
 
   this.tooltip_.setText(eorzeaString, earthString, timeUntilText);
+
+  // Figure out which weather is under the cursor.
+  var area = this.fish_.getLocation().getArea();
+  var weatherRange = /** @type {?ff.model.WeatherRange} */ (goog.array.find(
+      this.weatherService_.getWeatherRangesForArea(area),
+      function(weatherRange) {
+        return goog.math.Range.containsPoint(
+            weatherRange.getRange(), timeForWeather);
+      }));
+  var weather = weatherRange ? weatherRange.getWeather() : null;
+  this.tooltip_.setWeather(weather);
 
   // Update positions.
   var deltaMs = eorzeaDate.getTime() - currentDate.getTime();

@@ -262,14 +262,14 @@ ff.service.FishService.prototype.byNextCatch_ = function(f1, f2) {
 
   if (r1 && r2) {
     // If both ranges are 24 hour ranges, sort to the top.
-    if (r1.length == ff.service.EorzeaTime.MS_IN_A_DAY &&
-        r2.length == ff.service.EorzeaTime.MS_IN_A_DAY) {
+    if (r1.getLength() == ff.service.EorzeaTime.MS_IN_A_DAY &&
+        r2.getLength() == ff.service.EorzeaTime.MS_IN_A_DAY) {
       return 0;
     }
-    if (r1.length == ff.service.EorzeaTime.MS_IN_A_DAY) {
+    if (r1.getLength() == ff.service.EorzeaTime.MS_IN_A_DAY) {
       return -1;
     }
-    if (r2.length == ff.service.EorzeaTime.MS_IN_A_DAY) {
+    if (r2.getLength() == ff.service.EorzeaTime.MS_IN_A_DAY) {
       return 1;
     }
 

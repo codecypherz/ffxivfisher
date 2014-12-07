@@ -102,9 +102,14 @@
  * @param eorzeaTimeId
  * @param earthTimeId
  * @param remainingTimeId
+ * @param weatherId
  */
 {template .FISH_TIME_TOOLTIP}
   <div class="{css ff-fish-time-tooltip}">
+    <div class="{css ff-fish-time-tooltip-weather}">
+      <span>Weather:{sp}</span>
+      <span id="{$weatherId}"></span>
+    </div>
     <span id="{$eorzeaTimeId}"></span>{sp}(Eorzea)<br>
     <span id="{$earthTimeId}"></span>{sp}(Earth)<br>
     <span id="{$remainingTimeId}"></span>
