@@ -20,10 +20,14 @@
   margin-right: 5px;
 }
 
+.ff-fish-view-filter {
+  float: right;
+  margin-top: -3px;
+  vertical-align: top;
+}
+
 .ff-fish-view-title-hide {
   line-height: 30px;
-  margin-right: 16px;
-  margin-top: 6px;
   vertical-align: middle;
 }
 
@@ -33,7 +37,6 @@
   display: inline-block;
   height: 26px;
   margin-right: 6px;
-  margin-top: 10px;
   opacity: 0.8;
   vertical-align: middle;
   width: 26px;
