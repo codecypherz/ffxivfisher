@@ -11,7 +11,12 @@
   margin-right: 10px;
 }
 
+.ff-fish-view-radio-button {
+  cursor: pointer;
+}
+
 .ff-fish-view-radio-button-label {
+  cursor: pointer;
   margin-right: 5px;
 }
 
