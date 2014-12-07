@@ -7,6 +7,7 @@ goog.provide('ff.fisher.ui.State');
 goog.require('ff');
 goog.require('ff.model.Area');
 goog.require('ff.model.AreaEnum');
+goog.require('ff.model.Fish');
 goog.require('ff.service.CookieService');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
@@ -37,6 +38,12 @@ ff.fisher.ui.State = function() {
   this.view_ = ff.fisher.ui.State.View.ALL;
 
   /**
+   * Keeps track of filter state.
+   * @private {!Object.<string, boolean>}
+   */
+  this.filterMap_ = {};
+
+  /**
    * Keeps track of an area's collapsed state.
    * @private {!Object.<string, boolean>}
    */
@@ -54,6 +61,7 @@ goog.addSingletonGetter(ff.fisher.ui.State);
  */
 ff.fisher.ui.State.EventType = {
   COLLAPSE_CHANGED: ff.getUniqueId('collapse-changed'),
+  FILTER_CHANGED: ff.getUniqueId('filter-changed'),
   VIEW_CHANGED: ff.getUniqueId('view-changed')
 };
 
@@ -65,6 +73,17 @@ ff.fisher.ui.State.EventType = {
 ff.fisher.ui.State.View = {
   ALL: ff.getUniqueId('all'),
   BY_AREA: ff.getUniqueId('by-area')
+};
+
+
+/**
+ * The types of filters over fish.
+ * @enum {string}
+ */
+ff.fisher.ui.State.Filter = {
+  COLOR_ONE: ff.getUniqueId('color-one'),
+  COLOR_TWO: ff.getUniqueId('color-two'),
+  COLOR_THREE: ff.getUniqueId('color-three')
 };
 
 
@@ -84,6 +103,14 @@ ff.fisher.ui.State.COLLAPSE_STATE_ = 'ff_collapse_state';
 ff.fisher.ui.State.VIEW_STATE_ = 'ff_view_state';
 
 
+/**
+ * @const
+ * @private
+ * @type {string}
+ */
+ff.fisher.ui.State.FILTER_STATE_ = 'ff_filter_state';
+
+
 /** @return {!ff.fisher.ui.State.View} */
 ff.fisher.ui.State.prototype.getView = function() {
   return this.view_;
@@ -100,6 +127,34 @@ ff.fisher.ui.State.prototype.setView = function(view) {
     this.cookieService_.set(ff.fisher.ui.State.VIEW_STATE_, view);
     this.dispatchEvent(new ff.fisher.ui.State.ViewChanged(view));
   }
+};
+
+
+/**
+ * @param {!ff.fisher.ui.State.Filter} filter
+ */
+ff.fisher.ui.State.prototype.toggleFilter = function(filter) {
+  this.setFilterEnabled_(filter, !this.isFilterEnabled_(filter));
+};
+
+
+/**
+ * @param {!ff.fisher.ui.State.Filter} filter
+ * @return {boolean}
+ */
+ff.fisher.ui.State.prototype.isFilterEnabled = function(filter) {
+  return this.isFilterEnabled_(filter);
+};
+
+
+/**
+ * Checks to see if the given fish is filtered.
+ * @param {!ff.model.Fish} fish
+ * @return {boolean}
+ */
+ff.fisher.ui.State.prototype.isFiltered = function(fish) {
+  var filter = this.getFilterForColor_(fish.getUserColor());
+  return filter ? this.isFilterEnabled(filter) : false;
 };
 
 
@@ -152,7 +207,25 @@ ff.fisher.ui.State.prototype.isAllCollapsed = function() {
  */
 ff.fisher.ui.State.prototype.toggleAreaCollapsed = function(area) {
   var key = ff.model.Area.getEnum(area);
-  this.set_(area, !this.isAreaCollapsed_(key));
+  this.setAreaCollapsed_(area, !this.isAreaCollapsed_(key));
+};
+
+
+/**
+ * Figures out which filter maps to the given color.
+ * @param {!ff.model.Fish.Color} color
+ * @return {?ff.fisher.ui.State.Filter} The matching filter, if any.
+ * @private
+ */
+ff.fisher.ui.State.prototype.getFilterForColor_ = function(color) {
+  if (color == ff.model.Fish.Color.ONE) {
+    return ff.fisher.ui.State.Filter.COLOR_ONE;
+  } else if (color == ff.model.Fish.Color.TWO) {
+    return ff.fisher.ui.State.Filter.COLOR_TWO;
+  } else if (color == ff.model.Fish.Color.THREE) {
+    return ff.fisher.ui.State.Filter.COLOR_THREE;
+  }
+  return null;
 };
 
 
@@ -162,6 +235,7 @@ ff.fisher.ui.State.prototype.toggleAreaCollapsed = function(area) {
  */
 ff.fisher.ui.State.prototype.initializeFromCookie_ = function() {
   this.initializeViewState_();
+  this.initializeFilterState_();
   this.initializeCollapseState_();
 };
 
@@ -179,6 +253,34 @@ ff.fisher.ui.State.prototype.initializeViewState_ = function() {
       this.view_ = view;
     } // Else, invalid view.  Maybe the user had a view that no longer exists.
   } // Else, the user has never chosen a view, don't alter the default.
+};
+
+
+/**
+ * Initializes the filter map from the cookie if there is one otherwise sets up
+ * the default.
+ * @private
+ */
+ff.fisher.ui.State.prototype.initializeFilterState_ = function() {
+  var cookieState = this.cookieService_.get(
+      ff.fisher.ui.State.FILTER_STATE_, '');
+  var cookieMap = {};
+  if (cookieState) {
+    this.logger.info('Setting filter state map from cookie.');
+    try {
+      cookieMap = JSON.parse(cookieState);
+    } catch (e) {
+      this.logger.severe('Failed to read filter state from the cookie.');
+    }
+  }
+
+  goog.object.forEach(
+      ff.fisher.ui.State.Filter,
+      function(filter, key, obj) {
+        var value = cookieMap[filter] || false;
+        this.filterMap_[filter] = value;
+      },
+      this);
 };
 
 
@@ -222,6 +324,17 @@ ff.fisher.ui.State.prototype.isAreaCollapsed_ = function(key) {
 
 
 /**
+ * Checks if the given filter is enabled or not.
+ * @param {string} filter
+ * @return {boolean}
+ * @private
+ */
+ff.fisher.ui.State.prototype.isFilterEnabled_ = function(filter) {
+  return this.filterMap_[filter] || false;
+};
+
+
+/**
  * Sets all areas to be either expanded or collapsed.
  * @param {boolean} collapsed
  * @private
@@ -230,7 +343,7 @@ ff.fisher.ui.State.prototype.setAll_ = function(collapsed) {
   goog.object.forEach(
       ff.model.AreaEnum,
       function(area, key, obj) {
-        this.set_(area, collapsed);
+        this.setAreaCollapsed_(area, collapsed);
       },
       this);
 };
@@ -243,7 +356,7 @@ ff.fisher.ui.State.prototype.setAll_ = function(collapsed) {
  * @param {boolean} collapsed
  * @private
  */
-ff.fisher.ui.State.prototype.set_ = function(area, collapsed) {
+ff.fisher.ui.State.prototype.setAreaCollapsed_ = function(area, collapsed) {
   var key = ff.model.Area.getEnum(area);
   var oldValue = this.isAreaCollapsed_(key);
   if (oldValue == collapsed) {
@@ -261,6 +374,30 @@ ff.fisher.ui.State.prototype.set_ = function(area, collapsed) {
 };
 
 
+/**
+ * Sets the given filter to have the given enabled value.
+ * An event is dispatched if the value changes.
+ * @param {!ff.fisher.ui.State.Filter} filter
+ * @param {boolean} enabled
+ * @private
+ */
+ff.fisher.ui.State.prototype.setFilterEnabled_ = function(filter, enabled) {
+  var oldValue = this.isFilterEnabled_(filter);
+  if (oldValue == enabled) {
+    return; // no change
+  }
+
+  // Set the new value.
+  this.filterMap_[filter] = enabled;
+
+  // Save state to a cookie so it's sticky for this user.
+  var mapJson = goog.json.serialize(this.filterMap_);
+  this.cookieService_.set(ff.fisher.ui.State.FILTER_STATE_, mapJson);
+
+  this.dispatchEvent(new ff.fisher.ui.State.FilterChanged(filter));
+};
+
+
 
 /**
  * The event that gets dispatched when a view change happens.
@@ -275,6 +412,22 @@ ff.fisher.ui.State.ViewChanged = function(view) {
   this.view = view;
 };
 goog.inherits(ff.fisher.ui.State.ViewChanged, goog.events.Event);
+
+
+
+/**
+ * The event that gets dispatched when a filter changes.
+ * @param {!ff.fisher.ui.State.Filter} filter
+ * @constructor
+ * @extends {goog.events.Event}
+ */
+ff.fisher.ui.State.FilterChanged = function(filter) {
+  goog.base(this, ff.fisher.ui.State.EventType.FILTER_CHANGED);
+
+  /** @type {!ff.fisher.ui.State.Filter} */
+  this.filter = filter;
+};
+goog.inherits(ff.fisher.ui.State.FilterChanged, goog.events.Event);
 
 
 

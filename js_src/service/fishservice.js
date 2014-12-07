@@ -258,8 +258,32 @@ ff.service.FishService.prototype.onFishLoaded_ = function(fishesJson) {
 ff.service.FishService.prototype.byNextCatch_ = function(f1, f2) {
   var r1 = this.getFirstVisibleRange_(f1);
   var r2 = this.getFirstVisibleRange_(f2);
+  var now = this.eorzeaTime_.getCurrentEorzeaDate().getTime();
+
   if (r1 && r2) {
-    // Compare the ranges such that the earlier one comes first.
+    // If both ranges are 24 hour ranges, sort to the top.
+    if (r1.length == ff.service.EorzeaTime.MS_IN_A_DAY &&
+        r2.length == ff.service.EorzeaTime.MS_IN_A_DAY) {
+      return 0;
+    }
+    if (r1.length == ff.service.EorzeaTime.MS_IN_A_DAY) {
+      return -1;
+    }
+    if (r2.length == ff.service.EorzeaTime.MS_IN_A_DAY) {
+      return 1;
+    }
+
+    // Neither range is a 24 hour range, so if both ranges overlap "now", then
+    // sort the one with the most remaining time before the rest.
+    if (goog.math.Range.containsPoint(r1, now) &&
+        goog.math.Range.containsPoint(r2, now)) {
+      var remaining1 = r1.end - now;
+      var remaining2 = r2.end - now;
+      return remaining2 - remaining1;
+    }
+
+    // One of the ranges doesn't cover "now", so compare the ranges such that
+    // the earlier one comes first.
     return r1.start - r2.start;
   } else if (r1 && !r2) {
     // Fish 1 is catchable but fish 2 is not.
@@ -268,6 +292,7 @@ ff.service.FishService.prototype.byNextCatch_ = function(f1, f2) {
     // Fish 2 is catchable but fish 1 is not.
     return 1;
   }
+
   // Neither fish is catchable.
   return 0;
 };

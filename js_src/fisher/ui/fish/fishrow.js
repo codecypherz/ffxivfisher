@@ -5,6 +5,7 @@
 goog.provide('ff.fisher.ui.fish.FishRow');
 
 goog.require('ff');
+goog.require('ff.fisher.ui.State');
 goog.require('ff.fisher.ui.admin.AdminFishDialog');
 goog.require('ff.fisher.ui.fish.CatchPath');
 goog.require('ff.fisher.ui.fish.ColorChooser');
@@ -18,6 +19,7 @@ goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
 goog.require('goog.log');
 goog.require('goog.soy');
+goog.require('goog.style');
 goog.require('goog.ui.Component');
 
 
@@ -41,6 +43,9 @@ ff.fisher.ui.fish.FishRow = function(fish) {
 
   /** @private {!ff.service.EorzeaTime} */
   this.eorzeaTime_ = ff.service.EorzeaTime.getInstance();
+
+  /** @private {!ff.fisher.ui.State} */
+  this.uiState_ = ff.fisher.ui.State.getInstance();
 
   /** @private {!ff.fisher.ui.fish.ColorChooser} */
   this.colorChooser_ = new ff.fisher.ui.fish.ColorChooser(fish);
@@ -151,8 +156,13 @@ ff.fisher.ui.fish.FishRow.prototype.enterDocument = function() {
       ff.model.Fish.EventType.COLOR_CHANGED,
       this.updateColor_);
 
+  this.getHandler().listen(
+      this.uiState_,
+      ff.fisher.ui.State.EventType.FILTER_CHANGED,
+      this.updateVisibility_);
+
   this.updateCatchable_();
-  this.updateColor_();
+  this.updateColor_(); // Updates visibility too.
 };
 
 
@@ -200,4 +210,17 @@ ff.fisher.ui.fish.FishRow.prototype.updateColor_ = function() {
         this.getElement(),
         colorClass);
   }
+
+  this.updateVisibility_();
+};
+
+
+/**
+ * Updates the visibility of the fish based on it's color and current filters.
+ * @private
+ */
+ff.fisher.ui.fish.FishRow.prototype.updateVisibility_ = function() {
+  goog.style.setElementShown(
+      this.getElement(),
+      !this.uiState_.isFiltered(this.fish_));
 };

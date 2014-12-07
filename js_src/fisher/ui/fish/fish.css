@@ -2,10 +2,6 @@
  * CSS for a single fish.
  */
 
-@def FISH_COLOR_ONE      #d77625;
-@def FISH_COLOR_TWO      #035002;
-@def FISH_COLOR_THREE    #741114;
-
 .ff-fish-row {
   font-size: 14px;
   opacity: 0.4;

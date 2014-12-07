@@ -7,6 +7,7 @@ goog.provide('ff.ui.Css');
 
 /**
  * Common CSS classes used in the application.
+ * @enum {string}
  */
 ff.ui.Css = {
   CARD: goog.getCssName('ff-card'),

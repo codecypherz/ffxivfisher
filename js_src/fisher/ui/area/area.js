@@ -106,6 +106,11 @@ ff.fisher.ui.area.Area.prototype.enterDocument = function() {
       this.fishWatcher_,
       ff.service.FishWatcher.EventType.CATCHABLE_SET_CHANGED,
       this.renderFish_);
+
+  this.getHandler().listen(
+      this.uiState_,
+      ff.fisher.ui.State.EventType.FILTER_CHANGED,
+      this.renderFish_);
 };
 
 
@@ -126,11 +131,6 @@ ff.fisher.ui.area.Area.prototype.renderFish_ = function() {
 
   goog.dom.classlist.enable(this.getElement(), ff.ui.Css.COLLAPSED, collapsed);
 
-  // If collapsed, don't render any fish.
-  if (collapsed) {
-    return;
-  }
-
   var fishRowsElement = ff.ui.getElementByFragment(
       this, ff.fisher.ui.area.Area.Id_.FISH_ROWS);
 
@@ -139,13 +139,18 @@ ff.fisher.ui.area.Area.prototype.renderFish_ = function() {
   this.fishService_.sortByNextCatch(fishes);
 
   // Render the fish.
+  var filterCount = 0;
   goog.array.forEach(fishes, function(fish) {
     var fishRow = new ff.fisher.ui.fish.FishRow(fish);
     this.fishRows_.push(fishRow);
     this.addChild(fishRow);
     fishRow.render(fishRowsElement);
+    if (this.uiState_.isFiltered(fish)) {
+      filterCount++;
+    }
   }, this);
 
-  // Hide the component if there are no fish.
-  goog.style.setElementShown(this.getElement(), fishes.length > 0);
+  // Hide the component if there are no fish or if all fish are filtered.
+  var showComponent = (fishes.length > 0) && (filterCount != fishes.length);
+  goog.style.setElementShown(this.getElement(), showComponent);
 };

@@ -14,3 +14,44 @@
 .ff-fish-view-radio-button-label {
   margin-right: 5px;
 }
+
+.ff-fish-view-title-hide {
+  line-height: 30px;
+  margin-right: 16px;
+  margin-top: 6px;
+  vertical-align: middle;
+}
+
+.ff-fish-view-color {
+  border: 2px solid transparent;
+  cursor: pointer;
+  display: inline-block;
+  height: 26px;
+  margin-right: 6px;
+  margin-top: 10px;
+  opacity: 0.8;
+  vertical-align: middle;
+  width: 26px;
+  @mixin border_radius(15px);
+}
+
+.ff-fish-view-color:hover {
+  opacity: 1;
+}
+
+.ff-fish-view-color.ff-fish-view-filter-enabled {
+  border: 2px solid #fff;
+  opacity: 1;
+}
+
+.ff-fish-view-color-one {
+  background-color: FISH_COLOR_ONE;
+}
+
+.ff-fish-view-color-two {
+  background-color: FISH_COLOR_TWO;
+}
+
+.ff-fish-view-color-three {
+  background-color: FISH_COLOR_THREE;
+}

@@ -13,10 +13,7 @@
 }
 
 .ff-fisher-area {
-  margin-top: 16px;
-}
-.ff-fisher-area:first-child {
-  margin-top: 0;
+  margin-bottom: 15px;
 }
 
 .ff-fisher-areas-toggle,
@@ -68,7 +65,7 @@
 }
 
 .ff-fisher-area.ff-collapsed {
-  margin-bottom: -20px;
+  margin-bottom: -8px;
 }
 
 /* Hide all children of the area... */

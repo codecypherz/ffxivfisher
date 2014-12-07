@@ -114,6 +114,8 @@ ff.fisher.ui.area.AreaWeather.prototype.enterDocument = function() {
       goog.Timer.TICK,
       this.update_);
 
+  this.renderWeather_();
+
   // Update regularly and right now.
   goog.Timer.callOnce(this.update_, 50, this);
 };

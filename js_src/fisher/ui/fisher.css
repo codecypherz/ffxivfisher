@@ -4,6 +4,9 @@
 
 @def HEADER_HEIGHT             30px;
 @def TIME_COLOR                #FFF0A0;
+@def FISH_COLOR_ONE            #d77625;
+@def FISH_COLOR_TWO            #035002;
+@def FISH_COLOR_THREE          #741114;
 
 .ff-fisher-root {
   margin: auto;
