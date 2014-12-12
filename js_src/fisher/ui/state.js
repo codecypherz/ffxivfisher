@@ -83,7 +83,8 @@ ff.fisher.ui.State.View = {
 ff.fisher.ui.State.Filter = {
   COLOR_ONE: ff.getUniqueId('color-one'),
   COLOR_TWO: ff.getUniqueId('color-two'),
-  COLOR_THREE: ff.getUniqueId('color-three')
+  COLOR_THREE: ff.getUniqueId('color-three'),
+  NO_COLOR: ff.getUniqueId('no-color')
 };
 
 
@@ -224,6 +225,8 @@ ff.fisher.ui.State.prototype.getFilterForColor_ = function(color) {
     return ff.fisher.ui.State.Filter.COLOR_TWO;
   } else if (color == ff.model.Fish.Color.THREE) {
     return ff.fisher.ui.State.Filter.COLOR_THREE;
+  } else if (color == ff.model.Fish.Color.CLEAR) {
+    return ff.fisher.ui.State.Filter.NO_COLOR;
   }
   return null;
 };

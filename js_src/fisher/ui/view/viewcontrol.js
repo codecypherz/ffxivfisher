@@ -39,6 +39,9 @@ ff.fisher.ui.view.ViewControl = function() {
 
   /** @private {Element} */
   this.colorThree_ = null;
+
+  /** @private {Element} */
+  this.noColor_ = null;
 };
 goog.inherits(ff.fisher.ui.view.ViewControl, goog.ui.Component);
 
@@ -52,7 +55,8 @@ ff.fisher.ui.view.ViewControl.Id_ = {
   BY_AREA_RADIO_BUTTON: ff.getUniqueId('by-area'),
   COLOR_ONE: ff.getUniqueId('color-one'),
   COLOR_TWO: ff.getUniqueId('color-two'),
-  COLOR_THREE: ff.getUniqueId('color-three')
+  COLOR_THREE: ff.getUniqueId('color-three'),
+  NO_COLOR: ff.getUniqueId('no-color')
 };
 
 
@@ -84,6 +88,8 @@ ff.fisher.ui.view.ViewControl.prototype.createDom = function() {
       this, ff.fisher.ui.view.ViewControl.Id_.COLOR_TWO);
   this.colorThree_ = ff.ui.getElementByFragment(
       this, ff.fisher.ui.view.ViewControl.Id_.COLOR_THREE);
+  this.noColor_ = ff.ui.getElementByFragment(
+      this, ff.fisher.ui.view.ViewControl.Id_.NO_COLOR);
 
   this.updateViewState_();
   this.updateFilterState_();
@@ -119,6 +125,7 @@ ff.fisher.ui.view.ViewControl.prototype.enterDocument = function() {
       ff.fisher.ui.State.EventType.FILTER_CHANGED,
       this.updateFilterState_);
 
+  // TODO: Create a filter component.
   this.getHandler().listen(
       this.colorOne_,
       goog.events.EventType.CLICK,
@@ -136,6 +143,12 @@ ff.fisher.ui.view.ViewControl.prototype.enterDocument = function() {
       goog.events.EventType.CLICK,
       function(e) {
         this.uiState_.toggleFilter(ff.fisher.ui.State.Filter.COLOR_THREE);
+      });
+  this.getHandler().listen(
+      this.noColor_,
+      goog.events.EventType.CLICK,
+      function(e) {
+        this.uiState_.toggleFilter(ff.fisher.ui.State.Filter.NO_COLOR);
       });
 };
 
@@ -171,4 +184,8 @@ ff.fisher.ui.view.ViewControl.prototype.updateFilterState_ = function() {
       this.colorThree_,
       ff.fisher.ui.view.ViewControl.Css_.FILTER_ENABLED,
       this.uiState_.isFilterEnabled(ff.fisher.ui.State.Filter.COLOR_THREE));
+  goog.dom.classlist.enable(
+      this.noColor_,
+      ff.fisher.ui.view.ViewControl.Css_.FILTER_ENABLED,
+      this.uiState_.isFilterEnabled(ff.fisher.ui.State.Filter.NO_COLOR));
 };

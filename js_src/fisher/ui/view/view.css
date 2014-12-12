@@ -32,7 +32,7 @@
 }
 
 .ff-fish-view-color {
-  border: 2px solid transparent;
+  border: 2px solid #666;
   cursor: pointer;
   display: inline-block;
   height: 26px;
@@ -62,4 +62,7 @@
 
 .ff-fish-view-color-three {
   background-color: FISH_COLOR_THREE;
+}
+
+.ff-fish-view-no-color {
 }
