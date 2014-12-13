@@ -107,6 +107,7 @@ ff.fisher.ui.fish.FishRow.prototype.createDom = function() {
         ids: this.makeIds(ff.fisher.ui.fish.FishRow.Id_),
         name: this.fish_.getName(),
         location: this.fish_.getLocation().getName(),
+        locationTip: this.getLocationTip_(),
         imageSrc: this.fish_.getImageUrl(),
         predatorCount: this.fish_.getPredatorCount(),
         predatorName: this.fish_.getPredator(),
@@ -223,4 +224,15 @@ ff.fisher.ui.fish.FishRow.prototype.updateVisibility_ = function() {
   goog.style.setElementShown(
       this.getElement(),
       !this.uiState_.isFiltered(this.fish_));
+};
+
+
+/**
+ * Gets the tooltip for the location.
+ * @return {string}
+ * @private
+ */
+ff.fisher.ui.fish.FishRow.prototype.getLocationTip_ = function() {
+  var location = this.fish_.getLocation();
+  return location.getName() + ' in ' + location.getArea().getName();
 };
