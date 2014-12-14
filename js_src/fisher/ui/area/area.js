@@ -8,12 +8,14 @@ goog.require('ff');
 goog.require('ff.fisher.ui.State');
 goog.require('ff.fisher.ui.area.soy');
 goog.require('ff.fisher.ui.fish.FishRow');
+goog.require('ff.model.Fish');
 goog.require('ff.service.FishService');
 goog.require('ff.service.FishWatcher');
 goog.require('ff.ui');
 goog.require('ff.ui.Css');
 goog.require('goog.array');
 goog.require('goog.dom.classlist');
+goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.log');
 goog.require('goog.soy');
@@ -47,6 +49,9 @@ ff.fisher.ui.area.Area = function(area) {
 
   /** @private {!ff.fisher.ui.State} */
   this.uiState_ = ff.fisher.ui.State.getInstance();
+
+  /** @private {!goog.events.EventHandler} */
+  this.fishHandler_ = new goog.events.EventHandler(this);
 };
 goog.inherits(ff.fisher.ui.area.Area, goog.ui.Component);
 
@@ -117,6 +122,7 @@ ff.fisher.ui.area.Area.prototype.renderFish_ = function() {
     goog.dispose(fishRow);
   }, this);
   this.fishRows_ = [];
+  this.fishHandler_.removeAll();
 
   var collapsed = this.uiState_.isAreaCollapsed(this.area_);
 
@@ -130,12 +136,32 @@ ff.fisher.ui.area.Area.prototype.renderFish_ = function() {
   this.fishService_.sortByNextCatch(fishes);
 
   // Render the fish.
-  var filterCount = 0;
   goog.array.forEach(fishes, function(fish) {
     var fishRow = new ff.fisher.ui.fish.FishRow(fish);
     this.fishRows_.push(fishRow);
     this.addChild(fishRow);
     fishRow.render(fishRowsElement);
+
+    // Update the visibility of the area component if the fish changes color
+    // in case the filter is such that this would remove the last visible fish.
+    this.fishHandler_.listen(
+        fish, ff.model.Fish.EventType.COLOR_CHANGED, this.updateVisibility_);
+
+  }, this);
+
+  this.updateVisibility_();
+};
+
+
+/**
+ * Updates this area's visibility.
+ * @private
+ */
+ff.fisher.ui.area.Area.prototype.updateVisibility_ = function() {
+  var fishes = this.fishService_.getForArea(this.area_);
+
+  var filterCount = 0;
+  goog.array.forEach(fishes, function(fish) {
     if (this.uiState_.isFiltered(fish)) {
       filterCount++;
     }
