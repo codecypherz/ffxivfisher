@@ -1,0 +1,16 @@
+/**
+ * Css for tooltips.
+ */
+
+.ff-fish-tooltip {
+  background-color: #333;
+  border: 1px solid #555;
+  color: TIME_COLOR;
+  font-size: 12px;
+  padding: 10px;
+  position: absolute;
+  text-align: center;
+  vertical-align: top;
+  z-index: 5;
+  @mixin border_radius(5px);
+}
