@@ -14,6 +14,7 @@ java -jar ..\closure\soy\SoyToJsSrcCompiler.jar ^
   fisher\ui\all\all.soy ^
   fisher\ui\area\area.soy ^
   fisher\ui\fish\fish.soy ^
+  fisher\ui\tooltip\tooltip.soy ^
   fisher\ui\view\view.soy ^
   fisher\ui\weather\weather.soy
 

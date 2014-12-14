@@ -11,6 +11,7 @@ goog.require('ff.fisher.ui.fish.CatchPath');
 goog.require('ff.fisher.ui.fish.ColorChooser');
 goog.require('ff.fisher.ui.fish.FishTime');
 goog.require('ff.fisher.ui.fish.soy');
+goog.require('ff.fisher.ui.tooltip.Tooltip');
 goog.require('ff.model.Fish');
 goog.require('ff.model.User');
 goog.require('ff.service.EorzeaTime');
@@ -47,6 +48,9 @@ ff.fisher.ui.fish.FishRow = function(fish) {
   /** @private {!ff.fisher.ui.State} */
   this.uiState_ = ff.fisher.ui.State.getInstance();
 
+  /** @private {!ff.fisher.ui.tooltip.Tooltip} */
+  this.tooltip_ = ff.fisher.ui.tooltip.Tooltip.getInstance();
+
   /** @private {!ff.fisher.ui.fish.ColorChooser} */
   this.colorChooser_ = new ff.fisher.ui.fish.ColorChooser(fish);
   this.addChild(this.colorChooser_);
@@ -70,7 +74,9 @@ goog.inherits(ff.fisher.ui.fish.FishRow, goog.ui.Component);
 ff.fisher.ui.fish.FishRow.Id_ = {
   BEST_CATCH_PATH: ff.getUniqueId('best-catch-path'),
   COLOR_CHOOSER: ff.getUniqueId('color-chooser'),
+  LOCATION: ff.getUniqueId('location'),
   NAME: ff.getUniqueId('name'),
+  PREDATOR: ff.getUniqueId('predator'),
   TIME: ff.getUniqueId('time')
 };
 
@@ -107,10 +113,8 @@ ff.fisher.ui.fish.FishRow.prototype.createDom = function() {
         ids: this.makeIds(ff.fisher.ui.fish.FishRow.Id_),
         name: this.fish_.getName(),
         location: this.fish_.getLocation().getName(),
-        locationTip: this.getLocationTip_(),
         imageSrc: this.fish_.getImageUrl(),
         predatorCount: this.fish_.getPredatorCount(),
-        predatorName: this.fish_.getPredator(),
         predatorImageSrc: this.fish_.getPredatorImageUrl()
       }));
 
@@ -161,6 +165,24 @@ ff.fisher.ui.fish.FishRow.prototype.enterDocument = function() {
       this.uiState_,
       ff.fisher.ui.State.EventType.FILTER_CHANGED,
       this.updateVisibility_);
+
+  this.tooltip_.registerElement(
+      this.getHandler(),
+      ff.ui.getElementByFragment(this, ff.fisher.ui.fish.FishRow.Id_.NAME),
+      this.fish_.getName());
+
+  this.tooltip_.registerElement(
+      this.getHandler(),
+      ff.ui.getElementByFragment(this, ff.fisher.ui.fish.FishRow.Id_.LOCATION),
+      this.getLocationTip_());
+
+  if (this.fish_.getPredatorCount() > 0) {
+    this.tooltip_.registerElement(
+        this.getHandler(),
+        ff.ui.getElementByFragment(
+            this, ff.fisher.ui.fish.FishRow.Id_.PREDATOR),
+        this.getPredatorTip_());
+  }
 
   this.updateCatchable_();
   this.updateColor_(); // Updates visibility too.
@@ -235,4 +257,15 @@ ff.fisher.ui.fish.FishRow.prototype.updateVisibility_ = function() {
 ff.fisher.ui.fish.FishRow.prototype.getLocationTip_ = function() {
   var location = this.fish_.getLocation();
   return location.getName() + ' in ' + location.getArea().getName();
+};
+
+
+/**
+ * Gets the tooltip for the predator.
+ * @return {string}
+ * @private
+ */
+ff.fisher.ui.fish.FishRow.prototype.getPredatorTip_ = function() {
+  return 'Predator: ' +
+      this.fish_.getPredatorCount() + ' ' + this.fish_.getPredator();
 };

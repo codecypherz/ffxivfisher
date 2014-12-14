@@ -159,6 +159,15 @@ ff.fisher.ui.fish.FishTime.prototype.enterDocument = function() {
       function(e) {
         this.updateCursorTime_(true, e);
       });
+  this.getHandler().listen(
+      this.getElement(),
+      goog.events.EventType.CLICK,
+      function(e) {
+        var show = !goog.style.isElementShown(this.tooltip_.getElement());
+        goog.Timer.callOnce(function() {
+          this.updateCursorTime_(show, e);
+        }, 0, this);
+      });
 
   // Listen for catchable range changes.
   this.getHandler().listen(
