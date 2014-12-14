@@ -41,5 +41,6 @@ ff.service.CookieService.prototype.get = function(cookieName, defaultValue) {
  * @param {string} value
  */
 ff.service.CookieService.prototype.set = function(cookieName, value) {
-  this.cookies_.set(cookieName, value);
+  // Set all cookies as persistent cookies.
+  this.cookies_.set(cookieName, value, Number.MAX_VALUE);
 };
