@@ -355,7 +355,7 @@ ff.model.Fish.prototype.toJson = function() {
     'endHour': this.endHour_,
     'location': fishLocationKey,
     'bestCatchPath': this.bestCatchPath_.toJson(),
-    'predator': this.predator_,
+    'predator': predator,
     'predatorCount': this.predatorCount_
   };
 };

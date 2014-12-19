@@ -100,7 +100,7 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.createDom = function() {
         ids: this.makeIds(ff.fisher.ui.admin.AdminFishDialog.Id_)
       }));
 
-  var confirmButton = this.getButtonSet().getButton(
+  this.getButtonSet().getButton(
       ff.fisher.ui.admin.AdminFishDialog.Id_.CONFIRM_BUTTON);
 
   goog.dom.setTextContent(this.getTitleCloseElement(), 'X');
