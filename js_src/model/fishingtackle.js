@@ -57,7 +57,7 @@ ff.model.FishingTackle.prototype.getItemLevel = function() {
 
 /** @return {string} */
 ff.model.FishingTackle.prototype.getImageUrl = function() {
-  return ff.model.Image.getUrl('tackle', this.name_);
+  return ff.model.Image.getUrl('tackle/25_25', this.name_);
 };
 
 
