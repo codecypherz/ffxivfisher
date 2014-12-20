@@ -26,7 +26,7 @@ ff.model.Mooch.prototype.getName = function() {
 
 /** @override */
 ff.model.Mooch.prototype.getImageUrl = function() {
-  return ff.model.Image.getUrl('fish', this.fishName_);
+  return ff.model.Image.getUrl('fish/30_30', this.fishName_);
 };
 
 

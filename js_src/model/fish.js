@@ -263,7 +263,7 @@ ff.model.Fish.prototype.setTimeRanges = function(previous, next) {
  * @return {string}
  */
 ff.model.Fish.prototype.getImageUrl = function() {
-  return ff.model.Image.getUrl('fish', this.name_);
+  return ff.model.Image.getUrl('fish/30_30', this.name_);
 };
 
 
@@ -303,7 +303,7 @@ ff.model.Fish.prototype.getPredatorCount = function() {
 
 /** @return {string} */
 ff.model.Fish.prototype.getPredatorImageUrl = function() {
-  return ff.model.Image.getUrl('fish', this.predator_);
+  return ff.model.Image.getUrl('fish/30_30', this.predator_);
 };
 
 
