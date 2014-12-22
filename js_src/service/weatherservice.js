@@ -9,6 +9,7 @@ goog.require('ff.model.Area');
 goog.require('ff.model.AreaEnum');
 goog.require('ff.model.Image');
 goog.require('ff.model.Weather');
+goog.require('ff.model.WeatherEnum');
 goog.require('ff.model.WeatherRange');
 goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.XhrService');
@@ -95,7 +96,7 @@ ff.service.WeatherService.prototype.startPolling = function() {
  * @return {string}
  */
 ff.service.WeatherService.prototype.getImageUrl = function(weather) {
-  return ff.model.Image.getUrl('weather', weather);
+  return ff.model.Image.getUrl('weather', weather.getName());
 };
 
 
@@ -152,7 +153,7 @@ ff.service.WeatherService.prototype.onWeatherLoaded_ = function(json) {
   var currentHour =
       eorzeaDate.getUTCHours() + (eorzeaDate.getUTCMinutes() / 60.0);
 
-  var reportHour = json['eorzeaHour'];
+  var reportHour = json['b'] || json['eorzeaHour'];
 
   // Figure out the starting hour of the range in which the report hour occurs.
   var startHour = 0;
@@ -177,6 +178,54 @@ ff.service.WeatherService.prototype.onWeatherLoaded_ = function(json) {
   }
 
   // Map areas to their weather ranges.
+  if (goog.isDefAndNotNull(json['a'])) {
+    this.parseWeatherMapFromCondensed_(json);
+  } else {
+    // TODO Remove once clients update.
+    this.parseWeatherMapFromLegacy_(json);
+  }
+
+  this.dispatchEvent(ff.service.WeatherService.EventType.WEATHER_UPDATED);
+};
+
+
+/**
+ * Parses the weather map from the new, condensed serialized data.
+ * @param {Object} json
+ * @private
+ */
+ff.service.WeatherService.prototype.parseWeatherMapFromCondensed_ = function(
+    json) {
+  var weatherMap = json['a'];
+  goog.object.forEach(
+      weatherMap,
+      function(rawWeatherList, areaIdentifier, obj) {
+        if (!rawWeatherList) {
+          return; // No weather data for this area.
+        }
+        var areaKey = ff.model.Area.getEnumFromIdentifier(areaIdentifier);
+        var weatherRangeList = [];
+        goog.array.forEach(rawWeatherList, function(weatherIdentifier, i, arr) {
+          var weather = ff.model.Weather.getFromIdentifier(weatherIdentifier);
+          if (weather) {
+            weatherRangeList.push(
+                new ff.model.WeatherRange(weather, this.weatherRanges_[i]));
+          } // else no weather for this particular range or unknown weather.
+        }, this);
+        this.weatherRangeMap_[areaKey] = weatherRangeList;
+      },
+      this);
+};
+
+
+/**
+ * TODO Remove once most clients have updated.
+ * Parses the weather map from the old format from the server.
+ * @param {Object} json
+ * @private
+ */
+ff.service.WeatherService.prototype.parseWeatherMapFromLegacy_ = function(
+    json) {
   var weatherMap = json['weatherMap'];
   goog.object.forEach(
       ff.model.AreaEnum,
@@ -187,18 +236,16 @@ ff.service.WeatherService.prototype.onWeatherLoaded_ = function(json) {
         }
         var weatherRangeList = [];
         goog.array.forEach(rawWeatherList, function(rawWeather, i, arr) {
-          var weather = /** @type {!ff.model.Weather} */ (
-              ff.stringKeyToEnum(rawWeather, ff.model.Weather));
+          var weather = ff.stringKeyToEnum(rawWeather, ff.model.WeatherEnum);
           if (weather) {
             weatherRangeList.push(
-                new ff.model.WeatherRange(weather, this.weatherRanges_[i]));
+                new ff.model.WeatherRange(
+                    ff.model.WeatherEnum[weather], this.weatherRanges_[i]));
           } // else no weather for this particular range or unknown weather.
         }, this);
         this.weatherRangeMap_[key] = weatherRangeList;
       },
       this);
-
-  this.dispatchEvent(ff.service.WeatherService.EventType.WEATHER_UPDATED);
 };
 
 

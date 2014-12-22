@@ -11,7 +11,7 @@ goog.require('ff.model.Fish');
 goog.require('ff.model.FishingTackleEnum');
 goog.require('ff.model.LocationEnum');
 goog.require('ff.model.Mooch');
-goog.require('ff.model.Weather');
+goog.require('ff.model.WeatherEnum');
 goog.require('ff.service.FishService');
 goog.require('ff.ui');
 goog.require('goog.array');
@@ -120,7 +120,7 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.createDom = function() {
           } else {
             previousWeatherStr += ', ';
           }
-          previousWeatherStr += ff.model.Weather[weather];
+          previousWeatherStr += weather.getName();
         });
     this.setValue_(
         ff.fisher.ui.admin.AdminFishDialog.Id_.PREVIOUS_WEATHER_INPUT,
@@ -135,7 +135,7 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.createDom = function() {
       } else {
         weatherStr += ', ';
       }
-      weatherStr += ff.model.Weather[weather];
+      weatherStr += weather.getName();
     });
     this.setValue_(
         ff.fisher.ui.admin.AdminFishDialog.Id_.WEATHER_INPUT,
@@ -254,7 +254,12 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
     goog.array.forEach(previousWeatherSplits, function(weatherSplit) {
       weatherSplit = goog.string.trim(weatherSplit);
       if (!goog.string.isEmptySafe(weatherSplit)) {
-        var weather = ff.stringValueToEnum(weatherSplit, ff.model.Weather);
+        var weather = goog.object.findValue(
+            ff.model.WeatherEnum,
+            function(value, key, object) {
+              return goog.string.caseInsensitiveCompare(
+                  value.getName(), weatherSplit) == 0;
+            });
         if (weather) {
           previousWeatherSet.add(weather);
         } else {
@@ -278,7 +283,12 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
     goog.array.forEach(weatherSplits, function(weatherSplit) {
       weatherSplit = goog.string.trim(weatherSplit);
       if (!goog.string.isEmptySafe(weatherSplit)) {
-        var weather = ff.stringValueToEnum(weatherSplit, ff.model.Weather);
+        var weather = goog.object.findValue(
+            ff.model.WeatherEnum,
+            function(value, key, object) {
+              return goog.string.caseInsensitiveCompare(
+                  value.getName(), weatherSplit) == 0;
+            });
         if (weather) {
           weatherSet.add(weather);
         } else {
