@@ -206,11 +206,14 @@ ff.service.WeatherService.prototype.parseWeatherMapFromCondensed_ = function(
         var areaKey = ff.model.Area.getEnumFromIdentifier(areaIdentifier);
         var weatherRangeList = [];
         goog.array.forEach(rawWeatherList, function(weatherIdentifier, i, arr) {
+          if (!goog.isDefAndNotNull(weatherIdentifier)) {
+            return; // No weather for this range.
+          }
           var weather = ff.model.Weather.getFromIdentifier(weatherIdentifier);
           if (weather) {
             weatherRangeList.push(
                 new ff.model.WeatherRange(weather, this.weatherRanges_[i]));
-          } // else no weather for this particular range or unknown weather.
+          } // Unknown weather.
         }, this);
         this.weatherRangeMap_[areaKey] = weatherRangeList;
       },
