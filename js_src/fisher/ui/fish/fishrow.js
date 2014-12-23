@@ -112,6 +112,7 @@ ff.fisher.ui.fish.FishRow.prototype.createDom = function() {
       ff.fisher.ui.fish.soy.FISH_ROW, {
         ids: this.makeIds(ff.fisher.ui.fish.FishRow.Id_),
         name: this.fish_.getName(),
+        detailUrl: this.fish_.getDetailUrl(),
         location: this.fish_.getLocation().getName(),
         imageSrc: this.fish_.getImageUrl(),
         predatorCount: this.fish_.getPredatorCount(),
@@ -165,11 +166,6 @@ ff.fisher.ui.fish.FishRow.prototype.enterDocument = function() {
       this.uiState_,
       ff.fisher.ui.State.EventType.FILTER_CHANGED,
       this.updateVisibility_);
-
-  this.tooltip_.registerElement(
-      this.getHandler(),
-      ff.ui.getElementByFragment(this, ff.fisher.ui.fish.FishRow.Id_.NAME),
-      this.fish_.getName());
 
   this.tooltip_.registerElement(
       this.getHandler(),

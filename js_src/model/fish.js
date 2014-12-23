@@ -32,6 +32,7 @@ goog.require('goog.structs.Set');
  * @param {!ff.model.CatchPath} bestCatchPath
  * @param {string} predator
  * @param {number} predatorCount
+ * @param {number} cbhId
  * @constructor
  * @extends {goog.events.EventTarget}
  */
@@ -45,7 +46,8 @@ ff.model.Fish = function(
     fishLocation,
     bestCatchPath,
     predator,
-    predatorCount) {
+    predatorCount,
+    cbhId) {
   goog.base(this);
 
   /** @protected {goog.log.Logger} */
@@ -95,6 +97,9 @@ ff.model.Fish = function(
 
   /** @private {number} */
   this.predatorCount_ = predatorCount;
+
+  /** @private {number} */
+  this.cbhId_ = cbhId;
 };
 goog.inherits(ff.model.Fish, goog.events.EventTarget);
 
@@ -267,6 +272,21 @@ ff.model.Fish.prototype.getImageUrl = function() {
 };
 
 
+/** @return {number} */
+ff.model.Fish.prototype.getCbhId = function() {
+  return this.cbhId_;
+};
+
+
+/**
+ * Gets the detail URL for the fish.
+ * @return {string}
+ */
+ff.model.Fish.prototype.getDetailUrl = function() {
+  return 'http://en.ff14angler.com/fish/' + this.cbhId_;
+};
+
+
 /**
  * Sets the color the user chose for the fish.
  * @param {!ff.model.Fish.Color} color The new color chosen by the user.
@@ -349,7 +369,8 @@ ff.model.Fish.prototype.toJson = function() {
     'location': fishLocationKey,
     'bestCatchPath': this.bestCatchPath_.toJson(),
     'predator': predator,
-    'predatorCount': this.predatorCount_
+    'predatorCount': this.predatorCount_,
+    'cbhId': this.cbhId_
   };
 };
 
@@ -424,5 +445,6 @@ ff.model.Fish.fromJson = function(json) {
       ff.model.LocationEnum[fishLocation],
       ff.model.CatchPath.fromJson(json['bestCatchPath']),
       predator,
-      json['predatorCount']);
+      json['predatorCount'],
+      json['cbhId']);
 };

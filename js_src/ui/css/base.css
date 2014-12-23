@@ -39,5 +39,11 @@ body {
 }
 
 a {
+	color: #fff;
+	text-decoration: none;
+}
+
+a:hover {
   color: #00BFFF;
+  text-decoration: underline;
 }

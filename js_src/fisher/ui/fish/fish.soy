@@ -4,6 +4,7 @@
  * HTML for the component that renders a fish as a row.
  * @param ids
  * @param name
+ * @param detailUrl
  * @param location
  * @param imageSrc
  * @param predatorCount
@@ -20,7 +21,7 @@
       </img>
       <div id="{$ids.NAME|id}"
           class="{css ff-fish-cell}{sp}{css ff-fish-row-name}">
-        {$name}
+        <a href="{$detailUrl}" target="_blank">{$name}</a>
       </div>
       <div id="{$ids.TIME|id}"
           class="{css ff-fish-cell}{sp}{css ff-fish-row-time}">

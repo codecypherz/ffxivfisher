@@ -21,6 +21,7 @@ public class Fish {
 	private List<CatchPathPart> bestCatchPath;
 	private String predator;
 	private int predatorCount;
+	private int cbhId;
 	
 	public Fish() {
 		this(
@@ -33,7 +34,8 @@ public class Fish {
 			null, // location
 			new ArrayList<CatchPathPart>(),
 			null, // predator
-			0); // predator count
+			0, // predator count
+			-1); // CBH ID
 	}
 	
 	public Fish(
@@ -46,7 +48,8 @@ public class Fish {
 			Location location,
 			List<CatchPathPart> bestCatchPath,
 			String predator,
-			int predatorCount) {
+			int predatorCount,
+			int cbhId) {
 		this.key = key;
 		this.name = name;
 		this.previousWeatherSet = previousWeatherSet;
@@ -57,6 +60,7 @@ public class Fish {
 		this.bestCatchPath = bestCatchPath;
 		this.predator = predator;
 		this.predatorCount = predatorCount;
+		this.cbhId = cbhId;
 	}
 	
 	public String getKey() {
@@ -93,7 +97,10 @@ public class Fish {
 	public int getPredatorCount() {
 		return predatorCount;
 	}
-
+	public int getCbhId() {
+		return cbhId;
+	}
+	
 	public void setFromFish(Fish other) {
 		name = other.name;
 		previousWeatherSet = other.previousWeatherSet;
@@ -104,5 +111,6 @@ public class Fish {
 		bestCatchPath = other.bestCatchPath;
 		predator = other.predator;
 		predatorCount = other.predatorCount;
+		cbhId = other.cbhId;
 	}
 }

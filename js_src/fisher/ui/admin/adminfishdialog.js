@@ -68,6 +68,7 @@ goog.inherits(ff.fisher.ui.admin.AdminFishDialog, goog.ui.Dialog);
  */
 ff.fisher.ui.admin.AdminFishDialog.Id_ = {
   BEST_CATCH_PATH_INPUT: ff.getUniqueId('best-catch-path-input'),
+  CBH_ID_INPUT: ff.getUniqueId('cbh-id-input'),
   CONFIRM_BUTTON: ff.getUniqueId('confirm-button'),
   END_HOUR_INPUT: ff.getUniqueId('end-hour-input'),
   LOCATION_INPUT: ff.getUniqueId('location-input'),
@@ -182,6 +183,13 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.createDom = function() {
     this.setValue_(
         ff.fisher.ui.admin.AdminFishDialog.Id_.PREDATOR_COUNT_INPUT,
         predatorCountString);
+
+    // Set the CBH id.
+    var cbhId = this.fishToEdit_.getCbhId();
+    var cbhIdStr = cbhId >= 0 ? cbhId + '' : '';
+    this.setValue_(
+        ff.fisher.ui.admin.AdminFishDialog.Id_.CBH_ID_INPUT,
+        cbhIdStr);
   }
 };
 
@@ -367,6 +375,21 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
       return;
     } // Else, nothing set: valid predator fields.
 
+    // Validate the CBH ID.
+    var cbhIdInput = ff.ui.getElementByFragment(this,
+        ff.fisher.ui.admin.AdminFishDialog.Id_.CBH_ID_INPUT);
+    var cbhIdString = cbhIdInput.value;
+    var cbhId = -1;
+    if (!goog.string.isEmptySafe(cbhIdString)) {
+      try {
+        cbhId = parseInt(cbhIdString, 10);
+      } catch (error) {
+        predatorInput.select();
+        e.preventDefault();
+        return;
+      }
+    }
+
     // Create the fish with the given data.
     var fishKey = this.fishToEdit_ ? this.fishToEdit_.getKey() : '';
     var fish = new ff.model.Fish(
@@ -379,7 +402,8 @@ ff.fisher.ui.admin.AdminFishDialog.prototype.onSelect_ = function(e) {
         fishLocation,
         new ff.model.CatchPath(bestCatchPathParts),
         predator,
-        predatorCount);
+        predatorCount,
+        cbhId);
 
     // Save the fish.
     if (this.fishToEdit_) {
