@@ -110,9 +110,9 @@ ff.model.LocationEnum = {
   'HALFSTONE': new ff.model.Location(
       ff.model.AreaEnum.WESTERN_LA_NOSCEA, 'Halfstone'),
   'NORTH_UMBRAL_ISLES': new ff.model.Location(
-      ff.model.AreaEnum.WESTERN_LA_NOSCEA, 'North Umbral Isles'),
+      ff.model.AreaEnum.WESTERN_LA_NOSCEA, 'Isles of Umbra Northshore'),
   'SOUTH_UMBRAL_ISLES': new ff.model.Location(
-      ff.model.AreaEnum.WESTERN_LA_NOSCEA, 'South Umbral Isles'),
+      ff.model.AreaEnum.WESTERN_LA_NOSCEA, 'Isles of Umbra Southshore'),
   'THE_BREWERS_BEACON': new ff.model.Location(
       ff.model.AreaEnum.WESTERN_LA_NOSCEA, 'The Brewer\'s Beacon'),
   'THE_SHIP_GRAVEYARD': new ff.model.Location(
