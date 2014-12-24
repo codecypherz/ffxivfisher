@@ -112,8 +112,9 @@ ff.fisher.ui.fish.FishRow.prototype.createDom = function() {
       ff.fisher.ui.fish.soy.FISH_ROW, {
         ids: this.makeIds(ff.fisher.ui.fish.FishRow.Id_),
         name: this.fish_.getName(),
-        detailUrl: this.fish_.getDetailUrl(),
+        fishDetailUrl: this.fish_.getDetailUrl(),
         location: this.fish_.getLocation().getName(),
+        locationDetailUrl: this.fish_.getLocation().getDetailUrl(),
         imageSrc: this.fish_.getImageUrl(),
         predatorCount: this.fish_.getPredatorCount(),
         predatorImageSrc: this.fish_.getPredatorImageUrl()
