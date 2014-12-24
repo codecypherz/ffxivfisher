@@ -129,18 +129,21 @@
 /**
  * HTML for a catch path.
  * @param catchPathPartCss
- * @param imageUrls
+ * @param catchPathParts
  */
 {template .CATCH_PATH}
   <div class="{css ff-fish-catch-path}">
-    {foreach $imageUrl in $imageUrls}
-      {if not isFirst($imageUrl)}
+    {foreach $catchPathPart in $catchPathParts}
+      {if not isFirst($catchPathPart)}
         <div class="{css ff-fish-catch-path-part-divider}">
           &#8594
         </div>
       {/if}
       <div class="{$catchPathPartCss}">
-        <img src="{$imageUrl}" class="{css ff-fish-catch-path-part-image}" />
+        <a href="{$catchPathPart.detailUrl}" target="_blank">
+          <img src="{$catchPathPart.imageUrl}"
+              class="{css ff-fish-catch-path-part-image}" />
+        </a>
       </div>
     {/foreach}
   </div>

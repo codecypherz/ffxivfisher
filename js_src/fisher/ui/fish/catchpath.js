@@ -6,6 +6,8 @@ goog.provide('ff.fisher.ui.fish.CatchPath');
 
 goog.require('ff.fisher.ui.fish.soy');
 goog.require('ff.fisher.ui.tooltip.Tooltip');
+goog.require('ff.model.FishingTackle');
+goog.require('ff.service.FishService');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
@@ -29,6 +31,9 @@ ff.fisher.ui.fish.CatchPath = function(catchPath) {
   /** @private {!ff.fisher.ui.tooltip.Tooltip} */
   this.tooltip_ = ff.fisher.ui.tooltip.Tooltip.getInstance();
 
+  /** @private {!ff.service.FishService} */
+  this.fishService_ = ff.service.FishService.getInstance();
+
   /** @private {!ff.model.CatchPath} */
   this.catchPath_ = catchPath;
 };
@@ -46,14 +51,17 @@ ff.fisher.ui.fish.CatchPath.Css_ = {
 
 /** @override */
 ff.fisher.ui.fish.CatchPath.prototype.createDom = function() {
-  var imageUrls = [];
+  var catchPathParts = [];
   goog.array.forEach(this.catchPath_.getCatchPathParts(), function(part) {
-    imageUrls.push(part.getImageUrl());
-  });
+    catchPathParts.push({
+      imageUrl: part.getImageUrl(),
+      detailUrl: this.getDetailUrl_(part)
+    });
+  }, this);
   this.setElementInternal(goog.soy.renderAsElement(
       ff.fisher.ui.fish.soy.CATCH_PATH, {
         catchPathPartCss: ff.fisher.ui.fish.CatchPath.Css_.CATCH_PATH_PART,
-        imageUrls: imageUrls
+        catchPathParts: catchPathParts
       }));
 };
 
@@ -79,4 +87,20 @@ ff.fisher.ui.fish.CatchPath.prototype.enterDocument = function() {
       partIndex++;
     }
   }, this);
+};
+
+
+/**
+ * @param {!ff.model.CatchPathPart} catchPathPart
+ * @return {string}
+ * @private
+ */
+ff.fisher.ui.fish.CatchPath.prototype.getDetailUrl_ = function(catchPathPart) {
+  if (catchPathPart instanceof ff.model.FishingTackle) {
+    var tackle = /** @type {!ff.model.FishingTackle} */ (catchPathPart);
+    return tackle.getDetailUrl();
+  } else {
+    var mooch = /** @type {!ff.model.Mooch} */ (catchPathPart);
+    return mooch.getDetailUrl(this.fishService_);
+  }
 };

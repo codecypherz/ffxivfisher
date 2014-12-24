@@ -288,11 +288,13 @@ ff.model.LocationEnum = {
   'THE_WEEPING_SAINT': new ff.model.Location(
       ff.model.AreaEnum.COERTHAS_CENTRAL_HIGHLANDS, 'The Weeping Saint', 40104),
   'DRAGONHEAD_LATRINES': new ff.model.Location(
-      ff.model.AreaEnum.COERTHAS_CENTRAL_HIGHLANDS, 'Dragonhead Latrines', 40105),
+      ff.model.AreaEnum.COERTHAS_CENTRAL_HIGHLANDS,
+      'Dragonhead Latrines', 40105),
   'DANIFFEN_PASS': new ff.model.Location(
       ff.model.AreaEnum.COERTHAS_CENTRAL_HIGHLANDS, 'Daniffen Pass', 40106),
   'EXPLORATORY_ICE_HOLE': new ff.model.Location(
-      ff.model.AreaEnum.COERTHAS_CENTRAL_HIGHLANDS, 'Exploratory Ice Hole', 40107),
+      ff.model.AreaEnum.COERTHAS_CENTRAL_HIGHLANDS,
+      'Exploratory Ice Hole', 40107),
   'SNOWCLOAK': new ff.model.Location(
       ff.model.AreaEnum.COERTHAS_CENTRAL_HIGHLANDS, 'Snowcloak', 40108),
   'SEA_OF_CLOUDS': new ff.model.Location(
