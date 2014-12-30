@@ -52,6 +52,7 @@ ff.fisher.ui.area.Area = function(area) {
 
   /** @private {!goog.events.EventHandler} */
   this.fishHandler_ = new goog.events.EventHandler(this);
+  this.registerDisposable(this.fishHandler_);
 };
 goog.inherits(ff.fisher.ui.area.Area, goog.ui.Component);
 
@@ -158,6 +159,10 @@ ff.fisher.ui.area.Area.prototype.renderFish_ = function() {
  * @private
  */
 ff.fisher.ui.area.Area.prototype.updateVisibility_ = function() {
+  if (!this.isInDocument()) {
+    return;
+  }
+
   var fishes = this.fishService_.getForArea(this.area_);
 
   var filterCount = 0;
