@@ -16,10 +16,6 @@ public class WeatherReport {
 	@SerializedName("b")
 	private final int condensedEorzeaHour;
 	
-	// TODO Remove once clients understand the new format.
-	private final Map<Area, List<Weather>> weatherMap;
-	private final int eorzeaHour;
-	
 	public WeatherReport(Map<Area, List<Weather>> weatherMap, int eorzeaHour) {
 		this.condensedWeatherMap = new HashMap<Integer, List<Integer>>();
 		for (Entry<Area, List<Weather>> entry : weatherMap.entrySet()) {
@@ -36,16 +32,5 @@ public class WeatherReport {
 					weatherInts);
 		}
 		this.condensedEorzeaHour = eorzeaHour;
-		
-		this.weatherMap = weatherMap;
-		this.eorzeaHour = eorzeaHour;
-	}
-	
-	public Map<Area, List<Weather>> getWeatherMap() {
-		return weatherMap;
-	}
-	
-	public int getEorzeaHour() {
-		return eorzeaHour;
 	}
 }

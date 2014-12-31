@@ -61,12 +61,12 @@ ff.model.LocationEnum = {
   // Middle La Noscea
   'ZEPHYR_DRIFT': new ff.model.Location(
       ff.model.AreaEnum.MIDDLE_LA_NOSCEA, 'Zephyr Drift', 10301),
-  'ROGUE_RIVER': new ff.model.Location(
-      ff.model.AreaEnum.MIDDLE_LA_NOSCEA, 'Rogue River', 10302),
-  'WEST_AGELYSS_RIVER': new ff.model.Location(
-      ff.model.AreaEnum.MIDDLE_LA_NOSCEA, 'West Agelyss River', 10303),
   'SUMMERFORD': new ff.model.Location(
-      ff.model.AreaEnum.MIDDLE_LA_NOSCEA, 'Summerford', 10304),
+      ff.model.AreaEnum.MIDDLE_LA_NOSCEA, 'Summerford', 10302),
+  'ROGUE_RIVER': new ff.model.Location(
+      ff.model.AreaEnum.MIDDLE_LA_NOSCEA, 'Rogue River', 10303),
+  'WEST_AGELYSS_RIVER': new ff.model.Location(
+      ff.model.AreaEnum.MIDDLE_LA_NOSCEA, 'West Agelyss River', 10304),
   'NYM_RIVER': new ff.model.Location(
       ff.model.AreaEnum.MIDDLE_LA_NOSCEA, 'Nym River', 10305),
   'WOAD_WHISPER_CANYON': new ff.model.Location(

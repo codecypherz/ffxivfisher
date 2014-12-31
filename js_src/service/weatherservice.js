@@ -6,10 +6,8 @@ goog.provide('ff.service.WeatherService');
 
 goog.require('ff');
 goog.require('ff.model.Area');
-goog.require('ff.model.AreaEnum');
 goog.require('ff.model.Image');
 goog.require('ff.model.Weather');
-goog.require('ff.model.WeatherEnum');
 goog.require('ff.model.WeatherRange');
 goog.require('ff.service.EorzeaTime');
 goog.require('ff.service.XhrService');
@@ -178,12 +176,7 @@ ff.service.WeatherService.prototype.onWeatherLoaded_ = function(json) {
   }
 
   // Map areas to their weather ranges.
-  if (goog.isDefAndNotNull(json['a'])) {
-    this.parseWeatherMapFromCondensed_(json);
-  } else {
-    // TODO Remove once clients update.
-    this.parseWeatherMapFromLegacy_(json);
-  }
+  this.parseWeatherMapFromCondensed_(json);
 
   this.dispatchEvent(ff.service.WeatherService.EventType.WEATHER_UPDATED);
 };
@@ -216,37 +209,6 @@ ff.service.WeatherService.prototype.parseWeatherMapFromCondensed_ = function(
           } // Unknown weather.
         }, this);
         this.weatherRangeMap_[areaKey] = weatherRangeList;
-      },
-      this);
-};
-
-
-/**
- * TODO Remove once most clients have updated.
- * Parses the weather map from the old format from the server.
- * @param {Object} json
- * @private
- */
-ff.service.WeatherService.prototype.parseWeatherMapFromLegacy_ = function(
-    json) {
-  var weatherMap = json['weatherMap'];
-  goog.object.forEach(
-      ff.model.AreaEnum,
-      function(area, key, obj) {
-        var rawWeatherList = weatherMap[key];
-        if (!rawWeatherList) {
-          return; // No weather data for this area.
-        }
-        var weatherRangeList = [];
-        goog.array.forEach(rawWeatherList, function(rawWeather, i, arr) {
-          var weather = ff.stringKeyToEnum(rawWeather, ff.model.WeatherEnum);
-          if (weather) {
-            weatherRangeList.push(
-                new ff.model.WeatherRange(
-                    ff.model.WeatherEnum[weather], this.weatherRanges_[i]));
-          } // else no weather for this particular range or unknown weather.
-        }, this);
-        this.weatherRangeMap_[key] = weatherRangeList;
       },
       this);
 };
