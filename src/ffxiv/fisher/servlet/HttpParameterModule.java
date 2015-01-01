@@ -2,7 +2,6 @@ package ffxiv.fisher.servlet;
 
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,8 +13,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
 public class HttpParameterModule extends AbstractModule {
-
-	private static final Logger log = Logger.getLogger(HttpParameterModule.class.getName());
 
 	/**
 	 * The UTF_8 charset.
@@ -34,7 +31,7 @@ public class HttpParameterModule extends AbstractModule {
 				ServingMode servingMode = ServingMode.valueOf(servingModeParam.toUpperCase());
 				if (ServingMode.DEV == servingMode &&
 						SystemProperty.Environment.Value.Production == SystemProperty.environment.value()) {
-					log.severe("Cannot request dev mode in production environment");
+					return ServingMode.PROD;
 				}
 				return servingMode;
 			} catch (Exception e) {

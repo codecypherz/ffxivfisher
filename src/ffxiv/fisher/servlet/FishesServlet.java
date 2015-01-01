@@ -3,7 +3,6 @@ package ffxiv.fisher.servlet;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,8 +24,6 @@ import ffxiv.fisher.service.FishService.InvalidationCallback;
 public class FishesServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = -8372385733325260330L;
-	
-	private static final Logger log = Logger.getLogger(FishesServlet.class.getName());
 	
 	private final FishService fishService;
 	private final FishSerializer fishSerializer;
@@ -55,11 +52,9 @@ public class FishesServlet extends HttpServlet {
 
 		String allFishJson = jsonRef.get();
 		if (allFishJson != null) {
-			log.info("Serving fish JSON from memory.");
 			resp.getWriter().write(allFishJson);
 			return; // Return now so no data is fetched from the database.
 		} else {
-			log.info("JSON was not already in memory.");
 		}
 		
 		// TODO Create metrics around the various cache hits.
@@ -67,7 +62,6 @@ public class FishesServlet extends HttpServlet {
 		List<Fish> allFish = fishService.getAll();
 		
 		allFishJson = fishSerializer.serialize(allFish);
-		log.info("Saving fish JSON reference for next time.");
 		jsonRef.compareAndSet(null, allFishJson);
 		
 		// Finally, write the response to the client.

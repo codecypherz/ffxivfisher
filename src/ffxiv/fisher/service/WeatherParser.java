@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
@@ -16,8 +15,6 @@ import ffxiv.fisher.model.WeatherReport;
 
 @Singleton
 public class WeatherParser {
-	
-	private static final Logger log = Logger.getLogger(WeatherParser.class.getName());
 	
 	private static final Map<Integer, Area> TO_AREA =
 			ImmutableMap.<Integer, Area>builder()
@@ -73,12 +70,9 @@ public class WeatherParser {
 
 		// Check error condition.
 		if (rawDataString == null) {
-			log.severe("Invalid source data.  Returning empty weather.");
 			return new WeatherReport(new HashMap<Area, List<Weather>>(), 0);
 		}
 
-		log.info("Parsing weather data.");
-		
 		Gson gson = new Gson();
 		RawData rawData = gson.fromJson(rawDataString, RawData.class);
 		
@@ -116,7 +110,6 @@ public class WeatherParser {
 			}
 		}
 		
-		log.info("Successfully parsed weather data.");
 		return new WeatherReport(weatherMap, rawData.hour);
 	}
 	

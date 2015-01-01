@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
@@ -34,8 +33,6 @@ public class FishService {
 	public static interface InvalidationCallback {
 		void invalidate();
 	}
-	
-	private static final Logger log = Logger.getLogger(FishService.class.getName());
 	
 	private static final String MEMCACHE_FISHES_KEY = "fishes";
 	
@@ -94,7 +91,6 @@ public class FishService {
 		// Read from Level 1 cache first.  Should happen frequently.
 		List<Fish> cachedFish = cachedFishRef.get();
 		if (cachedFish != null) {
-			log.info("Returning fish from memory.");
 			return cachedFish;
 		}
 		
@@ -104,7 +100,6 @@ public class FishService {
 			cachedFish = fishSerializer.deserializeAll(cachedFishJson);
 			// Update Level 1 cache from memcache.
 			cachedFishRef.compareAndSet(null, cachedFish);
-			log.info("Returning fish from memcache.");
 			return cachedFish;
 		}
 		
@@ -128,7 +123,6 @@ public class FishService {
 		cachedFishRef.compareAndSet(null, fishList);
 		memcacheService.put(MEMCACHE_FISHES_KEY, fishSerializer.serialize(fishList));
 		
-		log.info("Returning fish from the database.");
 		return fishList;
 	}
 	
@@ -225,7 +219,6 @@ public class FishService {
 	public void deleteAll() {
 		// Safeguard against deleting production data.
 		if (!isDevelopmentEnvironment) {
-			log.severe("Attempted to delete all fish in production.");
 			return;
 		}
 		
@@ -242,21 +235,13 @@ public class FishService {
 	 * we are assuming it's refreshed and kept alive.
 	 */
 	public void keepMemcacheAlive() {
-		log.info("Keeping memcache alive");
-		Object allFishJson = memcacheService.get(MEMCACHE_FISHES_KEY);
-		if (allFishJson != null) {
-			log.info("Memcache is still fresh");
-		} else {
-			log.info("Memcache has no fish");
-		}
+		memcacheService.get(MEMCACHE_FISHES_KEY);
 	}
 	
 	/**
 	 * Invalidates all caches for fish.  Used whenever a large mutation happens.
 	 */
 	private void invalidateCaches() {
-		log.info("Invalidating all fish caches.");
-		
 		cachedFishRef.set(null);
 		memcacheService.delete(MEMCACHE_FISHES_KEY);
 		

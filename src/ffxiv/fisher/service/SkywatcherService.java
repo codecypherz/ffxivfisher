@@ -1,7 +1,5 @@
 package ffxiv.fisher.service;
 
-import java.util.logging.Logger;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -9,8 +7,6 @@ import ffxiv.fisher.model.WeatherReport;
 
 @Singleton
 public class SkywatcherService {
-	
-	private static final Logger log = Logger.getLogger(SkywatcherService.class.getName());
 	
 	private static final String SOURCE = "http://na.ff14angler.com/skywatcher.php";
 	
@@ -50,7 +46,6 @@ public class SkywatcherService {
 		
 		// Update if too stale.
 		if (tooStale) {
-			log.info("Requesting data from source");
 			weatherReport = parser.parse(urlFetchService.getRawData(SOURCE));
 			lastUpdate = System.currentTimeMillis();
 			

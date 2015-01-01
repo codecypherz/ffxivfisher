@@ -1,7 +1,6 @@
 package ffxiv.fisher.servlet.admin;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,8 +21,6 @@ import ffxiv.fisher.servlet.HttpResponseCode;
 @Singleton
 public class AdminFishServlet extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(AdminFishServlet.class.getName());
-	
 	private static final long serialVersionUID = 337121127107680287L;
 	
 	private final FishService fishService;
@@ -51,7 +48,6 @@ public class AdminFishServlet extends HttpServlet {
 				fish = fishService.create(fish);
 			}
 		} catch (IllegalArgumentException e) {
-			log.severe(e.getMessage());
 			resp.sendError(HttpResponseCode.BAD_REQUEST.getCode());
 			return;
 		}

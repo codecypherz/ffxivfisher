@@ -2,7 +2,6 @@ package ffxiv.fisher.servlet.admin;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,8 +24,6 @@ import ffxiv.fisher.service.UrlFetchService;
 public class CopyProdToLocalServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = -1618388594334206517L;
-	
-	private static final Logger log = Logger.getLogger(CopyProdToLocalServlet.class.getName());
 	
 	private static final String SOURCE = "http://ffxivfisher.appspot.com/fishes";
 	
@@ -52,11 +49,8 @@ public class CopyProdToLocalServlet extends HttpServlet {
 			throws ServletException, IOException {
 		
 		if (!isDevelopmentEnvironment) {
-			log.severe("Attempted to alter production data with a dev only servlet.");
 			return;
 		}
-		
-		log.info("Copying prod data to local DB.");
 		
 		// Fetch the prod data.
 		String fishesJson = urlFetchService.getRawData(SOURCE);
