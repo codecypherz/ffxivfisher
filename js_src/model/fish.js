@@ -292,7 +292,23 @@ ff.model.Fish.prototype.getDetailUrl = function() {
  * @param {!ff.model.Fish.Color} color The new color chosen by the user.
  */
 ff.model.Fish.prototype.setUserColor = function(color) {
-  this.cookieService_.set(this.getUserColorKey_(), color);
+  // No action needed if the color is the same.
+  if (this.getUserColor() == color) {
+    return;
+  }
+  var cookieValue = null;
+  if (color == ff.model.Fish.Color.ONE) {
+    cookieValue = '1';
+  } else if (color == ff.model.Fish.Color.TWO) {
+    cookieValue = '2';
+  } else if (color == ff.model.Fish.Color.THREE) {
+    cookieValue = '3';
+  }
+  if (goog.isDefAndNotNull(cookieValue)) {
+    this.cookieService_.set(this.getUserColorKey_(), cookieValue);
+  } else {
+    this.cookieService_.remove(this.getUserColorKey_());
+  }
   this.dispatchEvent(ff.model.Fish.EventType.COLOR_CHANGED);
 };
 
@@ -302,10 +318,38 @@ ff.model.Fish.prototype.setUserColor = function(color) {
  * @return {!ff.model.Fish.Color}
  */
 ff.model.Fish.prototype.getUserColor = function() {
-  var colorFromCookie = this.cookieService_.get(
-      this.getUserColorKey_(), ff.model.Fish.Color.CLEAR);
-  return /** @type {!ff.model.Fish.Color} */ (
-      ff.stringValueToEnum(colorFromCookie, ff.model.Fish.Color));
+  var colorFromCookie = this.cookieService_.get(this.getUserColorKey_(), '');
+  if (colorFromCookie == '1') {
+    return ff.model.Fish.Color.ONE;
+  } else if (colorFromCookie == '2') {
+    return ff.model.Fish.Color.TWO;
+  } else if (colorFromCookie == '3') {
+    return ff.model.Fish.Color.THREE;
+  }
+  return ff.model.Fish.Color.CLEAR;
+};
+
+
+/**
+ * Only keep around for migration.
+ * @return {?ff.model.Fish.Color}
+ */
+ff.model.Fish.prototype.getLegacyUserColor = function() {
+  var value = this.cookieService_.get(this.getLegacyUserColorKey_());
+  if (goog.isDefAndNotNull(value)) {
+    return /** @type {!ff.model.Fish.Color} */ (
+        ff.stringValueToEnum(value, ff.model.Fish.Color));
+  }
+  return null;
+};
+
+
+/**
+ * Removes the legacy cookie used for storing fish color.  Only call this
+ * function once the data has been stored elsewhere.
+ */
+ff.model.Fish.prototype.removeLegacyUserColorCookie = function() {
+  this.cookieService_.remove(this.getLegacyUserColorKey_());
 };
 
 
@@ -332,6 +376,17 @@ ff.model.Fish.prototype.getPredatorImageUrl = function() {
  * @private
  */
 ff.model.Fish.prototype.getUserColorKey_ = function() {
+  // Keep this tiny.
+  return this.cbhId_ + 'c';
+};
+
+
+/**
+ * DEPRECATED - way too big.
+ * @return {string} The key used to set/get color cookies.
+ * @private
+ */
+ff.model.Fish.prototype.getLegacyUserColorKey_ = function() {
   return this.key_ + '_user_color';
 };
 

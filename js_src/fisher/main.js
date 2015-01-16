@@ -4,6 +4,7 @@
 
 goog.provide('ff.fisher.Main');
 
+goog.require('ff.fisher.ui.CookieFixer');
 goog.require('ff.fisher.ui.Root');
 goog.require('ff.model.User');
 goog.require('ff.service.FishService');
@@ -45,6 +46,7 @@ ff.fisher.Main = function(userJson) {
   ff.model.User.getInstance().parse(userJson);
   ff.service.WeatherService.getInstance().startPolling();
   ff.service.FishService.getInstance().loadAll();
+  ff.fisher.ui.CookieFixer.getInstance().initialize();
 
   // Create and render the UI.
   var root = new ff.fisher.ui.Root();

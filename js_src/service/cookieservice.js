@@ -25,13 +25,22 @@ goog.addSingletonGetter(ff.service.CookieService);
 
 
 /**
+ * Arbitrarily long expiration to make sure cookies are persistent.
+ * @private
+ * @const
+ * @type {number}
+ */
+ff.service.CookieService.EXPIRATION_ = 60 * 60 * 24 * 30 * 12 * 10;
+
+
+/**
  * Gets the cookie identified by the name.
  * @param {string} cookieName
- * @param {string} defaultValue If not found this is returned instead.
- * @return {string}
+ * @param {string=} opt_default If not found this is returned instead.
+ * @return {string|undefined}
  */
-ff.service.CookieService.prototype.get = function(cookieName, defaultValue) {
-  return this.cookies_.get(cookieName, defaultValue) || defaultValue;
+ff.service.CookieService.prototype.get = function(cookieName, opt_default) {
+  return this.cookies_.get(cookieName, opt_default);
 };
 
 
@@ -42,5 +51,14 @@ ff.service.CookieService.prototype.get = function(cookieName, defaultValue) {
  */
 ff.service.CookieService.prototype.set = function(cookieName, value) {
   // Set all cookies as persistent cookies.
-  this.cookies_.set(cookieName, value, Number.MAX_VALUE);
+  this.cookies_.set(cookieName, value, ff.service.CookieService.EXPIRATION_);
+};
+
+
+/**
+ * Removes the given cooke.
+ * @param {string} cookieName
+ */
+ff.service.CookieService.prototype.remove = function(cookieName) {
+  this.cookies_.remove(cookieName);
 };
