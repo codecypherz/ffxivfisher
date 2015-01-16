@@ -15,6 +15,7 @@ goog.require('ff.fisher.ui.tooltip.Tooltip');
 goog.require('ff.model.Fish');
 goog.require('ff.model.User');
 goog.require('ff.service.EorzeaTime');
+goog.require('ff.service.FishService');
 goog.require('ff.ui');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
@@ -47,6 +48,9 @@ ff.fisher.ui.fish.FishRow = function(fish) {
 
   /** @private {!ff.fisher.ui.State} */
   this.uiState_ = ff.fisher.ui.State.getInstance();
+
+  /** @private {!ff.service.FishService} */
+  this.fishService_ = ff.service.FishService.getInstance();
 
   /** @private {!ff.fisher.ui.tooltip.Tooltip} */
   this.tooltip_ = ff.fisher.ui.tooltip.Tooltip.getInstance();
@@ -116,6 +120,7 @@ ff.fisher.ui.fish.FishRow.prototype.createDom = function() {
         location: this.fish_.getLocation().getName(),
         locationDetailUrl: this.fish_.getLocation().getDetailUrl(),
         imageSrc: this.fish_.getImageUrl(),
+        predatorDetailUrl: this.getPredatorDetailUrl_(),
         predatorCount: this.fish_.getPredatorCount(),
         predatorImageSrc: this.fish_.getPredatorImageUrl()
       }));
@@ -183,6 +188,24 @@ ff.fisher.ui.fish.FishRow.prototype.enterDocument = function() {
 
   this.updateCatchable_();
   this.updateColor_(); // Updates visibility too.
+};
+
+
+/**
+ * Figures out the predator URL for the fish if it has a predator.
+ * @return {string}
+ * @private
+ */
+ff.fisher.ui.fish.FishRow.prototype.getPredatorDetailUrl_ = function() {
+  if (this.fish_.getPredatorCount() > 0) {
+    var predator = this.fishService_.findFishByName(this.fish_.getPredator());
+    if (goog.isDefAndNotNull(predator)) {
+      return predator.getDetailUrl();
+    }
+    goog.log.error(
+        this.logger, 'No fish model found for ' + this.fish_.getPredator());
+  }
+  return '';
 };
 
 

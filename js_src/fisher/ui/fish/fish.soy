@@ -8,6 +8,7 @@
  * @param location
  * @param locationDetailUrl
  * @param imageSrc
+ * @param predatorDetailUrl
  * @param predatorCount
  * @param predatorImageSrc
  */
@@ -36,11 +37,13 @@
       {if $predatorCount > 0}
       <div id="{$ids.PREDATOR|id}"
           class="{css ff-fish-cell}{sp}{css ff-fish-row-predator-info}">
-        <img src="{$predatorImageSrc}" class="{css ff-fish-row-predator-image}">
-        </img>
-        <div class="{css ff-fish-row-predator-count}">
-          {$predatorCount}
-        </div>
+        <a href="{$predatorDetailUrl}" target="_blank">
+          <img src="{$predatorImageSrc}" class="{css ff-fish-row-predator-image}">
+          </img>
+          <div class="{css ff-fish-row-predator-count}">
+            {$predatorCount}
+          </div>
+        </a>
       </div>
       {/if}
 
